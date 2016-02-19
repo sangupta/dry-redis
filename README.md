@@ -26,7 +26,8 @@ Commands not yet supported:
   * setex
 * Hash
   * hscan
-* 
+* Geo
+  * All: geoadd, geohash, geopos, geodist, georadius, georadiusbymember. All methods are in redis-beta
 
 TODO
 ----
