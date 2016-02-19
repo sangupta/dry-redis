@@ -124,6 +124,110 @@ public class DryRedisHash implements DryRedisCache {
 		return returnValue;
 	}
 	
+	public int hsetnx(String key, String field, String value) {
+		Map<String, String> map = this.store.get(key);
+		if(map == null) {
+			map = new HashMap<String, String>();
+			this.store.put(key, map);
+		}
+		
+		if(map.containsKey(field)) {
+			return 0;
+		}
+		
+		map.put(field, value);
+		return 1;
+	}
+	
+	public int hstrlen(String key, String field) {
+		Map<String, String> map = this.store.get(key);
+		if(map == null) {
+			return 0;
+		}
+		
+		String value = map.get(field);
+		if(value == null) {
+			return 0;
+		}
+		
+		return value.length();
+	}
+	
+	public List<String> hvals(String key) {
+		List<String> list = new ArrayList<String>();
+		
+		Map<String, String> map = this.store.get(key);
+		if(map == null) {
+			return list;
+		}
+		
+		if(map.isEmpty()) {
+			return list;
+		}
+		
+		list.addAll(map.values());
+		return list;
+	}
+	
+	public long hincrby(String key, String field, long increment) {
+		Map<String, String> map = this.store.get(key);
+		if(map == null) {
+			map = new HashMap<String, String>();
+			this.store.put(key, map);
+		}
+		
+		String value = map.get(field);
+		if(value == null) {
+			value = "0";
+		}
+		
+		long newValue = Long.parseLong(value) + increment;
+		map.put(field, String.valueOf(newValue));
+		return newValue;
+	}
+	
+	public double hincrbyfloat(String key, String field, double increment) {
+		Map<String, String> map = this.store.get(key);
+		if(map == null) {
+			map = new HashMap<String, String>();
+			this.store.put(key, map);
+		}
+		
+		String value = map.get(field);
+		if(value == null) {
+			value = "0";
+		}
+		
+		double newValue = Double.parseDouble(value) + increment;
+		map.put(field, String.valueOf(newValue));
+		return newValue;
+	}
+	
+	public List<String> hmget(String key, List<String> fields) {
+		Map<String, String> map = this.store.get(key);
+		if(map == null) {
+			return null;
+		}
+		
+		List<String> list = new ArrayList<String>();
+		for(String field : fields) {
+			list.add(map.get(field));
+		}
+		
+		return list;
+	}
+	
+	public String hmset(String key, Map<String, String> fieldValues) {
+		Map<String, String> map = this.store.get(key);
+		if(map == null) {
+			map = new HashMap<String, String>();
+			this.store.put(key, map);
+		}
+		
+		map.putAll(fieldValues);
+		return "OK";
+	}
+	
 	// commands for DryRedisCache
 
 	@Override

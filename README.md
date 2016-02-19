@@ -26,6 +26,8 @@ Commands not yet supported:
   * setbit
   * setex
 * Hash
+  * hscan
+* 
 
 TODO
 ----
