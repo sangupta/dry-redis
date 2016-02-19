@@ -24,7 +24,19 @@ class RegisterSet {
         } else {
             this.M = initialValues;
         }
+        
         this.size = this.M.length;
+    }
+    
+    /**
+     * Package-private method to support cloning on {@link HyperLogLog}.
+     * 
+     * @param other
+     */
+    void setFrom(RegisterSet other) {
+    	for(int index = 0; index < other.M.length; index++) {
+    		this.M[index] = other.M[index];
+    	}
     }
 
     public static int getBits(int count) {
@@ -35,11 +47,13 @@ class RegisterSet {
         int bits = getBits(count);
         if (bits == 0) {
             return 1;
-        } else if (bits % Integer.SIZE == 0) {
+        } 
+        
+        if (bits % Integer.SIZE == 0) {
             return bits;
-        } else {
-            return bits + 1;
         }
+        
+        return bits + 1;
     }
 
     public void set(int position, int value) {
@@ -65,9 +79,9 @@ class RegisterSet {
         if (curVal < newVal) {
             this.M[bucket] = (int) ((this.M[bucket] & ~mask) | newVal);
             return true;
-        } else {
-            return false;
         }
+        
+        return false;
     }
 
     public void merge(RegisterSet that) {

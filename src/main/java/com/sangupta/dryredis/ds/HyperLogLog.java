@@ -9,13 +9,26 @@ import com.sangupta.murmur.Murmur3;
  * @author sangupta
  *
  */
-public class HyperLogLog {
+public class HyperLogLog implements Cloneable {
 	
 	private static final long SEED = 3920214;
 
 	private final RegisterSet registerSet;
+	
     private final int log2m;
+    
     private final double alphaMM;
+    
+    @Override
+    public HyperLogLog clone() {
+    	HyperLogLog hll = new HyperLogLog(this.log2m);
+    	
+    	// copy all registers
+    	hll.registerSet.setFrom(this.registerSet);
+    	
+    	// return instance
+    	return hll;
+    }
 
 
     /**
@@ -26,20 +39,6 @@ public class HyperLogLog {
      */
     public HyperLogLog(double rsd) {
         this(log2m(rsd));
-    }
-
-    private static int log2m(double rsd) {
-        return (int) (Math.log((1.106 / rsd) * (1.106 / rsd)) / Math.log(2));
-    }
-
-//    private static double rsd(int log2m) {
-//        return 1.106 / Math.sqrt(Math.exp(log2m * Math.log(2)));
-//    }
-
-    private static void validateLog2m(int log2m) {
-        if (log2m < 0 || log2m > 30) {
-            throw new IllegalArgumentException("log2m argument is " + log2m + " and is outside the range [0, 30]");
-        }
     }
 
     /**
@@ -66,7 +65,21 @@ public class HyperLogLog {
         this.log2m = log2m;
         int m = 1 << this.log2m;
 
-        alphaMM = getAlphaMM(log2m, m);
+        this.alphaMM = getAlphaMM(log2m, m);
+    }
+
+    private static int log2m(double rsd) {
+        return (int) (Math.log((1.106 / rsd) * (1.106 / rsd)) / Math.log(2));
+    }
+
+//    private static double rsd(int log2m) {
+//        return 1.106 / Math.sqrt(Math.exp(log2m * Math.log(2)));
+//    }
+
+    private static void validateLog2m(int log2m) {
+        if (log2m < 0 || log2m > 30) {
+            throw new IllegalArgumentException("log2m argument is " + log2m + " and is outside the range [0, 30]");
+        }
     }
 
     private boolean offerHashed(long hashedValue) {
@@ -185,15 +198,15 @@ public class HyperLogLog {
      * @param other A compatible Hyperloglog instance (same log2m)
      * @throws CardinalityMergeException if other is not compatible
      */
-    public void addAll(HyperLogLog other) throws HyperLogLogMergeException {
+    public void addAll(HyperLogLog other) {
         if (this.sizeof() != other.sizeof()) {
-            throw new HyperLogLogMergeException("Cannot merge estimators of different sizes");
+            throw new IllegalArgumentException("Cannot merge estimators of different sizes");
         }
 
         registerSet.merge(other.registerSet);
     }
 
-    public HyperLogLog merge(HyperLogLog... estimators) throws HyperLogLogMergeException {
+    public HyperLogLog merge(HyperLogLog... estimators) {
         HyperLogLog merged = new HyperLogLog(log2m, new RegisterSet(this.registerSet.count));
         merged.addAll(this);
 
@@ -207,15 +220,6 @@ public class HyperLogLog {
         }
 
         return merged;
-    }
-
-    @SuppressWarnings("serial")
-    protected static class HyperLogLogMergeException extends Exception {
-
-        public HyperLogLogMergeException(String message) {
-            super(message);
-        }
-        
     }
 
     protected static double getAlphaMM(final int p, final int m) {
