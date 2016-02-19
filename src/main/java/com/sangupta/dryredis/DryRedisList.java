@@ -286,6 +286,38 @@ public class DryRedisList implements DryRedisCache {
 		return list.size();
 	}
 	
+	public String ltrim(String key, int start, int stop) {
+		List<String> list = this.store.get(key);
+		if(list == null) {
+			return "OK";
+		}
+		
+		if(list.isEmpty()) {
+			this.store.remove(key);
+			return "OK";
+		}
+		
+		int size = list.size();
+
+		// negative bounds
+		if(start < 0) {
+			start = size + start;
+		}
+		if(stop < 0) {
+			stop = size + start;
+		}
+		
+		// check for bounds
+		if(start > size) {
+			this.store.remove(key);
+			return "OK";
+		}
+		
+		list = new ArrayList<String>(list.subList(start, stop));
+		this.store.put(key, list);
+		return "OK";
+	}
+	
 	// commmands from DryRedisCache
 
 	@Override

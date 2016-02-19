@@ -13,7 +13,6 @@ Commands not yet supported:
   * blpop
   * brpop
   * brpoplpush
-  * ltrim
 * Set
   * sscan
 * Strings
