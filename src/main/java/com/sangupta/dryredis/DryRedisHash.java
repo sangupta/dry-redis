@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.sangupta.dryredis.support.DryRedisCache;
+import com.sangupta.dryredis.support.DryRedisCacheType;
+
 /**
  * Hash operations from Redis
  * 

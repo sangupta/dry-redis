@@ -1,4 +1,4 @@
-package com.sangupta.dryredis;
+package com.sangupta.dryredis.support;
 
 import java.util.List;
 

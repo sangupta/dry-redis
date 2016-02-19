@@ -8,6 +8,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.sangupta.dryredis.support.DryRedisCache;
+import com.sangupta.dryredis.support.DryRedisCacheType;
+
 public class DryRedisSet implements DryRedisCache {
 	
 	private final Map<String, Set<String>> store = new HashMap<String, Set<String>>();

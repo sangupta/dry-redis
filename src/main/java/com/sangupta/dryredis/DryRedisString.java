@@ -7,6 +7,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.sangupta.dryredis.support.DryRedisCache;
+import com.sangupta.dryredis.support.DryRedisCacheType;
+
 public class DryRedisString implements DryRedisCache {
 	
 	private final Map<String, String> store = new HashMap<String, String>();
@@ -205,7 +208,7 @@ public class DryRedisString implements DryRedisCache {
 
 	@Override
 	public DryRedisCacheType getType() {
-		return DryRedisCacheType.Key;
+		return DryRedisCacheType.String;
 	}
 
 }

@@ -1,4 +1,4 @@
-package com.sangupta.dryredis;
+package com.sangupta.dryredis.support;
 
 public enum DryRedisCacheType {
 
@@ -9,6 +9,8 @@ public enum DryRedisCacheType {
 	Set,
 	
 	SortedSet,
+	
+	String,
 	
 	Hash,
 	

@@ -1,4 +1,4 @@
-package com.sangupta.dryredis;
+package com.sangupta.dryredis.support;
 
 /**
  * Contract for a class that implements a group of commands over a
