@@ -26,8 +26,16 @@ Commands not yet supported:
   * setex
 * Hash
   * hscan
+* HyperLogLog
 * Geo
-  * All: geoadd, geohash, geopos, geodist, georadius, georadiusbymember. All methods are in redis-beta
+
+
+Important Notes
+---------------
+
+* Geo algorithms currently use a brute-force method, a O(n) search and thus will be slower than `Redis`
+* Geo methods use `haversine` method to compute distance between two points
+* HyperLogLog implementation uses https://github.com/addthis/stream-lib libraries implementation and may thus slightly differ from `Redis`
 
 TODO
 ----
