@@ -229,8 +229,7 @@ public class DryRedisGeo implements DryRedisCache {
 		}
 		
 		public String getGeoHash() {
-			// TODO: fix this 
-			return null;
+			return DryRedisUtils.getGeoHash(this.latitude, this.longitude);
 		}
 
 		public double[] getPoint() {
