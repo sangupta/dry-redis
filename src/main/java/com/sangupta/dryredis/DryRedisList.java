@@ -81,6 +81,10 @@ public class DryRedisList implements DryRedisCache {
 			index = list.size() + index;
 		}
 		
+		if(index >= list.size()) {
+		    return null;
+		}
+		
 		return list.get(index);
 	}
 	
