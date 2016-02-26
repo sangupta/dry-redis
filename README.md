@@ -10,9 +10,6 @@ that `Redis` supports. There are many other implementation available like:
 Commands not yet supported:
 
 * List
-  * blpop
-  * brpop
-  * brpoplpush
 * Set
   * sscan
 * Strings
@@ -28,6 +25,7 @@ Commands not yet supported:
   * hscan
 * HyperLogLog
 * Geo
+
 
 
 Important Notes

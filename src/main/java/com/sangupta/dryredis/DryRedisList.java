@@ -15,16 +15,60 @@ public class DryRedisList implements DryRedisCache {
 	
 	private final Map<String, List<String>> store = new HashMap<String, List<String>>();
 	
-	public void blpop() {
-		// TODO:
+	private final Object blockingMonitor = new Object();
+	
+	public String blpop(String key, int maxSecondsToBlock) {
+	    final long millis = maxSecondsToBlock * 1000l;
+	    final long end = System.currentTimeMillis() + millis;
+		
+	    do {
+		    String result = this.lpop(key);
+		    if(result != null) {
+		        return result;
+		    }
+		    
+            if(System.currentTimeMillis() > end) {
+                return null;
+            }
+
+            try {
+                this.blockingMonitor.wait(maxSecondsToBlock * 1000l);
+            } catch (InterruptedException e) {
+                return null;
+            }
+		} while(true);
 	}
 	
-	public void brpop() {
-		// TODO:
+	public String brpop(String key, int maxSecondsToBlock) {
+        final long millis = maxSecondsToBlock * 1000l;
+        final long end = System.currentTimeMillis() + millis;
+        
+        do {
+            String result = this.rpop(key);
+            if(result != null) {
+                return result;
+            }
+            
+            if(System.currentTimeMillis() > end) {
+                return null;
+            }
+
+            try {
+                this.blockingMonitor.wait(maxSecondsToBlock * 1000l);
+            } catch (InterruptedException e) {
+                return null;
+            }
+        } while(true);
 	}
 	
-	public void brpoplpush() {
-		// TODO:
+	public String brpoplpush(String source, String destination, int maxSecondsToBlock) {
+		String value = this.brpop(source, maxSecondsToBlock);
+		if(value == null) {
+		    return null;
+		}
+		
+		this.lpush(destination, value);
+		return value;
 	}
 	
 	public String lindex(String key, int index) {
@@ -76,7 +120,7 @@ public class DryRedisList implements DryRedisCache {
 		return list.size();
 	}
 	
-	public String lpop(byte[] key) {
+	public String lpop(String key) {
 		List<String> list = this.store.get(key);
 		if(list == null) {
 			return null;
@@ -97,6 +141,7 @@ public class DryRedisList implements DryRedisCache {
 		}
 		
 		list.add(0, value);
+		this.blockingMonitor.notify();
 		return list.size();
 	}
 	
@@ -111,6 +156,7 @@ public class DryRedisList implements DryRedisCache {
 			list.add(0, item);
 		}
 		
+		this.blockingMonitor.notifyAll();
 		return list.size();
 	}
 	
@@ -124,6 +170,7 @@ public class DryRedisList implements DryRedisCache {
 			list.add(0, item);
 		}
 		
+		this.blockingMonitor.notifyAll();
 		return list.size();
 	}
 	
@@ -288,6 +335,7 @@ public class DryRedisList implements DryRedisCache {
 		}
 		
 		list.add(value);
+		this.blockingMonitor.notify();
 		return list.size();
 	}
 	
