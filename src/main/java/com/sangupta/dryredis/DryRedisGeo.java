@@ -214,6 +214,16 @@ public class DryRedisGeo implements DryRedisCache {
 		return DryRedisCacheType.Geo;
 	}
 
+    @Override
+    public boolean hasKey(String key) {
+        return this.store.containsKey(key);
+    }
+    
+    @Override
+    public void keys(String pattern, List<String> keys) {
+        
+    }
+    
 	public static class GeoPoint {
 
 		public String name;

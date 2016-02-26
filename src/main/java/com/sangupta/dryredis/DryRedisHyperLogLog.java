@@ -153,4 +153,13 @@ public class DryRedisHyperLogLog implements DryRedisCache {
 		return DryRedisCacheType.HyperLogLog;
 	}
 
+    @Override
+    public boolean hasKey(String key) {
+        return this.store.containsKey(key);
+    }
+    
+    @Override
+    public void keys(String pattern, List<String> keys) {
+        
+    }
 }

@@ -213,4 +213,13 @@ public class DryRedisString implements DryRedisCache {
 		return DryRedisCacheType.String;
 	}
 
+    @Override
+    public boolean hasKey(String key) {
+        return this.store.containsKey(key);
+    }
+    
+    @Override
+    public void keys(String pattern, List<String> keys) {
+        
+    }
 }

@@ -400,4 +400,13 @@ public class DryRedisList implements DryRedisCache {
 		return DryRedisCacheType.List;
 	}
 
+    @Override
+    public boolean hasKey(String key) {
+        return this.store.containsKey(key);
+    }
+    
+    @Override
+    public void keys(String pattern, List<String> keys) {
+        
+    }
 }
