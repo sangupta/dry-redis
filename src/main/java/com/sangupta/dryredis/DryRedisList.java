@@ -284,10 +284,6 @@ public class DryRedisList implements DryRedisCache {
 		return "OK";
 	}
 	
-	public void ltrim() {
-		// TODO:
-	}
-	
 	public String rpop(String key) {
 		List<String> list = this.store.get(key);
 		if(list == null) {

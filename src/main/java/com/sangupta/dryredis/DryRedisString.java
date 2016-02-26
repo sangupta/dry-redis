@@ -197,6 +197,8 @@ public class DryRedisString implements DryRedisCache {
 		this.store.put(key, value);
 		return oldValue;
 	}
+	
+	// interface commands
 
 	@Override
 	public int del(String key) {

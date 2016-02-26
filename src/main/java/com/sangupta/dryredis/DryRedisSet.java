@@ -270,8 +270,7 @@ public class DryRedisSet implements DryRedisCache {
 	}
 	
 	public List<String> sscan(String key, int cursor) {
-		// TODO:
-		return null;
+		throw new RuntimeException("Not yet implemented");
 	}
 	
 	// commands for DryRedisCache

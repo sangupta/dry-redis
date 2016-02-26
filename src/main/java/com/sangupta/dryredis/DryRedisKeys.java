@@ -19,26 +19,26 @@ public abstract class DryRedisKeys {
 	
 	private final List<DryRedisCache> caches = new ArrayList<DryRedisCache>();
 	
-	protected final DryRedisGeo geo = new DryRedisGeo();
+	protected final DryRedisGeo geoCommands = new DryRedisGeo();
 	
-	protected final DryRedisHash hash = new DryRedisHash();
+	protected final DryRedisHash hashCommands = new DryRedisHash();
 	
-	protected final DryRedisHyperLogLog hyperLogLog = new DryRedisHyperLogLog();
+	protected final DryRedisHyperLogLog hyperLogLogCommands = new DryRedisHyperLogLog();
 	
-	protected final DryRedisList list = new DryRedisList();
+	protected final DryRedisList listCommands = new DryRedisList();
 	
-	protected final DryRedisSet set = new DryRedisSet();
+	protected final DryRedisSet setCommands = new DryRedisSet();
 	
-	protected final DryRedisString redisString = new DryRedisString();
+	protected final DryRedisString stringCommands = new DryRedisString();
 	
 	public DryRedisKeys() {
-        caches.add(this.geo);
-        caches.add(this.hash);
-        caches.add(this.hyperLogLog);
-        caches.add(this.list);
-        caches.add(this.set);
-        caches.add(this.geo);
-        caches.add(this.redisString);
+        caches.add(this.geoCommands);
+        caches.add(this.hashCommands);
+        caches.add(this.hyperLogLogCommands);
+        caches.add(this.listCommands);
+        caches.add(this.setCommands);
+        caches.add(this.geoCommands);
+        caches.add(this.stringCommands);
     }
 	
 	public int del(String key) {
@@ -92,7 +92,12 @@ public abstract class DryRedisKeys {
 	}
 
 	protected void matchKeyType(String key, DryRedisCacheType type) {
-	    if(type != keyType(key)) {
+	    DryRedisCacheType foundKeyType = keyType(key);
+	    if(foundKeyType == null) {
+	        return;
+	    }
+	    
+	    if(type != foundKeyType) {
 	        throw new IllegalArgumentException("Key contains a different type of data-structure");
 	    }
 	}
