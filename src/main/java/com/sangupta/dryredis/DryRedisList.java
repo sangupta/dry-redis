@@ -141,7 +141,7 @@ public class DryRedisList implements DryRedisCache {
 		}
 		
 		list.add(0, value);
-		this.blockingMonitor.notify();
+//		this.blockingMonitor.notify();
 		return list.size();
 	}
 	
@@ -156,7 +156,7 @@ public class DryRedisList implements DryRedisCache {
 			list.add(0, item);
 		}
 		
-		this.blockingMonitor.notifyAll();
+//		this.blockingMonitor.notifyAll();
 		return list.size();
 	}
 	
@@ -170,7 +170,7 @@ public class DryRedisList implements DryRedisCache {
 			list.add(0, item);
 		}
 		
-		this.blockingMonitor.notifyAll();
+//		this.blockingMonitor.notifyAll();
 		return list.size();
 	}
 	
@@ -314,6 +314,14 @@ public class DryRedisList implements DryRedisCache {
 		return list.size();
 	}
 	
+	public int rpushx(String key, String value) {
+	    if(this.store.containsKey(key)) {
+	        this.rpush(key, value);	        
+	    }
+	    
+	    return this.llen(key);
+	}
+	
 	public int rpush(String key, List<String> value) {
 		List<String> list = this.store.get(key);
 		if(list == null) {
@@ -335,7 +343,7 @@ public class DryRedisList implements DryRedisCache {
 		}
 		
 		list.add(value);
-		this.blockingMonitor.notify();
+//		this.blockingMonitor.notify();
 		return list.size();
 	}
 	
