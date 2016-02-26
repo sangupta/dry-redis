@@ -211,7 +211,7 @@ public class DryRedisGeo implements DryRedisCache {
 
 	@Override
 	public DryRedisCacheType getType() {
-		return DryRedisCacheType.Geo;
+		return DryRedisCacheType.GEO;
 	}
 
     @Override

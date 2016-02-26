@@ -393,7 +393,7 @@ public class DryRedisList implements DryRedisCache {
 
 	@Override
 	public DryRedisCacheType getType() {
-		return DryRedisCacheType.List;
+		return DryRedisCacheType.LIST;
 	}
 
     @Override

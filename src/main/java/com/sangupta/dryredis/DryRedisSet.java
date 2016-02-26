@@ -287,7 +287,7 @@ public class DryRedisSet implements DryRedisCache {
 
 	@Override
 	public DryRedisCacheType getType() {
-		return DryRedisCacheType.Set;
+		return DryRedisCacheType.SET;
 	}
 
     @Override

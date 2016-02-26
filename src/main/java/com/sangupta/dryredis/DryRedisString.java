@@ -212,7 +212,7 @@ public class DryRedisString implements DryRedisCache {
 
 	@Override
 	public DryRedisCacheType getType() {
-		return DryRedisCacheType.String;
+		return DryRedisCacheType.STRING;
 	}
 
     @Override

@@ -150,7 +150,7 @@ public class DryRedisHyperLogLog implements DryRedisCache {
 
 	@Override
 	public DryRedisCacheType getType() {
-		return DryRedisCacheType.HyperLogLog;
+		return DryRedisCacheType.HYPER_LOG_LOG;
 	}
 
     @Override

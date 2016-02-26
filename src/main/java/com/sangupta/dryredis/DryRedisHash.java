@@ -245,7 +245,7 @@ public class DryRedisHash implements DryRedisCache {
 
 	@Override
 	public DryRedisCacheType getType() {
-		return DryRedisCacheType.Hash;
+		return DryRedisCacheType.HASH;
 	}
 
     @Override

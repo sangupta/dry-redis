@@ -14,7 +14,7 @@ public class DryRedisSortedSet implements DryRedisCache {
 
     @Override
     public DryRedisCacheType getType() {
-        return DryRedisCacheType.SortedSet;
+        return DryRedisCacheType.SORTED_SET;
     }
 
     @Override
