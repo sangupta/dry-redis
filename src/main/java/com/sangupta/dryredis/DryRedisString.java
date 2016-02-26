@@ -15,8 +15,9 @@ public class DryRedisString implements DryRedisCache {
 	private final Map<String, String> store = new HashMap<String, String>();
 	
 	public int append(String key, String value) {
-		String oldValue = this.store.putIfAbsent(key, value);
+		String oldValue = this.store.get(key);
 		if(oldValue == null) {
+	        this.store.put(key, value);
 			return value.length();
 		}
 		
@@ -81,8 +82,9 @@ public class DryRedisString implements DryRedisCache {
 	}
 	
 	public String setnx(String key, String value) {
-		String oldValue = this.store.putIfAbsent(key, value);
+		String oldValue = this.store.get(key);
 		if(oldValue == null) {
+	        this.store.put(key, value);
 			return "OK";
 		}
 		
