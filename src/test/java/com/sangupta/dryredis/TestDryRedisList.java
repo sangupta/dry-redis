@@ -81,6 +81,7 @@ public class TestDryRedisList {
         Assert.assertNull(redis.lpop(listName));
     }
     
+    @Test
     public void testLPUSH() {
         DryRedisList redis = new DryRedisList();
         
@@ -97,6 +98,7 @@ public class TestDryRedisList {
         Assert.assertNull(redis.lpop(listName));
     }
     
+    @Test
     public void testLPUSHX() {
         DryRedisList redis = new DryRedisList();
         
@@ -113,6 +115,7 @@ public class TestDryRedisList {
         Assert.assertNull(redis.lpop(listName));
     }
 
+    @Test
     public void testRPUSH() {
         DryRedisList redis = new DryRedisList();
         
@@ -129,6 +132,7 @@ public class TestDryRedisList {
         Assert.assertNull(redis.lpop(listName));
     }
 
+    @Test
     public void testRPUSHX() {
         DryRedisList redis = new DryRedisList();
         
