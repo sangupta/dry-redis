@@ -57,6 +57,10 @@ public class DryRedisString implements DryRedisCache {
 	}
 	
 	public List<String> mget(String[] keys) {
+	    if(keys == null || keys.length == 0) {
+            return null;
+        }
+	    
 		List<String> list = new ArrayList<String>();
 		for(String key : keys) {
 			String value = this.store.get(key);
@@ -67,6 +71,10 @@ public class DryRedisString implements DryRedisCache {
 	}
 	
 	public List<String> mget(Collection<String> keys) {
+	    if(keys == null || keys.isEmpty()) {
+	        return null;
+	    }
+	    
 		List<String> list = new ArrayList<String>();
 		for(String key : keys) {
 			String value = this.store.get(key);

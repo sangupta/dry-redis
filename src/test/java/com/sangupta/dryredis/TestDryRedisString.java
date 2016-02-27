@@ -1,5 +1,7 @@
 package com.sangupta.dryredis;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.junit.Assert;
@@ -92,9 +94,38 @@ public class TestDryRedisString {
     public void testMGET() {
         DryRedisString str = new DryRedisString();
         
+        // string[] version
+        Assert.assertNull(str.mget((String[]) null));
+        Assert.assertNull(str.mget(new String[]  { }));
         Assert.assertTrue(assertListNullOfSize(str.mget(new String[] { "test" }), 1));
         Assert.assertTrue(assertListNullOfSize(str.mget(new String[] { "test1", "test2" }), 2));
+        
+        Collection<String> coll = null;
+        Assert.assertNull(str.mget(coll));
+        
+        coll = new ArrayList<String>();
+        Assert.assertNull(str.mget(coll));
+        
+        coll.add("test1");
+        Assert.assertTrue(assertListNullOfSize(str.mget(coll), 1));
+        
+        coll.add("test2");
+        Assert.assertTrue(assertListNullOfSize(str.mget(coll), 2));
     }
+    
+    @Test
+    public void testSETandGET() {
+        DryRedisString str = new DryRedisString();
+        
+        Assert.assertNull(str.get("key"));
+        Assert.assertEquals("OK", str.set("key", "value"));
+        Assert.assertNotNull(str.get("key"));
+        Assert.assertEquals("value", str.get("key"));
+    }
+    
+    
+    
+    // private methods
 
     private boolean assertListNullOfSize(List<String> list, int size) {
         if(size == 0) {

@@ -104,14 +104,14 @@ public class TestDryRedisList {
         
         Assert.assertNull(redis.lpop(listName));
         
-        Assert.assertEquals(0, redis.lpushx(listName, "value1"));
+        Assert.assertEquals(-1, redis.lpushx(listName, "value1"));
         Assert.assertNull(redis.lpop(listName));
         Assert.assertNull(redis.lpop(listName));
 
         Assert.assertEquals(1, redis.lpush(listName, "value1"));
         Assert.assertEquals(2, redis.lpushx(listName, "value2"));
-        Assert.assertEquals("value2", redis.lpop(listName));
         Assert.assertEquals("value1", redis.lpop(listName));
+        Assert.assertEquals("value2", redis.lpop(listName));
         Assert.assertNull(redis.lpop(listName));
     }
 
@@ -127,8 +127,8 @@ public class TestDryRedisList {
 
         Assert.assertEquals(1, redis.rpush(listName, "value1"));
         Assert.assertEquals(2, redis.rpush(listName, "value2"));
-        Assert.assertEquals("value2", redis.lpop(listName));
         Assert.assertEquals("value1", redis.lpop(listName));
+        Assert.assertEquals("value2", redis.lpop(listName));
         Assert.assertNull(redis.lpop(listName));
     }
 
@@ -144,8 +144,8 @@ public class TestDryRedisList {
 
         Assert.assertEquals(1, redis.rpush(listName, "value1"));
         Assert.assertEquals(2, redis.rpushx(listName, "value2"));
-        Assert.assertEquals("value2", redis.lpop(listName));
         Assert.assertEquals("value1", redis.lpop(listName));
+        Assert.assertEquals("value2", redis.lpop(listName));
         Assert.assertNull(redis.lpop(listName));
     }
     
