@@ -18,6 +18,11 @@ public class TestUtils {
 
     public static List<String> asList(String... str) {
         List<String> list = new ArrayList<String>();
+        
+        if(str == null) {
+            return list;
+        }
+        
         for(String s : str) {
             list.add(s);
         }

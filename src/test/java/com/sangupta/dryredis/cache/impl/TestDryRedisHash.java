@@ -17,12 +17,15 @@ public class TestDryRedisHash {
         
         redis.hset("key", "field", "value");
         Assert.assertEquals(1, redis.hdel("key", "field"));
+        Assert.assertEquals(0, redis.hdel("key", "field"));
         
         redis.hset("key", "field", "value");
         redis.hset("key", "field1", "value1");
         redis.hset("key", "field2", "value2");
         redis.hset("key", "field3", "value3");
         Assert.assertEquals(3, redis.hdel("key", TestUtils.asList("field", "field1", "field5", "field6", "field3")));
+        
+        Assert.assertEquals(0, redis.hdel("non-existent", TestUtils.asList("field", "field1", "field5", "field6", "field3")));
     }
     
     @Test
@@ -122,6 +125,15 @@ public class TestDryRedisHash {
         redis.hset("key", "field4", "value4");
         
         TestUtils.equalUnsorted(TestUtils.asList("value1", "value2", "value3", "value4"), redis.hvals("key"));
+        
+        // non-existent
+        TestUtils.equalUnsorted(TestUtils.asList(""), redis.hvals("non-existent"));
+        
+        redis.hdel("key", "field1");
+        redis.hdel("key", "field2");
+        redis.hdel("key", "field3");
+        redis.hdel("key", "field4");
+        TestUtils.equalUnsorted(TestUtils.asList(""), redis.hvals("non-existent"));
     }
     
     @Test
@@ -152,6 +164,21 @@ public class TestDryRedisHash {
         redis.hset("key", "test", "100.3");
         Assert.assertEquals(105.4d, redis.hincrbyfloat("key", "test", 5.1d), 0.0001d);
         Assert.assertEquals(110.5d, redis.hincrbyfloat("key", "test", 5.1d), 0.0001d);
+    }
+    
+    @Test
+    public void testHGETALL() {
+        
+    }
+    
+    @Test
+    public void testHMGET() {
+        
+    }
+    
+    @Test
+    public void testHMSET() {
+        
     }
     
     private DryRedisHashOperations getRedis() {

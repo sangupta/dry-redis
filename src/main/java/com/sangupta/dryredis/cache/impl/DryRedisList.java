@@ -249,6 +249,7 @@ public class DryRedisList implements DryRedisCache, DryRedisListOperations {
 		if(start < 0) {
 			start = 0;
 		}
+		
 		if(stop > size) {
 			stop = size;
 		}
@@ -292,6 +293,7 @@ public class DryRedisList implements DryRedisCache, DryRedisListOperations {
 		}
 		
 		// this is the case of moving from tail to head
+		count = 0 - count;
 		int removed = 0;
 		int size = list.size();
 		for(int index = size - 1; index >= 0; index--) {
@@ -299,6 +301,10 @@ public class DryRedisList implements DryRedisCache, DryRedisListOperations {
 			if(item.equals(value)) {
 				list.remove(index);
 				removed++;
+				
+				if(removed == count) {
+				    return removed;
+				}
 			}
 		}
 		
@@ -439,7 +445,7 @@ public class DryRedisList implements DryRedisCache, DryRedisListOperations {
 			start = size + start;
 		}
 		if(stop < 0) {
-			stop = size + start;
+			stop = size + stop;
 		}
 		
 		// check for bounds
@@ -447,6 +453,12 @@ public class DryRedisList implements DryRedisCache, DryRedisListOperations {
 			this.store.remove(key);
 			return "OK";
 		}
+
+		// for inclusive stop
+        stop++;
+        if(stop > size) {
+            stop = size;
+        }
 		
 		list = new ArrayList<String>(list.subList(start, stop));
 		this.store.put(key, list);
