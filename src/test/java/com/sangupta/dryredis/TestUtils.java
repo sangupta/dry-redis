@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class TestDryRedisUtils {
+public class TestUtils {
     
     public static Set<String> asSet(String... str) {
         Set<String> set = new HashSet<String>();

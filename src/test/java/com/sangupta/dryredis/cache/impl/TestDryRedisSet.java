@@ -5,7 +5,7 @@ import java.util.Set;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.sangupta.dryredis.TestDryRedisUtils;
+import com.sangupta.dryredis.TestUtils;
 
 public class TestDryRedisSet {
 
@@ -19,9 +19,9 @@ public class TestDryRedisSet {
         Assert.assertEquals(0, redis.sadd("key", "value1"));
         Assert.assertEquals(0, redis.sadd("key", "value2"));
         
-        Assert.assertEquals(1, redis.sadd("key1", TestDryRedisUtils.asList("value1")));
-        Assert.assertEquals(3, redis.sadd("key1", TestDryRedisUtils.asList("value2", "value3", "value4")));
-        Assert.assertEquals(2, redis.sadd("key1", TestDryRedisUtils.asList("value5", "value3", "value6")));
+        Assert.assertEquals(1, redis.sadd("key1", TestUtils.asList("value1")));
+        Assert.assertEquals(3, redis.sadd("key1", TestUtils.asList("value2", "value3", "value4")));
+        Assert.assertEquals(2, redis.sadd("key1", TestUtils.asList("value5", "value3", "value6")));
     }
     
     @Test
@@ -54,13 +54,13 @@ public class TestDryRedisSet {
         
         Set<String> result = redis.sdiff("key1", "key2");
         Assert.assertEquals(3, result.size());
-        Assert.assertEquals(TestDryRedisUtils.asSet("value1", "value2", "value3"), result);
+        Assert.assertEquals(TestUtils.asSet("value1", "value2", "value3"), result);
                 
         // remove keys
         redis.sadd("key2", "value1");
         result = redis.sdiff("key1", "key2");
         Assert.assertEquals(2, result.size());
-        Assert.assertEquals(TestDryRedisUtils.asSet("value2", "value3"), result);
+        Assert.assertEquals(TestUtils.asSet("value2", "value3"), result);
         
         redis.sadd("key2", "value2");
         redis.sadd("key2", "value3");
@@ -86,12 +86,12 @@ public class TestDryRedisSet {
         redis.sadd("key2", "value5");
         
         Assert.assertEquals(3, redis.sdiffstore("result", "key1", "key2"));
-        Assert.assertEquals(TestDryRedisUtils.asSet("value1", "value2", "value3"), redis.smembers("result"));
+        Assert.assertEquals(TestUtils.asSet("value1", "value2", "value3"), redis.smembers("result"));
                 
         // remove keys
         redis.sadd("key2", "value1");
         Assert.assertEquals(2, redis.sdiffstore("result", "key1", "key2"));
-        Assert.assertEquals(TestDryRedisUtils.asSet("value2", "value3"), redis.smembers("result"));
+        Assert.assertEquals(TestUtils.asSet("value2", "value3"), redis.smembers("result"));
         
         redis.sadd("key2", "value2");
         redis.sadd("key2", "value3");
@@ -143,13 +143,13 @@ public class TestDryRedisSet {
         redis.sadd("key2", "value1");
         result = redis.sinter("key1", "key2");
         Assert.assertEquals(1, result.size());
-        Assert.assertEquals(TestDryRedisUtils.asSet("value1"), result);
+        Assert.assertEquals(TestUtils.asSet("value1"), result);
         
         redis.sadd("key2", "value2");
         redis.sadd("key2", "value3");
         result = redis.sinter("key1", "key2");
         Assert.assertEquals(3, result.size());
-        Assert.assertEquals(TestDryRedisUtils.asSet("value1", "value2", "value3"), result);
+        Assert.assertEquals(TestUtils.asSet("value1", "value2", "value3"), result);
         
         result = redis.sinter("key2", "non-existent");
         Assert.assertEquals(0, result.size());
@@ -175,12 +175,12 @@ public class TestDryRedisSet {
         // remove keys
         redis.sadd("key2", "value1");
         Assert.assertEquals(1, redis.sinterstore("result", "key1", "key2"));
-        Assert.assertEquals(TestDryRedisUtils.asSet("value1"), redis.smembers("result"));
+        Assert.assertEquals(TestUtils.asSet("value1"), redis.smembers("result"));
         
         redis.sadd("key2", "value2");
         redis.sadd("key2", "value3");
         Assert.assertEquals(3, redis.sinterstore("result", "key1", "key2"));
-        Assert.assertEquals(TestDryRedisUtils.asSet("value1", "value2", "value3"), redis.smembers("result"));
+        Assert.assertEquals(TestUtils.asSet("value1", "value2", "value3"), redis.smembers("result"));
         
         Assert.assertEquals(0, redis.sinterstore("result", "key2", "non-existent"));
         Assert.assertEquals(0, redis.scard("result"));
@@ -196,13 +196,13 @@ public class TestDryRedisSet {
         Assert.assertNull(redis.smembers("key"));
 
         redis.sadd("key", "value1");
-        Assert.assertEquals(TestDryRedisUtils.asSet("value1"), redis.smembers("key"));
+        Assert.assertEquals(TestUtils.asSet("value1"), redis.smembers("key"));
         
         redis.sadd("key", "value2");
-        Assert.assertEquals(TestDryRedisUtils.asSet("value1", "value2"), redis.smembers("key"));
+        Assert.assertEquals(TestUtils.asSet("value1", "value2"), redis.smembers("key"));
 
         redis.sadd("key", "value3");
-        Assert.assertEquals(TestDryRedisUtils.asSet("value1", "value2", "value3"), redis.smembers("key"));
+        Assert.assertEquals(TestUtils.asSet("value1", "value2", "value3"), redis.smembers("key"));
     }
     
     @Test
@@ -218,11 +218,11 @@ public class TestDryRedisSet {
         redis.sadd("key", "value3");
         Assert.assertEquals(3, redis.scard("key"));
         
-        Assert.assertTrue(TestDryRedisUtils.contains(redis.smembers("key"), redis.spop("key")));
+        Assert.assertTrue(TestUtils.contains(redis.smembers("key"), redis.spop("key")));
         Assert.assertEquals(2, redis.scard("key"));
-        Assert.assertTrue(TestDryRedisUtils.contains(redis.smembers("key"), redis.spop("key")));
+        Assert.assertTrue(TestUtils.contains(redis.smembers("key"), redis.spop("key")));
         Assert.assertEquals(1, redis.scard("key"));
-        Assert.assertTrue(TestDryRedisUtils.contains(redis.smembers("key"), redis.spop("key")));
+        Assert.assertTrue(TestUtils.contains(redis.smembers("key"), redis.spop("key")));
         Assert.assertEquals(0, redis.scard("key"));
         
         // with count
@@ -237,20 +237,20 @@ public class TestDryRedisSet {
         
         Assert.assertEquals(8, redis.scard("key"));
         
-        Assert.assertTrue(TestDryRedisUtils.contains(redis.smembers("key"), redis.spop("key", 2)));
+        Assert.assertTrue(TestUtils.contains(redis.smembers("key"), redis.spop("key", 2)));
         Assert.assertEquals(6, redis.scard("key"));
         
-        Assert.assertTrue(TestDryRedisUtils.contains(redis.smembers("key"), redis.spop("key", 3)));
+        Assert.assertTrue(TestUtils.contains(redis.smembers("key"), redis.spop("key", 3)));
         Assert.assertEquals(3, redis.scard("key"));
         
-        Assert.assertTrue(TestDryRedisUtils.contains(redis.smembers("key"), redis.spop("key", 2)));
+        Assert.assertTrue(TestUtils.contains(redis.smembers("key"), redis.spop("key", 2)));
         Assert.assertEquals(1, redis.scard("key"));
         
         // no key
         Assert.assertNull(redis.spop("non-existent", 5));
         
         // more count
-        Assert.assertTrue(TestDryRedisUtils.contains(redis.smembers("key"), redis.spop("key", 5)));
+        Assert.assertTrue(TestUtils.contains(redis.smembers("key"), redis.spop("key", 5)));
     }
 
     @Test
@@ -294,7 +294,7 @@ public class TestDryRedisSet {
         redis.sadd("key", "value8");
         
         Assert.assertEquals(8, redis.scard("key"));
-        Assert.assertEquals(3, redis.srem("key", TestDryRedisUtils.asList("value1", "value2", "v", "value3")));
+        Assert.assertEquals(3, redis.srem("key", TestUtils.asList("value1", "value2", "v", "value3")));
         Assert.assertEquals(5, redis.scard("key"));
     }
     
@@ -311,19 +311,19 @@ public class TestDryRedisSet {
         
         Set<String> result = redis.sunion("key1", "key2");
         Assert.assertEquals(5, result.size());
-        Assert.assertEquals(TestDryRedisUtils.asSet("value1", "value2", "value3", "value4", "value5"), result);
+        Assert.assertEquals(TestUtils.asSet("value1", "value2", "value3", "value4", "value5"), result);
                 
         // remove keys
         redis.sadd("key2", "value1");
         result = redis.sunion("key1", "key2");
         Assert.assertEquals(5, result.size());
-        Assert.assertEquals(TestDryRedisUtils.asSet("value1", "value2", "value3", "value4", "value5"), result);
+        Assert.assertEquals(TestUtils.asSet("value1", "value2", "value3", "value4", "value5"), result);
         
         redis.sadd("key2", "value2");
         redis.sadd("key2", "value3");
         result = redis.sunion("key1", "key2");
         Assert.assertEquals(5, result.size());
-        Assert.assertEquals(TestDryRedisUtils.asSet("value1", "value2", "value3", "value4", "value5"), result);
+        Assert.assertEquals(TestUtils.asSet("value1", "value2", "value3", "value4", "value5"), result);
         
         result = redis.sunion("key2", "non-existent");
         Assert.assertEquals(5, result.size());
@@ -348,7 +348,7 @@ public class TestDryRedisSet {
         Assert.assertEquals(2, redis.scard("key2"));
         Assert.assertEquals(5, redis.scard("result"));
         
-        Assert.assertEquals(TestDryRedisUtils.asSet("value1", "value2", "value3", "value4", "value5"), redis.smembers("result"));
+        Assert.assertEquals(TestUtils.asSet("value1", "value2", "value3", "value4", "value5"), redis.smembers("result"));
                 
         Assert.assertEquals(2, redis.sunionstore("result", "key2", "non-existent"));
         Assert.assertEquals(2, redis.scard("result"));
@@ -370,13 +370,13 @@ public class TestDryRedisSet {
         redis.sadd("key", "value3");
         Assert.assertEquals(3, redis.scard("key"));
         
-        Assert.assertTrue(TestDryRedisUtils.contains(redis.smembers("key"), redis.srandmember("key")));
+        Assert.assertTrue(TestUtils.contains(redis.smembers("key"), redis.srandmember("key")));
         Assert.assertEquals(3, redis.scard("key"));
         
-        Assert.assertTrue(TestDryRedisUtils.contains(redis.smembers("key"), redis.srandmember("key")));
+        Assert.assertTrue(TestUtils.contains(redis.smembers("key"), redis.srandmember("key")));
         Assert.assertEquals(3, redis.scard("key"));
         
-        Assert.assertTrue(TestDryRedisUtils.contains(redis.smembers("key"), redis.srandmember("key")));
+        Assert.assertTrue(TestUtils.contains(redis.smembers("key"), redis.srandmember("key")));
         Assert.assertEquals(3, redis.scard("key"));
         
         // with count
@@ -391,19 +391,19 @@ public class TestDryRedisSet {
         
         Assert.assertEquals(8, redis.scard("key"));
         
-        Assert.assertTrue(TestDryRedisUtils.contains(redis.smembers("key"), redis.srandmember("key", 2)));
+        Assert.assertTrue(TestUtils.contains(redis.smembers("key"), redis.srandmember("key", 2)));
         Assert.assertEquals(8, redis.scard("key"));
         
-        Assert.assertTrue(TestDryRedisUtils.contains(redis.smembers("key"), redis.srandmember("key", 3)));
+        Assert.assertTrue(TestUtils.contains(redis.smembers("key"), redis.srandmember("key", 3)));
         Assert.assertEquals(8, redis.scard("key"));
         
-        Assert.assertTrue(TestDryRedisUtils.contains(redis.smembers("key"), redis.srandmember("key", 2)));
+        Assert.assertTrue(TestUtils.contains(redis.smembers("key"), redis.srandmember("key", 2)));
         Assert.assertEquals(8, redis.scard("key"));
         
         // no key
         Assert.assertNull(redis.srandmember("non-existent", 5));
         
         // more count
-        Assert.assertTrue(TestDryRedisUtils.contains(redis.smembers("key"), redis.srandmember("key", 5)));
+        Assert.assertTrue(TestUtils.contains(redis.smembers("key"), redis.srandmember("key", 5)));
     }
 }
