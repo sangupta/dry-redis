@@ -68,6 +68,13 @@
             <artifactId>murmur</artifactId>
             <version>1.0.0</version>
         </dependency>
+        
+        <!-- for expiry of keys -->
+        <dependency>
+            <groupId>com.stoyanr</groupId>
+            <artifactId>evictor</artifactId>
+            <version>1.0.0</version>
+        </dependency>
     </dependencies>
 
     <build>
