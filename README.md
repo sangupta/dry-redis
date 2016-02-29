@@ -30,7 +30,7 @@ Commands not yet supported:
   * hscan
 * HyperLogLog
 * Geo
-
+* Sorted Set - all commands
 
 
 Important Notes
@@ -43,6 +43,8 @@ Important Notes
 TODO
 ----
 
-Change all methods to be `synchronized` so that they are thread-safe as `Redis` is.
+* Thread-safety is currently not supported
+* Multiple redis databases and moving between databases is currently not supported
+
 
 
