@@ -1,9 +1,11 @@
-package com.sangupta.dryredis;
+package com.sangupta.dryredis.cache.impl;
 
 import java.util.UUID;
 
 import org.junit.Assert;
 import org.junit.Test;
+
+import com.sangupta.dryredis.cache.impl.DryRedisList;
 
 /**
  * Unit tests for {@link DryRedisList}.

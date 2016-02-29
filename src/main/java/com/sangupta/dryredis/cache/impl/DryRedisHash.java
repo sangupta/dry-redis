@@ -1,4 +1,4 @@
-package com.sangupta.dryredis;
+package com.sangupta.dryredis.cache.impl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.sangupta.dryredis.cache.DryRedisHashOperations;
 import com.sangupta.dryredis.support.DryRedisCache;
 import com.sangupta.dryredis.support.DryRedisCacheType;
 
@@ -18,13 +19,17 @@ import com.sangupta.dryredis.support.DryRedisCacheType;
  * @param <HK> type of hash key
  * @param <HV> type of hash value
  */
-public class DryRedisHash implements DryRedisCache {
+public class DryRedisHash implements DryRedisCache, DryRedisHashOperations {
 	
 	private final Map<String, Map<String, String>> store = new HashMap<String, Map<String, String>>();
 	
 	// commands from redis
 	
-	public int hdel(String key, String field) {
+	/* (non-Javadoc)
+     * @see com.sangupta.dryredis.DryRedisHashOperations#hdel(java.lang.String, java.lang.String)
+     */
+	@Override
+    public int hdel(String key, String field) {
 		Map<String, String> map = this.store.get(key);
 		if(map == null) {
 			return 0;
@@ -38,7 +43,11 @@ public class DryRedisHash implements DryRedisCache {
 		return 1;
 	}
 	
-	public int hdel(String key, List<String> fields) {
+	/* (non-Javadoc)
+     * @see com.sangupta.dryredis.DryRedisHashOperations#hdel(java.lang.String, java.util.List)
+     */
+	@Override
+    public int hdel(String key, List<String> fields) {
 		Map<String, String> map = this.store.get(key);
 		if(map == null) {
 			return 0;
@@ -55,7 +64,11 @@ public class DryRedisHash implements DryRedisCache {
 		return count;
 	}
 	
-	public int hexists(String key, String field) {
+	/* (non-Javadoc)
+     * @see com.sangupta.dryredis.DryRedisHashOperations#hexists(java.lang.String, java.lang.String)
+     */
+	@Override
+    public int hexists(String key, String field) {
 		Map<String, String> map = this.store.get(key);
 		if(map == null) {
 			return 0;
@@ -69,7 +82,11 @@ public class DryRedisHash implements DryRedisCache {
 		return 0;
 	}
 	
-	public Object hget(String key, String field) {
+	/* (non-Javadoc)
+     * @see com.sangupta.dryredis.DryRedisHashOperations#hget(java.lang.String, java.lang.String)
+     */
+	@Override
+    public Object hget(String key, String field) {
 		Map<String, String> map = this.store.get(key);
 		if(map == null) {
 			return null;
@@ -78,7 +95,11 @@ public class DryRedisHash implements DryRedisCache {
 		return map.get(field);
 	}
 	
-	public List<String> hgetall(String key) {
+	/* (non-Javadoc)
+     * @see com.sangupta.dryredis.DryRedisHashOperations#hgetall(java.lang.String)
+     */
+	@Override
+    public List<String> hgetall(String key) {
 		Map<String, String> map = this.store.get(key);
 		if(map == null) {
 			return null;
@@ -93,7 +114,11 @@ public class DryRedisHash implements DryRedisCache {
 		return list;
 	}
 	
-	public List<String> hkeys(String key) {
+	/* (non-Javadoc)
+     * @see com.sangupta.dryredis.DryRedisHashOperations#hkeys(java.lang.String)
+     */
+	@Override
+    public List<String> hkeys(String key) {
 		Map<String, String> map = this.store.get(key);
 		if(map == null) {
 			return null;
@@ -102,7 +127,11 @@ public class DryRedisHash implements DryRedisCache {
 		return new ArrayList<String>(map.keySet());
 	}
 	
-	public int hlen(String key) {
+	/* (non-Javadoc)
+     * @see com.sangupta.dryredis.DryRedisHashOperations#hlen(java.lang.String)
+     */
+	@Override
+    public int hlen(String key) {
 		Map<String, String> map = this.store.get(key);
 		if(map == null) {
 			return 0;
@@ -111,7 +140,11 @@ public class DryRedisHash implements DryRedisCache {
 		return map.size();
 	}
 	
-	public int hset(String key, String field, String value) {
+	/* (non-Javadoc)
+     * @see com.sangupta.dryredis.DryRedisHashOperations#hset(java.lang.String, java.lang.String, java.lang.String)
+     */
+	@Override
+    public int hset(String key, String field, String value) {
 		Map<String, String> map = this.store.get(key);
 		if(map == null) {
 			map = new HashMap<String, String>();
@@ -127,7 +160,11 @@ public class DryRedisHash implements DryRedisCache {
 		return returnValue;
 	}
 	
-	public int hsetnx(String key, String field, String value) {
+	/* (non-Javadoc)
+     * @see com.sangupta.dryredis.DryRedisHashOperations#hsetnx(java.lang.String, java.lang.String, java.lang.String)
+     */
+	@Override
+    public int hsetnx(String key, String field, String value) {
 		Map<String, String> map = this.store.get(key);
 		if(map == null) {
 			map = new HashMap<String, String>();
@@ -142,7 +179,11 @@ public class DryRedisHash implements DryRedisCache {
 		return 1;
 	}
 	
-	public int hstrlen(String key, String field) {
+	/* (non-Javadoc)
+     * @see com.sangupta.dryredis.DryRedisHashOperations#hstrlen(java.lang.String, java.lang.String)
+     */
+	@Override
+    public int hstrlen(String key, String field) {
 		Map<String, String> map = this.store.get(key);
 		if(map == null) {
 			return 0;
@@ -156,7 +197,11 @@ public class DryRedisHash implements DryRedisCache {
 		return value.length();
 	}
 	
-	public List<String> hvals(String key) {
+	/* (non-Javadoc)
+     * @see com.sangupta.dryredis.DryRedisHashOperations#hvals(java.lang.String)
+     */
+	@Override
+    public List<String> hvals(String key) {
 		List<String> list = new ArrayList<String>();
 		
 		Map<String, String> map = this.store.get(key);
@@ -172,7 +217,11 @@ public class DryRedisHash implements DryRedisCache {
 		return list;
 	}
 	
-	public long hincrby(String key, String field, long increment) {
+	/* (non-Javadoc)
+     * @see com.sangupta.dryredis.DryRedisHashOperations#hincrby(java.lang.String, java.lang.String, long)
+     */
+	@Override
+    public long hincrby(String key, String field, long increment) {
 		Map<String, String> map = this.store.get(key);
 		if(map == null) {
 			map = new HashMap<String, String>();
@@ -189,7 +238,11 @@ public class DryRedisHash implements DryRedisCache {
 		return newValue;
 	}
 	
-	public double hincrbyfloat(String key, String field, double increment) {
+	/* (non-Javadoc)
+     * @see com.sangupta.dryredis.DryRedisHashOperations#hincrbyfloat(java.lang.String, java.lang.String, double)
+     */
+	@Override
+    public double hincrbyfloat(String key, String field, double increment) {
 		Map<String, String> map = this.store.get(key);
 		if(map == null) {
 			map = new HashMap<String, String>();
@@ -206,7 +259,11 @@ public class DryRedisHash implements DryRedisCache {
 		return newValue;
 	}
 	
-	public List<String> hmget(String key, List<String> fields) {
+	/* (non-Javadoc)
+     * @see com.sangupta.dryredis.DryRedisHashOperations#hmget(java.lang.String, java.util.List)
+     */
+	@Override
+    public List<String> hmget(String key, List<String> fields) {
 		Map<String, String> map = this.store.get(key);
 		if(map == null) {
 			return null;
@@ -220,7 +277,11 @@ public class DryRedisHash implements DryRedisCache {
 		return list;
 	}
 	
-	public String hmset(String key, Map<String, String> fieldValues) {
+	/* (non-Javadoc)
+     * @see com.sangupta.dryredis.DryRedisHashOperations#hmset(java.lang.String, java.util.Map)
+     */
+	@Override
+    public String hmset(String key, Map<String, String> fieldValues) {
 		Map<String, String> map = this.store.get(key);
 		if(map == null) {
 			map = new HashMap<String, String>();

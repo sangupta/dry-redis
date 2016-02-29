@@ -1,4 +1,4 @@
-package com.sangupta.dryredis;
+package com.sangupta.dryredis.cache.impl;
 
 import java.util.ArrayList;
 import java.util.HashMap;

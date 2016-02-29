@@ -1,22 +1,27 @@
-package com.sangupta.dryredis;
+package com.sangupta.dryredis.cache.impl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.sangupta.dryredis.cache.DryRedisGeoOperations;
 import com.sangupta.dryredis.support.DryRedisCache;
 import com.sangupta.dryredis.support.DryRedisCacheType;
 import com.sangupta.dryredis.support.DryRedisGeoUnit;
 import com.sangupta.dryredis.support.DryRedisUtils;
 
-public class DryRedisGeo implements DryRedisCache {
+public class DryRedisGeo implements DryRedisCache, DryRedisGeoOperations {
 	
 	private final Map<String, Map<String, GeoPoint>> store = new HashMap<String, Map<String, GeoPoint>>();
 	
 	// redis commands
 	
-	public void geoadd(String key, double latitude, double longitude, String member) {
+	/* (non-Javadoc)
+     * @see com.sangupta.dryredis.DryRedisGeoOperations#geoadd(java.lang.String, double, double, java.lang.String)
+     */
+	@Override
+    public void geoadd(String key, double latitude, double longitude, String member) {
 		Map<String, GeoPoint> points = this.store.get(key);
 		if(points == null) {
 			points = new HashMap<String, GeoPoint>();
@@ -26,7 +31,11 @@ public class DryRedisGeo implements DryRedisCache {
 		points.put(member, new GeoPoint(member, latitude, longitude));
 	}
 	
-	public String geohash(String key, String member) {
+	/* (non-Javadoc)
+     * @see com.sangupta.dryredis.DryRedisGeoOperations#geohash(java.lang.String, java.lang.String)
+     */
+	@Override
+    public String geohash(String key, String member) {
 		Map<String, GeoPoint> points = this.store.get(key);
 		if(points == null) {
 			return null;
@@ -40,7 +49,11 @@ public class DryRedisGeo implements DryRedisCache {
 		return point.getGeoHash();
 	}
 	
-	public double[] geopos(String key, String member) {
+	/* (non-Javadoc)
+     * @see com.sangupta.dryredis.DryRedisGeoOperations#geopos(java.lang.String, java.lang.String)
+     */
+	@Override
+    public double[] geopos(String key, String member) {
 		Map<String, GeoPoint> points = this.store.get(key);
 		if(points == null) {
 			return null;
@@ -54,7 +67,11 @@ public class DryRedisGeo implements DryRedisCache {
 		return geoPoint.getPoint();
 	}
 	
-	public Double geodist(String key, String member1, String member2, DryRedisGeoUnit unit) {
+	/* (non-Javadoc)
+     * @see com.sangupta.dryredis.DryRedisGeoOperations#geodist(java.lang.String, java.lang.String, java.lang.String, com.sangupta.dryredis.support.DryRedisGeoUnit)
+     */
+	@Override
+    public Double geodist(String key, String member1, String member2, DryRedisGeoUnit unit) {
 		Map<String, GeoPoint> points = this.store.get(key);
 		if(points == null) {
 			return null;
@@ -89,20 +106,36 @@ public class DryRedisGeo implements DryRedisCache {
 		return null;
 	}
 	
-	public List<String> georadius(String key, double latitude, double longitude, double radius, DryRedisGeoUnit unit) {
+	/* (non-Javadoc)
+     * @see com.sangupta.dryredis.DryRedisGeoOperations#georadius(java.lang.String, double, double, double, com.sangupta.dryredis.support.DryRedisGeoUnit)
+     */
+	@Override
+    public List<String> georadius(String key, double latitude, double longitude, double radius, DryRedisGeoUnit unit) {
 		return this.georadius(key, latitude, longitude, radius, unit, false, false, false, 0);
 	}
 	
-	public List<String> georadius(String key, double latitude, double longitude, double radius, DryRedisGeoUnit unit, boolean withCoordinates, boolean withDistance, boolean withHash, int count) {
+	/* (non-Javadoc)
+     * @see com.sangupta.dryredis.DryRedisGeoOperations#georadius(java.lang.String, double, double, double, com.sangupta.dryredis.support.DryRedisGeoUnit, boolean, boolean, boolean, int)
+     */
+	@Override
+    public List<String> georadius(String key, double latitude, double longitude, double radius, DryRedisGeoUnit unit, boolean withCoordinates, boolean withDistance, boolean withHash, int count) {
 		GeoPoint origin = new GeoPoint("origin", latitude, longitude);
 		return this.getUsingRadius(key, origin, radius, unit, withCoordinates, withDistance, withHash, count);
 	}
 	
-	public List<String> georadiusbymember(String key, String member, double radius, DryRedisGeoUnit unit) {
+	/* (non-Javadoc)
+     * @see com.sangupta.dryredis.DryRedisGeoOperations#georadiusbymember(java.lang.String, java.lang.String, double, com.sangupta.dryredis.support.DryRedisGeoUnit)
+     */
+	@Override
+    public List<String> georadiusbymember(String key, String member, double radius, DryRedisGeoUnit unit) {
 		return this.georadiusbymember(key, member, radius, unit, false, false, false, 0);
 	}
 	
-	public List<String> georadiusbymember(String key, String member, double radius, DryRedisGeoUnit unit, boolean withCoordinates, boolean withDistance, boolean withHash, int count) {
+	/* (non-Javadoc)
+     * @see com.sangupta.dryredis.DryRedisGeoOperations#georadiusbymember(java.lang.String, java.lang.String, double, com.sangupta.dryredis.support.DryRedisGeoUnit, boolean, boolean, boolean, int)
+     */
+	@Override
+    public List<String> georadiusbymember(String key, String member, double radius, DryRedisGeoUnit unit, boolean withCoordinates, boolean withDistance, boolean withHash, int count) {
 		Map<String, GeoPoint> points = this.store.get(key);
 		if(points == null) {
 			return null;

@@ -3,7 +3,7 @@ package com.sangupta.dryredis.support;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.sangupta.dryredis.DryRedisGeo.GeoPoint;
+import com.sangupta.dryredis.cache.impl.DryRedisGeo.GeoPoint;
 
 public class TestDryRedisUtils {
 

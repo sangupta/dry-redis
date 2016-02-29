@@ -3,6 +3,12 @@ package com.sangupta.dryredis;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.sangupta.dryredis.cache.impl.DryRedisGeo;
+import com.sangupta.dryredis.cache.impl.DryRedisHash;
+import com.sangupta.dryredis.cache.impl.DryRedisHyperLogLog;
+import com.sangupta.dryredis.cache.impl.DryRedisList;
+import com.sangupta.dryredis.cache.impl.DryRedisSet;
+import com.sangupta.dryredis.cache.impl.DryRedisString;
 import com.sangupta.dryredis.support.DryRedisCache;
 import com.sangupta.dryredis.support.DryRedisCacheType;
 

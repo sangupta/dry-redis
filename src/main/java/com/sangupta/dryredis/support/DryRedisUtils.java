@@ -2,7 +2,7 @@ package com.sangupta.dryredis.support;
 
 import java.util.List;
 
-import com.sangupta.dryredis.DryRedisGeo.GeoPoint;
+import com.sangupta.dryredis.cache.impl.DryRedisGeo.GeoPoint;
 
 public class DryRedisUtils {
 	

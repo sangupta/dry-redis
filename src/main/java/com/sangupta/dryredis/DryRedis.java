@@ -5,11 +5,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.sangupta.dryredis.cache.DryRedisGeoOperations;
+import com.sangupta.dryredis.cache.DryRedisHashOperations;
+import com.sangupta.dryredis.cache.DryRedisStringOperations;
 import com.sangupta.dryredis.support.DryRedisCacheType;
 import com.sangupta.dryredis.support.DryRedisGeoUnit;
 import com.sangupta.dryredis.support.DryRedisInsertOrder;
 
-public class DryRedis extends DryRedisKeys {
+public class DryRedis extends DryRedisKeys implements DryRedisGeoOperations, DryRedisHashOperations, DryRedisStringOperations {
     
     // GEO commands follow
 
@@ -455,4 +458,9 @@ public class DryRedis extends DryRedisKeys {
         return this.stringCommands.getset(key, value);
     }
     
+    public long bitcount(String key) {
+        matchKeyType(key, DryRedisCacheType.STRING);
+        return this.stringCommands.bitcount(key);
+    }
+
 }

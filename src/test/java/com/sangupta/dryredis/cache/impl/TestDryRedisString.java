@@ -1,4 +1,4 @@
-package com.sangupta.dryredis;
+package com.sangupta.dryredis.cache.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -7,11 +7,13 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.sangupta.dryredis.cache.DryRedisStringOperations;
+
 public class TestDryRedisString {
 
     @Test
     public void testAPPEND() {
-        DryRedisString str = new DryRedisString();
+        DryRedisStringOperations str = new DryRedisString();
         
         Assert.assertEquals(5, str.append("key", "value"));
         Assert.assertEquals(10, str.append("key", "value"));
@@ -19,7 +21,7 @@ public class TestDryRedisString {
     
     @Test
     public void testINCR() {
-        DryRedisString str = new DryRedisString();
+        DryRedisStringOperations str = new DryRedisString();
         
         // no key
         Assert.assertEquals(1, str.incr("test"));
@@ -33,7 +35,7 @@ public class TestDryRedisString {
     
     @Test
     public void testINCRBY() {
-        DryRedisString str = new DryRedisString();
+        DryRedisStringOperations str = new DryRedisString();
         
         // no key
         Assert.assertEquals(5, str.incrby("test", 5));
@@ -48,7 +50,7 @@ public class TestDryRedisString {
     
     @Test
     public void testINCRBYFLOAT() {
-        DryRedisString str = new DryRedisString();
+        DryRedisStringOperations str = new DryRedisString();
         
         // no key
         Assert.assertEquals(5.1d, str.incrbyfloat("test", 5.1d), 0.0001d);
@@ -63,7 +65,7 @@ public class TestDryRedisString {
     
     @Test
     public void testDECR() {
-        DryRedisString str = new DryRedisString();
+        DryRedisStringOperations str = new DryRedisString();
         
         // no key
         Assert.assertEquals(-1, str.decr("test"));
@@ -77,7 +79,7 @@ public class TestDryRedisString {
 
     @Test
     public void testDECRBY() {
-        DryRedisString str = new DryRedisString();
+        DryRedisStringOperations str = new DryRedisString();
         
         // no key
         Assert.assertEquals(-5, str.decrby("test", 5));
@@ -92,7 +94,7 @@ public class TestDryRedisString {
     
     @Test
     public void testMGET() {
-        DryRedisString str = new DryRedisString();
+        DryRedisStringOperations str = new DryRedisString();
         
         // string[] version
         Assert.assertNull(str.mget((String[]) null));
@@ -115,7 +117,7 @@ public class TestDryRedisString {
     
     @Test
     public void testSETandGET() {
-        DryRedisString str = new DryRedisString();
+        DryRedisStringOperations str = new DryRedisString();
         
         Assert.assertNull(str.get("key"));
         Assert.assertEquals("OK", str.set("key", "value"));
@@ -125,7 +127,7 @@ public class TestDryRedisString {
     
     @Test
     public void testSETNX() {
-        DryRedisString str = new DryRedisString();
+        DryRedisStringOperations str = new DryRedisString();
         
         Assert.assertEquals("OK", str.setnx("key", "value"));
         Assert.assertNull(str.setnx("key", "value"));
@@ -133,7 +135,7 @@ public class TestDryRedisString {
     
     @Test
     public void testSETXX() {
-        DryRedisString str = new DryRedisString();
+        DryRedisStringOperations str = new DryRedisString();
         
         Assert.assertNull(str.setxx("key", "value"));
         Assert.assertEquals("OK", str.set("key", "value"));
@@ -143,7 +145,7 @@ public class TestDryRedisString {
     
     @Test
     public void testGETRANGE() {
-        DryRedisString str = new DryRedisString();
+        DryRedisStringOperations str = new DryRedisString();
         
         Assert.assertEquals("OK", str.set("key", "values"));
         Assert.assertEquals("alu", str.getrange("key", 1, 3));
@@ -158,7 +160,7 @@ public class TestDryRedisString {
     
     @Test
     public void testSETRANGE() {
-        DryRedisString str = new DryRedisString();
+        DryRedisStringOperations str = new DryRedisString();
         
         Assert.assertEquals("OK", str.set("key", "values"));
         Assert.assertEquals(6, str.setrange("key", 1, "tip"));
@@ -182,7 +184,7 @@ public class TestDryRedisString {
     
     @Test
     public void testBITCOUNT() {
-        DryRedisString str = new DryRedisString();
+        DryRedisStringOperations str = new DryRedisString();
         
         str.set("test", "hello");
         Assert.assertEquals(21, str.bitcount("test"));
@@ -196,7 +198,7 @@ public class TestDryRedisString {
     
     @Test
     public void testSTRLEN() {
-        DryRedisString str = new DryRedisString();
+        DryRedisStringOperations str = new DryRedisString();
         
         Assert.assertEquals(0, str.strlen("non-existent"));
         str.set("test", "hello");
@@ -207,7 +209,7 @@ public class TestDryRedisString {
     
     @Test
     public void testGETSET() {
-        DryRedisString str = new DryRedisString();
+        DryRedisStringOperations str = new DryRedisString();
         
         Assert.assertNull(str.getset("key", "value"));
         Assert.assertEquals("value", str.getset("key", "value2"));

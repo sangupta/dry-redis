@@ -1,9 +1,11 @@
-package com.sangupta.dryredis;
+package com.sangupta.dryredis.cache.impl;
 
 import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.Test;
+
+import com.sangupta.dryredis.TestDryRedisUtils;
 
 public class TestDryRedisSet {
 
