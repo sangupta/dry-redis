@@ -185,33 +185,45 @@ public class DryRedisSet implements DryRedisCache {
 		return result;
 	}
 	
+	public String srandmember(String key) {
+	    List<String> list = this.srandmember(key, 1);
+	    if(list == null || list.isEmpty()) {
+	        return null;
+	    }
+	    
+	    return list.get(0);
+	}
+	
 	public List<String> srandmember(String key, int count) {
 		Set<String> set = this.store.get(key);
 		if(set == null) {
 			return null;
 		}
 		
-		Iterator<String> iterator = set.iterator();
+		if(count == 0) {
+		    return null;
+		}
+		
+		if(count > 0) {
+		    Set<String> newSet = new HashSet<String>();
+		    for(String s : set) {
+		        newSet.add(s);
+		        
+		        if(newSet.size() == count) {
+		            break;
+		        }
+		    }
+		    
+		    return new ArrayList<String>(newSet);
+		}
+		
 		List<String> result = new ArrayList<String>();
-		while(iterator.hasNext()) {
-			String item = iterator.next();
-			iterator.remove();
+		for(String item : set) {
 			result.add(item);
 			
 			if(result.size() == count) {
-				return result;
+				break;
 			}
-		}
-		
-		int delta = count - result.size();
-		if(delta <= 0) {
-			return result;
-		}
-		
-		// copy same elements
-		String item = result.get(0);
-		for(int index = 0; index < delta; index++) {
-			result.add(item);
 		}
 		
 		return result;

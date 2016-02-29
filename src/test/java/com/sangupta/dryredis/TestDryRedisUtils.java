@@ -1,5 +1,6 @@
 package com.sangupta.dryredis;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -13,6 +14,15 @@ public class TestDryRedisUtils {
         }
         
         return set;
+    }
+
+    public static List<String> asList(String... str) {
+        List<String> list = new ArrayList<String>();
+        for(String s : str) {
+            list.add(s);
+        }
+        
+        return list;
     }
 
     public static boolean contains(Set<String> set, String str) {
