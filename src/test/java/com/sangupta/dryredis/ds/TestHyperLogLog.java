@@ -43,20 +43,20 @@ public class TestHyperLogLog {
 //        assertTrue(err < 0.1d);
 //    }
 
-    @Test
-    public void testHighCardinality_withDefinedRSD() {
-        long start = System.currentTimeMillis();
-        HyperLogLog hyperLogLog = new HyperLogLog(0.01);
-        int size = 100000000;
-        for (int i = 0; i < size; i++) {
-            hyperLogLog.offer(streamElement(i));
-        }
-        System.out.println("time: " + (System.currentTimeMillis() - start));
-        long estimate = hyperLogLog.cardinality();
-        double err = Math.abs(estimate - size) / (double) size;
-        System.out.println(err);
-        assertTrue(err < .1);
-    }
+//    @Test
+//    public void testHighCardinality_withDefinedRSD() {
+//        long start = System.currentTimeMillis();
+//        HyperLogLog hyperLogLog = new HyperLogLog(0.01);
+//        int size = 100000000;
+//        for (int i = 0; i < size; i++) {
+//            hyperLogLog.offer(streamElement(i));
+//        }
+//        System.out.println("time: " + (System.currentTimeMillis() - start));
+//        long estimate = hyperLogLog.cardinality();
+//        double err = Math.abs(estimate - size) / (double) size;
+//        System.out.println(err);
+//        assertTrue(err < .1);
+//    }
 
 //    @Test
 //    public void testMerge() {
