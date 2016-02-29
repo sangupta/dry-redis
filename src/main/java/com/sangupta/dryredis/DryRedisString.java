@@ -111,11 +111,11 @@ public class DryRedisString implements DryRedisCache {
 	public String getrange(String key, int start, int end) {
 		String value = this.store.get(key);
 		if(value == null) {
-			return null;
+			return "";
 		}
 		
 		if(value.isEmpty()) {
-			return null;
+			return "";
 		}
 		
 		// negative values
@@ -132,7 +132,7 @@ public class DryRedisString implements DryRedisCache {
 		
 		// bounds check
 		if(start > size) {
-			return null;
+			return "";
 		}
 		if(end > size) {
 			end = size;

@@ -149,6 +149,11 @@ public class TestDryRedisString {
         Assert.assertEquals("alu", str.getrange("key", 1, 3));
         Assert.assertEquals("ues", str.getrange("key", -3, -1));
         Assert.assertEquals("", str.getrange("key", -1, -3));
+        Assert.assertEquals("", str.getrange("non-existent", 1, 3));
+        
+        str.set("hello", "world");
+        Assert.assertEquals("", str.getrange("hello", 7, 9));
+        Assert.assertEquals("", str.getrange("hello", 16, 9));
     }
     
     @Test
@@ -161,6 +166,18 @@ public class TestDryRedisString {
 
         Assert.assertEquals(7, str.setrange("key", 4, "nim"));
         Assert.assertEquals("vtipnim", str.get("key"));
+
+        try {
+            str.setrange("somekey", -10, "hello");
+            Assert.assertTrue(false);
+        } catch(IllegalArgumentException e) {
+            Assert.assertTrue(true);
+        }
+        
+        
+        Assert.assertEquals(7, str.setrange("hello", 3, "test"));
+        char[] array = { 0, 0, 0, 't', 'e', 's', 't' };
+        Assert.assertEquals(new String(array), str.get("hello"));
     }
     
     @Test
@@ -195,6 +212,17 @@ public class TestDryRedisString {
         Assert.assertNull(str.getset("key", "value"));
         Assert.assertEquals("value", str.getset("key", "value2"));
         Assert.assertEquals("value2", str.getset("key", "value3"));
+    }
+    
+    @Test
+    public void testDEL() {
+        DryRedisString str = new DryRedisString();
+        
+        Assert.assertFalse(str.hasKey("hello"));
+        str.set("hello", "world");
+        Assert.assertTrue(str.hasKey("hello"));
+        Assert.assertEquals(1, str.del("hello"));
+        Assert.assertFalse(str.hasKey("hello"));
     }
     
     // private methods
