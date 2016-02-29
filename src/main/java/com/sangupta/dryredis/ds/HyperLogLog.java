@@ -59,7 +59,7 @@ public class HyperLogLog implements Cloneable {
      *
      * @param registerSet - the initial values for the register set
      */
-    private HyperLogLog(int log2m, RegisterSet registerSet) {
+    HyperLogLog(int log2m, RegisterSet registerSet) {
         validateLog2m(log2m);
         this.registerSet = registerSet;
         this.log2m = log2m;
@@ -128,7 +128,8 @@ public class HyperLogLog implements Cloneable {
         }
         
         if (o instanceof byte[]) {
-            return hash((byte[]) o);
+            byte[] bytes = (byte[]) o;
+            return Murmur3.hash_x86_32(bytes, bytes.length, SEED);
         }
         
         String str = o.toString();
@@ -139,7 +140,7 @@ public class HyperLogLog implements Cloneable {
         byte[] bytes = str.getBytes();
         return Murmur3.hash_x86_32(bytes, bytes.length, SEED);
     }
-
+    
     private static int hashLong(long data) {
         int m = 0x5bd1e995;
         int r = 24;
