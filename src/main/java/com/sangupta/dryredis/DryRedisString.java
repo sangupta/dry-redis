@@ -124,8 +124,11 @@ public class DryRedisString implements DryRedisCache {
 			start = size + start;
 		}
 		if(end < 0) {
-			end = size + start;
+			end = size + end;
 		}
+		
+		// end is inclusive in redis
+		end++;
 		
 		// bounds check
 		if(start > size) {
@@ -135,11 +138,19 @@ public class DryRedisString implements DryRedisCache {
 			end = size;
 		}
 		
+		if(start > end) {
+		    return "";
+		}
+		
 		// return substring
 		return value.substring(start, end);
 	}
 	
 	public int setrange(String key, int offset, String value) {
+        if(offset < 0) {
+            throw new IllegalArgumentException("Offset cannot be less than zero. Refer REDIS documentation.");
+        }
+        
 		String existing = this.store.get(key);
 		if(existing == null) {
 			existing = "";
@@ -156,8 +167,12 @@ public class DryRedisString implements DryRedisCache {
 			source[index] = chars[index - offset];
 		}
 		
-		this.store.put(key, new String(chars));
-		return chars.length;
+		this.store.put(key, new String(source));
+		return source.length;
+	}
+	
+	public long bitcount(String key) {
+	    return this.bitcount(key, 0, key.length());
 	}
 	
 	public long bitcount(String key, int start, int end) {

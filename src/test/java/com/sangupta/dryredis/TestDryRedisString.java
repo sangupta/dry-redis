@@ -123,7 +123,79 @@ public class TestDryRedisString {
         Assert.assertEquals("value", str.get("key"));
     }
     
+    @Test
+    public void testSETNX() {
+        DryRedisString str = new DryRedisString();
+        
+        Assert.assertEquals("OK", str.setnx("key", "value"));
+        Assert.assertNull(str.setnx("key", "value"));
+    }
     
+    @Test
+    public void testSETXX() {
+        DryRedisString str = new DryRedisString();
+        
+        Assert.assertNull(str.setxx("key", "value"));
+        Assert.assertEquals("OK", str.set("key", "value"));
+        Assert.assertEquals("OK", str.setxx("key", "value2"));
+        Assert.assertEquals("value2", str.get("key"));
+    }
+    
+    @Test
+    public void testGETRANGE() {
+        DryRedisString str = new DryRedisString();
+        
+        Assert.assertEquals("OK", str.set("key", "values"));
+        Assert.assertEquals("alu", str.getrange("key", 1, 3));
+        Assert.assertEquals("ues", str.getrange("key", -3, -1));
+        Assert.assertEquals("", str.getrange("key", -1, -3));
+    }
+    
+    @Test
+    public void testSETRANGE() {
+        DryRedisString str = new DryRedisString();
+        
+        Assert.assertEquals("OK", str.set("key", "values"));
+        Assert.assertEquals(6, str.setrange("key", 1, "tip"));
+        Assert.assertEquals("vtipes", str.get("key"));
+
+        Assert.assertEquals(7, str.setrange("key", 4, "nim"));
+        Assert.assertEquals("vtipnim", str.get("key"));
+    }
+    
+    @Test
+    public void testBITCOUNT() {
+        DryRedisString str = new DryRedisString();
+        
+        str.set("test", "hello");
+        Assert.assertEquals(21, str.bitcount("test"));
+        Assert.assertEquals(11, str.bitcount("test", 0, 2));
+        Assert.assertEquals(8, str.bitcount("test", 1, 2));
+        Assert.assertEquals(0, str.bitcount("test", -1, -2));
+        Assert.assertEquals(10, str.bitcount("test", -2, -1));
+        
+        Assert.assertEquals(0, str.bitcount("non-existent"));
+    }
+    
+    @Test
+    public void testSTRLEN() {
+        DryRedisString str = new DryRedisString();
+        
+        Assert.assertEquals(0, str.strlen("non-existent"));
+        str.set("test", "hello");
+        Assert.assertEquals(5, str.strlen("test"));
+        str.set("test", "hello world");
+        Assert.assertEquals(11, str.strlen("test"));
+    }
+    
+    @Test
+    public void testGETSET() {
+        DryRedisString str = new DryRedisString();
+        
+        Assert.assertNull(str.getset("key", "value"));
+        Assert.assertEquals("value", str.getset("key", "value2"));
+        Assert.assertEquals("value2", str.getset("key", "value3"));
+    }
     
     // private methods
 
