@@ -1,5 +1,12 @@
 package com.sangupta.dryredis.cache.impl;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.UUID;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -168,17 +175,86 @@ public class TestDryRedisHash {
     
     @Test
     public void testHGETALL() {
+        DryRedisHashOperations redis = getRedis();
         
+        Map<String, String> map = new HashMap<String, String>();
+        for(int index = 0; index < 1000; index++) {
+            String field = UUID.randomUUID().toString();
+            String value = UUID.randomUUID().toString();
+            map.put(field, value);
+            redis.hset("key", field, value);
+        }
+        
+        // start testing
+        List<String> list = redis.hgetall("key");
+        for(int index = 0; index < list.size(); index += 2) {
+            String key = list.get(index);
+            String value = list.get(index + 1);
+            
+            Assert.assertTrue(map.containsKey(key));
+            Assert.assertEquals(map.get(key), value);
+            
+            map.remove(key);
+        }
+        
+        Assert.assertTrue(map.isEmpty());
     }
     
     @Test
     public void testHMGET() {
+        DryRedisHashOperations redis = getRedis();
         
+        Random random = new Random(); 
+        List<String> keys = new ArrayList<String>();
+        Map<String, String> map = new HashMap<String, String>();
+        for(int index = 0; index < 1000; index++) {
+            String field = UUID.randomUUID().toString();
+            String value = UUID.randomUUID().toString();
+            map.put(field, value);
+            redis.hset("key", field, value);
+            if(random.nextInt(100) > 50) {
+                keys.add(field);
+            }
+        }
+        
+        // start testing
+        List<String> list = redis.hmget("key", keys);
+        Assert.assertEquals(keys.size(), list.size());
+        
+        for(int index = 0; index < list.size(); index++) {
+            String key = keys.get(index);
+            String value = list.get(index);
+            
+            Assert.assertEquals(map.get(key), value);
+        }
     }
     
     @Test
     public void testHMSET() {
+        DryRedisHashOperations redis = getRedis();
         
+        Map<String, String> map = new HashMap<String, String>();
+        for(int index = 0; index < 1000; index++) {
+            String field = UUID.randomUUID().toString();
+            String value = UUID.randomUUID().toString();
+            map.put(field, value);
+        }
+        
+        Assert.assertEquals("OK", redis.hmset("key", map));
+        
+        // start testing
+        List<String> list = redis.hgetall("key");
+        for(int index = 0; index < list.size(); index += 2) {
+            String key = list.get(index);
+            String value = list.get(index + 1);
+            
+            Assert.assertTrue(map.containsKey(key));
+            Assert.assertEquals(map.get(key), value);
+            
+            map.remove(key);
+        }
+        
+        Assert.assertTrue(map.isEmpty());
     }
     
     private DryRedisHashOperations getRedis() {

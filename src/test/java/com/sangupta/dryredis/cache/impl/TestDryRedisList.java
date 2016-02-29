@@ -10,7 +10,6 @@ import org.junit.Test;
 
 import com.sangupta.dryredis.TestUtils;
 import com.sangupta.dryredis.cache.DryRedisListOperations;
-import com.sangupta.dryredis.cache.impl.DryRedisList;
 
 /**
  * Unit tests for {@link DryRedisList}.
@@ -199,6 +198,12 @@ public class TestDryRedisList {
     public void testLREM() {
         DryRedisListOperations list = new DryRedisList();
         
+        Assert.assertEquals(0, list.lrem("non-existent", 5, "v"));
+        
+        list.rpush("empty", "value");
+        list.rpop("empty");
+        Assert.assertEquals(0, list.lrem("empty", 5, "v"));
+        
         list.rpush("key", "v1");
         list.rpush("key", "v2");
         list.rpush("key", "v3");
@@ -279,6 +284,24 @@ public class TestDryRedisList {
         redis.rpush("tp", list);
         Assert.assertEquals("OK", redis.ltrim("tp", -3, -4));
         Assert.assertTrue(redis.lrange("tp", 0, 20).isEmpty());
+        
+        Assert.assertEquals("OK", redis.ltrim("non-existent", 0, 10));
+        
+        redis.rpush("empty", list);
+        redis.rpop("empty");
+        Assert.assertEquals("OK", redis.ltrim("empty", 0, 10));
+        
+        // key deleted
+        redis.rpush("some", list);
+        Assert.assertEquals("OK", redis.ltrim("some", 10, 15));
+        Assert.assertNull(redis.lrange("some", 0, 10));
+    }
+    
+    @Test
+    public void testLINSERT() {
+        DryRedisListOperations redis = new DryRedisList();
+        
+        // TODO: fix this linsert tests
     }
     
     @Test
