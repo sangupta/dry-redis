@@ -98,13 +98,20 @@ public class DryRedisSet implements DryRedisCache {
 		}
 		
 		// find subtracting
+		boolean foundOne = false;
 		for(String otherKey : otherKeys) {
 			Set<String> otherSet = this.store.get(otherKey);
 			if(otherSet == null) {
 				continue;
 			}
 			
+			foundOne = true;
 			clonedSet.retainAll(otherSet);
+		}
+		
+		if(!foundOne) {
+		    // clear existing set
+		    clonedSet.clear();
 		}
 		
 		return clonedSet;
