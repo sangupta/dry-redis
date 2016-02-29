@@ -8,16 +8,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.sangupta.dryredis.cache.DryRedisSetOperations;
 import com.sangupta.dryredis.support.DryRedisCache;
 import com.sangupta.dryredis.support.DryRedisCacheType;
 
-public class DryRedisSet implements DryRedisCache {
+public class DryRedisSet implements DryRedisCache, DryRedisSetOperations {
 	
 	private final Map<String, Set<String>> store = new HashMap<String, Set<String>>();
 	
 	// commands from redis
 	
-	public int sadd(String key, String value) {
+	/* (non-Javadoc)
+     * @see com.sangupta.dryredis.cache.impl.DryRedisSetOperations#sadd(java.lang.String, java.lang.String)
+     */
+	@Override
+    public int sadd(String key, String value) {
 		Set<String> set = this.store.get(key);
 		if(set == null) {
 			set = new HashSet<String>();
@@ -32,7 +37,11 @@ public class DryRedisSet implements DryRedisCache {
 		return 0;
 	}
 	
-	public int sadd(String key, List<String> values) {
+	/* (non-Javadoc)
+     * @see com.sangupta.dryredis.cache.impl.DryRedisSetOperations#sadd(java.lang.String, java.util.List)
+     */
+	@Override
+    public int sadd(String key, List<String> values) {
 		Set<String> set = this.store.get(key);
 		if(set == null) {
 			set = new HashSet<String>();
@@ -49,7 +58,11 @@ public class DryRedisSet implements DryRedisCache {
 		return added;
 	}
 	
-	public int scard(String key) {
+	/* (non-Javadoc)
+     * @see com.sangupta.dryredis.cache.impl.DryRedisSetOperations#scard(java.lang.String)
+     */
+	@Override
+    public int scard(String key) {
 		Set<String> set = this.store.get(key);
 		if(set == null) {
 			return 0;
@@ -58,7 +71,11 @@ public class DryRedisSet implements DryRedisCache {
 		return set.size();
 	}
 	
-	public Set<String> sdiff(String key, String... otherKeys) {
+	/* (non-Javadoc)
+     * @see com.sangupta.dryredis.cache.impl.DryRedisSetOperations#sdiff(java.lang.String, java.lang.String)
+     */
+	@Override
+    public Set<String> sdiff(String key, String... otherKeys) {
 		Set<String> set = this.store.get(key);
 		
 		Set<String> clonedSet;
@@ -81,13 +98,21 @@ public class DryRedisSet implements DryRedisCache {
 		return clonedSet;
 	}
 	
-	public int sdiffstore(String destination, String key, String... otherKeys) {
+	/* (non-Javadoc)
+     * @see com.sangupta.dryredis.cache.impl.DryRedisSetOperations#sdiffstore(java.lang.String, java.lang.String, java.lang.String)
+     */
+	@Override
+    public int sdiffstore(String destination, String key, String... otherKeys) {
 		Set<String> setToStore = this.sdiff(key, otherKeys);
 		this.store.put(destination, setToStore);
 		return setToStore.size();
 	}
 	
-	public Set<String> sinter(String key, String... otherKeys) {
+	/* (non-Javadoc)
+     * @see com.sangupta.dryredis.cache.impl.DryRedisSetOperations#sinter(java.lang.String, java.lang.String)
+     */
+	@Override
+    public Set<String> sinter(String key, String... otherKeys) {
 		Set<String> set = this.store.get(key);
 		
 		Set<String> clonedSet;
@@ -117,13 +142,21 @@ public class DryRedisSet implements DryRedisCache {
 		return clonedSet;
 	}
 	
-	public int sinterstore(String destination, String key, String... otherKeys) {
+	/* (non-Javadoc)
+     * @see com.sangupta.dryredis.cache.impl.DryRedisSetOperations#sinterstore(java.lang.String, java.lang.String, java.lang.String)
+     */
+	@Override
+    public int sinterstore(String destination, String key, String... otherKeys) {
 		Set<String> setToStore = this.sinter(key, otherKeys);
 		this.store.put(destination, setToStore);
 		return setToStore.size();
 	}
 	
-	public int sismember(String key, String value) {
+	/* (non-Javadoc)
+     * @see com.sangupta.dryredis.cache.impl.DryRedisSetOperations#sismember(java.lang.String, java.lang.String)
+     */
+	@Override
+    public int sismember(String key, String value) {
 		Set<String> set = this.store.get(key);
 		if(set == null) {
 			return 0;
@@ -136,7 +169,11 @@ public class DryRedisSet implements DryRedisCache {
 		return 0;
 	}
 	
-	public Set<String> smembers(String key) {
+	/* (non-Javadoc)
+     * @see com.sangupta.dryredis.cache.impl.DryRedisSetOperations#smembers(java.lang.String)
+     */
+	@Override
+    public Set<String> smembers(String key) {
 		Set<String> set = this.store.get(key);
 		if(set == null) {
 			return null;
@@ -145,7 +182,11 @@ public class DryRedisSet implements DryRedisCache {
 		return new HashSet<String>(set);
 	}
 	
-	public int smove(String source, String destination, String value) {
+	/* (non-Javadoc)
+     * @see com.sangupta.dryredis.cache.impl.DryRedisSetOperations#smove(java.lang.String, java.lang.String, java.lang.String)
+     */
+	@Override
+    public int smove(String source, String destination, String value) {
 		int removed = this.srem(source, value);
 		if(removed == 0) {
 			return 0;
@@ -155,7 +196,11 @@ public class DryRedisSet implements DryRedisCache {
 		return 1;
 	}
 	
-	public String spop(String key) {
+	/* (non-Javadoc)
+     * @see com.sangupta.dryredis.cache.impl.DryRedisSetOperations#spop(java.lang.String)
+     */
+	@Override
+    public String spop(String key) {
 		List<String> values = this.spop(key, 1);
 		if(values == null || values.isEmpty()) {
 			return null;
@@ -164,7 +209,11 @@ public class DryRedisSet implements DryRedisCache {
 		return values.get(0);
 	}
 	
-	public List<String> spop(String key, int count) {
+	/* (non-Javadoc)
+     * @see com.sangupta.dryredis.cache.impl.DryRedisSetOperations#spop(java.lang.String, int)
+     */
+	@Override
+    public List<String> spop(String key, int count) {
 		Set<String> set = this.store.get(key);
 		if(set == null) {
 			return null;
@@ -185,7 +234,11 @@ public class DryRedisSet implements DryRedisCache {
 		return result;
 	}
 	
-	public String srandmember(String key) {
+	/* (non-Javadoc)
+     * @see com.sangupta.dryredis.cache.impl.DryRedisSetOperations#srandmember(java.lang.String)
+     */
+	@Override
+    public String srandmember(String key) {
 	    List<String> list = this.srandmember(key, 1);
 	    if(list == null || list.isEmpty()) {
 	        return null;
@@ -194,7 +247,11 @@ public class DryRedisSet implements DryRedisCache {
 	    return list.get(0);
 	}
 	
-	public List<String> srandmember(String key, int count) {
+	/* (non-Javadoc)
+     * @see com.sangupta.dryredis.cache.impl.DryRedisSetOperations#srandmember(java.lang.String, int)
+     */
+	@Override
+    public List<String> srandmember(String key, int count) {
 		Set<String> set = this.store.get(key);
 		if(set == null) {
 			return null;
@@ -229,7 +286,11 @@ public class DryRedisSet implements DryRedisCache {
 		return result;
 	}
 	
-	public int srem(String key, String value) {
+	/* (non-Javadoc)
+     * @see com.sangupta.dryredis.cache.impl.DryRedisSetOperations#srem(java.lang.String, java.lang.String)
+     */
+	@Override
+    public int srem(String key, String value) {
 		Set<String> set = this.store.get(key);
 		if(set == null) {
 			return 0;
@@ -243,7 +304,11 @@ public class DryRedisSet implements DryRedisCache {
 		return 0;
 	}
 	
-	public int srem(String key, List<String> values) {
+	/* (non-Javadoc)
+     * @see com.sangupta.dryredis.cache.impl.DryRedisSetOperations#srem(java.lang.String, java.util.List)
+     */
+	@Override
+    public int srem(String key, List<String> values) {
 		Set<String> set = this.store.get(key);
 		if(set == null) {
 			return 0;
@@ -259,7 +324,11 @@ public class DryRedisSet implements DryRedisCache {
 		return count;
 	}
 	
-	public Set<String> sunion(String key, String... otherKeys) {
+	/* (non-Javadoc)
+     * @see com.sangupta.dryredis.cache.impl.DryRedisSetOperations#sunion(java.lang.String, java.lang.String)
+     */
+	@Override
+    public Set<String> sunion(String key, String... otherKeys) {
 		Set<String> set = this.store.get(key);
 		
 		Set<String> clonedSet;
@@ -282,13 +351,21 @@ public class DryRedisSet implements DryRedisCache {
 		return clonedSet;
 	}
 	
-	public int sunionstore(String destination, String key, String... otherKeys) {
+	/* (non-Javadoc)
+     * @see com.sangupta.dryredis.cache.impl.DryRedisSetOperations#sunionstore(java.lang.String, java.lang.String, java.lang.String)
+     */
+	@Override
+    public int sunionstore(String destination, String key, String... otherKeys) {
 		Set<String> setToStore = this.sunion(key, otherKeys);
 		this.store.put(destination, setToStore);
 		return setToStore.size();
 	}
 	
-	public List<String> sscan(String key, int cursor) {
+	/* (non-Javadoc)
+     * @see com.sangupta.dryredis.cache.impl.DryRedisSetOperations#sscan(java.lang.String, int)
+     */
+	@Override
+    public List<String> sscan(String key, int cursor) {
 		throw new RuntimeException("Not yet implemented");
 	}
 	

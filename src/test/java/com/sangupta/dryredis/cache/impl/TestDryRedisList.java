@@ -5,6 +5,7 @@ import java.util.UUID;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.sangupta.dryredis.cache.DryRedisListOperations;
 import com.sangupta.dryredis.cache.impl.DryRedisList;
 
 /**
@@ -19,7 +20,7 @@ public class TestDryRedisList {
     
     @Test
     public void testLINDEX() {
-        DryRedisList redis = new DryRedisList();
+        DryRedisListOperations redis = new DryRedisList();
         
         // non existent
         Assert.assertNull(redis.lindex(listName, 0));
@@ -40,7 +41,7 @@ public class TestDryRedisList {
     
     @Test
     public void testLLEN() {
-        DryRedisList redis = new DryRedisList();
+        DryRedisListOperations redis = new DryRedisList();
         
         Assert.assertEquals(0, redis.llen(listName));
        
@@ -68,7 +69,7 @@ public class TestDryRedisList {
     
     @Test
     public void testLPOP() {
-        DryRedisList redis = new DryRedisList();
+        DryRedisListOperations redis = new DryRedisList();
         
         Assert.assertNull(redis.lpop(listName));
         
@@ -85,7 +86,7 @@ public class TestDryRedisList {
     
     @Test
     public void testLPUSH() {
-        DryRedisList redis = new DryRedisList();
+        DryRedisListOperations redis = new DryRedisList();
         
         Assert.assertNull(redis.lpop(listName));
         
@@ -102,7 +103,7 @@ public class TestDryRedisList {
     
     @Test
     public void testLPUSHX() {
-        DryRedisList redis = new DryRedisList();
+        DryRedisListOperations redis = new DryRedisList();
         
         Assert.assertNull(redis.lpop(listName));
         
@@ -119,7 +120,7 @@ public class TestDryRedisList {
 
     @Test
     public void testRPUSH() {
-        DryRedisList redis = new DryRedisList();
+        DryRedisListOperations redis = new DryRedisList();
         
         Assert.assertNull(redis.lpop(listName));
         
@@ -136,7 +137,7 @@ public class TestDryRedisList {
 
     @Test
     public void testRPUSHX() {
-        DryRedisList redis = new DryRedisList();
+        DryRedisListOperations redis = new DryRedisList();
         
         Assert.assertNull(redis.lpop(listName));
         
@@ -153,7 +154,7 @@ public class TestDryRedisList {
     
     @Test
     public void testIntegration() {
-        DryRedisList list = new DryRedisList();
+        DryRedisListOperations list = new DryRedisList();
         
         // check that there are no elements and size is zero
         Assert.assertEquals(0, list.llen(listName));

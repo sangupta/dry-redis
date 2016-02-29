@@ -6,18 +6,23 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.sangupta.dryredis.cache.DryRedisListOperations;
 import com.sangupta.dryredis.support.DryRedisCache;
 import com.sangupta.dryredis.support.DryRedisCacheType;
 import com.sangupta.dryredis.support.DryRedisInsertOrder;
 import com.sangupta.dryredis.support.DryRedisUtils;
 
-public class DryRedisList implements DryRedisCache {
+public class DryRedisList implements DryRedisCache, DryRedisListOperations {
 	
 	private final Map<String, List<String>> store = new HashMap<String, List<String>>();
 	
 	private final Object blockingMonitor = new Object();
 	
-	public String blpop(String key, int maxSecondsToBlock) {
+	/* (non-Javadoc)
+     * @see com.sangupta.dryredis.cache.impl.DryRedisListOperations#blpop(java.lang.String, int)
+     */
+	@Override
+    public String blpop(String key, int maxSecondsToBlock) {
 	    final long millis = maxSecondsToBlock * 1000l;
 	    final long end = System.currentTimeMillis() + millis;
 		
@@ -39,7 +44,11 @@ public class DryRedisList implements DryRedisCache {
 		} while(true);
 	}
 	
-	public String brpop(String key, int maxSecondsToBlock) {
+	/* (non-Javadoc)
+     * @see com.sangupta.dryredis.cache.impl.DryRedisListOperations#brpop(java.lang.String, int)
+     */
+	@Override
+    public String brpop(String key, int maxSecondsToBlock) {
         final long millis = maxSecondsToBlock * 1000l;
         final long end = System.currentTimeMillis() + millis;
         
@@ -61,7 +70,11 @@ public class DryRedisList implements DryRedisCache {
         } while(true);
 	}
 	
-	public String brpoplpush(String source, String destination, int maxSecondsToBlock) {
+	/* (non-Javadoc)
+     * @see com.sangupta.dryredis.cache.impl.DryRedisListOperations#brpoplpush(java.lang.String, java.lang.String, int)
+     */
+	@Override
+    public String brpoplpush(String source, String destination, int maxSecondsToBlock) {
 		String value = this.brpop(source, maxSecondsToBlock);
 		if(value == null) {
 		    return null;
@@ -71,7 +84,11 @@ public class DryRedisList implements DryRedisCache {
 		return value;
 	}
 	
-	public String lindex(String key, int index) {
+	/* (non-Javadoc)
+     * @see com.sangupta.dryredis.cache.impl.DryRedisListOperations#lindex(java.lang.String, int)
+     */
+	@Override
+    public String lindex(String key, int index) {
 		List<String> list = this.store.get(key);
 		if(list == null) {
 			return null;
@@ -88,7 +105,11 @@ public class DryRedisList implements DryRedisCache {
 		return list.get(index);
 	}
 	
-	public int linsert(String key, DryRedisInsertOrder order, String pivot, String value) {
+	/* (non-Javadoc)
+     * @see com.sangupta.dryredis.cache.impl.DryRedisListOperations#linsert(java.lang.String, com.sangupta.dryredis.support.DryRedisInsertOrder, java.lang.String, java.lang.String)
+     */
+	@Override
+    public int linsert(String key, DryRedisInsertOrder order, String pivot, String value) {
 		List<String> list = this.store.get(key);
 		if(list == null) {
 			return 0;
@@ -115,7 +136,11 @@ public class DryRedisList implements DryRedisCache {
 		return -1;
 	}
 	
-	public int llen(String key) {
+	/* (non-Javadoc)
+     * @see com.sangupta.dryredis.cache.impl.DryRedisListOperations#llen(java.lang.String)
+     */
+	@Override
+    public int llen(String key) {
 		List<String> list = this.store.get(key);
 		if(list == null) {
 			return 0;
@@ -124,7 +149,11 @@ public class DryRedisList implements DryRedisCache {
 		return list.size();
 	}
 	
-	public String lpop(String key) {
+	/* (non-Javadoc)
+     * @see com.sangupta.dryredis.cache.impl.DryRedisListOperations#lpop(java.lang.String)
+     */
+	@Override
+    public String lpop(String key) {
 		List<String> list = this.store.get(key);
 		if(list == null) {
 			return null;
@@ -137,7 +166,11 @@ public class DryRedisList implements DryRedisCache {
 		return list.remove(0);
 	}
 	
-	public int lpush(String key, String value) {
+	/* (non-Javadoc)
+     * @see com.sangupta.dryredis.cache.impl.DryRedisListOperations#lpush(java.lang.String, java.lang.String)
+     */
+	@Override
+    public int lpush(String key, String value) {
 		List<String> list = this.store.get(key);
 		if(list == null) {
 			list = new ArrayList<String>();
@@ -149,7 +182,11 @@ public class DryRedisList implements DryRedisCache {
 		return list.size();
 	}
 	
-	public int lpush(String key, List<String> values) {
+	/* (non-Javadoc)
+     * @see com.sangupta.dryredis.cache.impl.DryRedisListOperations#lpush(java.lang.String, java.util.List)
+     */
+	@Override
+    public int lpush(String key, List<String> values) {
 		List<String> list = this.store.get(key);
 		if(list == null) {
 			list = new ArrayList<String>();
@@ -164,7 +201,11 @@ public class DryRedisList implements DryRedisCache {
 		return list.size();
 	}
 	
-	public int lpushx(String key, List<String> values) {
+	/* (non-Javadoc)
+     * @see com.sangupta.dryredis.cache.impl.DryRedisListOperations#lpushx(java.lang.String, java.util.List)
+     */
+	@Override
+    public int lpushx(String key, List<String> values) {
 		List<String> list = this.store.get(key);
 		if(list == null) {
 			return -1;
@@ -178,14 +219,11 @@ public class DryRedisList implements DryRedisCache {
 		return list.size();
 	}
 	
-	/**
-	 * 
-	 * @param key
-	 * @param start inclusive
-	 * @param stop inclusive
-	 * @return
-	 */
-	public List<String> lrange(String key, int start, int stop) {
+	/* (non-Javadoc)
+     * @see com.sangupta.dryredis.cache.impl.DryRedisListOperations#lrange(java.lang.String, int, int)
+     */
+	@Override
+    public List<String> lrange(String key, int start, int stop) {
 		List<String> list = this.store.get(key);
 		if(list == null) {
 			return null;
@@ -219,7 +257,11 @@ public class DryRedisList implements DryRedisCache {
 		return DryRedisUtils.subList(list, start, stop);
 	}
 	
-	public int lrem(String key, int count, String value) {
+	/* (non-Javadoc)
+     * @see com.sangupta.dryredis.cache.impl.DryRedisListOperations#lrem(java.lang.String, int, java.lang.String)
+     */
+	@Override
+    public int lrem(String key, int count, String value) {
 		List<String> list = this.store.get(key);
 		if(list == null) {
 			return 0;
@@ -263,7 +305,11 @@ public class DryRedisList implements DryRedisCache {
 		return removed;
 	}
 	
-	public String lset(String key, int index, String value) {
+	/* (non-Javadoc)
+     * @see com.sangupta.dryredis.cache.impl.DryRedisListOperations#lset(java.lang.String, int, java.lang.String)
+     */
+	@Override
+    public String lset(String key, int index, String value) {
 		List<String> list = this.store.get(key);
 		if(list == null) {
 			return "OK";
@@ -284,7 +330,11 @@ public class DryRedisList implements DryRedisCache {
 		return "OK";
 	}
 	
-	public String rpop(String key) {
+	/* (non-Javadoc)
+     * @see com.sangupta.dryredis.cache.impl.DryRedisListOperations#rpop(java.lang.String)
+     */
+	@Override
+    public String rpop(String key) {
 		List<String> list = this.store.get(key);
 		if(list == null) {
 			return null;
@@ -297,13 +347,21 @@ public class DryRedisList implements DryRedisCache {
 		return list.remove(list.size() - 1);
 	}
 	
-	public String rpoplpush(String source, String destination) {
+	/* (non-Javadoc)
+     * @see com.sangupta.dryredis.cache.impl.DryRedisListOperations#rpoplpush(java.lang.String, java.lang.String)
+     */
+	@Override
+    public String rpoplpush(String source, String destination) {
 		String value = this.rpop(source);
 		this.lpush(destination, value);
 		return value;
 	}
 	
-	public int rpush(String key, String value) {
+	/* (non-Javadoc)
+     * @see com.sangupta.dryredis.cache.impl.DryRedisListOperations#rpush(java.lang.String, java.lang.String)
+     */
+	@Override
+    public int rpush(String key, String value) {
 		List<String> list = this.store.get(key);
 		if(list == null) {
 			list = new ArrayList<String>();
@@ -314,7 +372,11 @@ public class DryRedisList implements DryRedisCache {
 		return list.size();
 	}
 	
-	public int rpushx(String key, String value) {
+	/* (non-Javadoc)
+     * @see com.sangupta.dryredis.cache.impl.DryRedisListOperations#rpushx(java.lang.String, java.lang.String)
+     */
+	@Override
+    public int rpushx(String key, String value) {
 	    if(this.store.containsKey(key)) {
 	        this.rpush(key, value);	        
 	    }
@@ -322,7 +384,11 @@ public class DryRedisList implements DryRedisCache {
 	    return this.llen(key);
 	}
 	
-	public int rpush(String key, List<String> value) {
+	/* (non-Javadoc)
+     * @see com.sangupta.dryredis.cache.impl.DryRedisListOperations#rpush(java.lang.String, java.util.List)
+     */
+	@Override
+    public int rpush(String key, List<String> value) {
 		List<String> list = this.store.get(key);
 		if(list == null) {
 			list = new ArrayList<String>();
@@ -336,7 +402,11 @@ public class DryRedisList implements DryRedisCache {
 		return list.size();
 	}
 	
-	public int lpushx(String key, String value) {
+	/* (non-Javadoc)
+     * @see com.sangupta.dryredis.cache.impl.DryRedisListOperations#lpushx(java.lang.String, java.lang.String)
+     */
+	@Override
+    public int lpushx(String key, String value) {
 		List<String> list = this.store.get(key);
 		if(list == null) {
 			return -1;
@@ -347,7 +417,11 @@ public class DryRedisList implements DryRedisCache {
 		return list.size();
 	}
 	
-	public String ltrim(String key, int start, int stop) {
+	/* (non-Javadoc)
+     * @see com.sangupta.dryredis.cache.impl.DryRedisListOperations#ltrim(java.lang.String, int, int)
+     */
+	@Override
+    public String ltrim(String key, int start, int stop) {
 		List<String> list = this.store.get(key);
 		if(list == null) {
 			return "OK";

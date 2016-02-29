@@ -6,12 +6,13 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.sangupta.dryredis.TestUtils;
+import com.sangupta.dryredis.cache.DryRedisSetOperations;
 
 public class TestDryRedisSet {
 
     @Test
     public void testSADD() {
-        DryRedisSet redis = new DryRedisSet();
+        DryRedisSetOperations redis = new DryRedisSet();
         
         Assert.assertEquals(1, redis.sadd("key", "value1"));
         Assert.assertEquals(1, redis.sadd("key", "value2"));
@@ -26,7 +27,7 @@ public class TestDryRedisSet {
     
     @Test
     public void testSCARD() {
-        DryRedisSet redis = new DryRedisSet();
+        DryRedisSetOperations redis = new DryRedisSet();
         
         Assert.assertEquals(0, redis.scard("key"));
         redis.sadd("key", "value1");
@@ -43,7 +44,7 @@ public class TestDryRedisSet {
     
     @Test
     public void testSDIFF() {
-        DryRedisSet redis = new DryRedisSet();
+        DryRedisSetOperations redis = new DryRedisSet();
         
         redis.sadd("key1", "value1");
         redis.sadd("key1", "value2");
@@ -76,7 +77,7 @@ public class TestDryRedisSet {
     
     @Test
     public void testSDIFFINSTORE() {
-        DryRedisSet redis = new DryRedisSet();
+        DryRedisSetOperations redis = new DryRedisSet();
         
         redis.sadd("key1", "value1");
         redis.sadd("key1", "value2");
@@ -106,7 +107,7 @@ public class TestDryRedisSet {
     
     @Test
     public void testSISMEMBER() {
-        DryRedisSet redis = new DryRedisSet();
+        DryRedisSetOperations redis = new DryRedisSet();
         
         Assert.assertEquals(0, redis.sismember("key", "value1"));
 
@@ -127,7 +128,7 @@ public class TestDryRedisSet {
     
     @Test
     public void SINTER() {
-        DryRedisSet redis = new DryRedisSet();
+        DryRedisSetOperations redis = new DryRedisSet();
         
         redis.sadd("key1", "value1");
         redis.sadd("key1", "value2");
@@ -160,7 +161,7 @@ public class TestDryRedisSet {
     
     @Test
     public void testSINTERINSTORE() {
-        DryRedisSet redis = new DryRedisSet();
+        DryRedisSetOperations redis = new DryRedisSet();
         
         redis.sadd("key1", "value1");
         redis.sadd("key1", "value2");
@@ -191,7 +192,7 @@ public class TestDryRedisSet {
 
     @Test
     public void testSMEMBERS() {
-        DryRedisSet redis = new DryRedisSet();
+        DryRedisSetOperations redis = new DryRedisSet();
         
         Assert.assertNull(redis.smembers("key"));
 
@@ -207,7 +208,7 @@ public class TestDryRedisSet {
     
     @Test
     public void testSPOP() {
-        DryRedisSet redis = new DryRedisSet();
+        DryRedisSetOperations redis = new DryRedisSet();
         
         // no key
         Assert.assertNull(redis.spop("non-existent"));
@@ -255,7 +256,7 @@ public class TestDryRedisSet {
 
     @Test
     public void testSMOVE() {
-        DryRedisSet redis = new DryRedisSet();
+        DryRedisSetOperations redis = new DryRedisSet();
         
         Assert.assertEquals(0, redis.smove("non-existent", "destination", "hello"));
 
@@ -274,7 +275,7 @@ public class TestDryRedisSet {
     
     @Test
     public void testSREM() {
-        DryRedisSet redis = new DryRedisSet();
+        DryRedisSetOperations redis = new DryRedisSet();
         
         Assert.assertEquals(0, redis.srem("non-existent", "value"));
         
@@ -300,7 +301,7 @@ public class TestDryRedisSet {
     
     @Test
     public void testSUNION() {
-        DryRedisSet redis = new DryRedisSet();
+        DryRedisSetOperations redis = new DryRedisSet();
         
         redis.sadd("key1", "value1");
         redis.sadd("key1", "value2");
@@ -334,7 +335,7 @@ public class TestDryRedisSet {
     
     @Test
     public void testSUNIONSTORE() {
-        DryRedisSet redis = new DryRedisSet();
+        DryRedisSetOperations redis = new DryRedisSet();
         
         redis.sadd("key1", "value1");
         redis.sadd("key1", "value2");
@@ -359,7 +360,7 @@ public class TestDryRedisSet {
     
     @Test
     public void SRANDMEMBER() {
-        DryRedisSet redis = new DryRedisSet();
+        DryRedisSetOperations redis = new DryRedisSet();
         
         Assert.assertNull(redis.srandmember("non-existent"));
         Assert.assertNull(redis.srandmember("non-existent", 5));

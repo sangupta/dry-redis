@@ -7,12 +7,17 @@ import java.util.Set;
 
 import com.sangupta.dryredis.cache.DryRedisGeoOperations;
 import com.sangupta.dryredis.cache.DryRedisHashOperations;
+import com.sangupta.dryredis.cache.DryRedisHyperLogLogOperations;
+import com.sangupta.dryredis.cache.DryRedisListOperations;
+import com.sangupta.dryredis.cache.DryRedisSetOperations;
 import com.sangupta.dryredis.cache.DryRedisStringOperations;
 import com.sangupta.dryredis.support.DryRedisCacheType;
 import com.sangupta.dryredis.support.DryRedisGeoUnit;
 import com.sangupta.dryredis.support.DryRedisInsertOrder;
 
-public class DryRedis extends DryRedisKeys implements DryRedisGeoOperations, DryRedisHashOperations, DryRedisStringOperations {
+public class DryRedis extends DryRedisKeys implements DryRedisGeoOperations, 
+                                                      DryRedisHashOperations, DryRedisStringOperations, DryRedisListOperations,
+                                                      DryRedisSetOperations, DryRedisHyperLogLogOperations {
     
     // GEO commands follow
 
@@ -234,9 +239,9 @@ public class DryRedis extends DryRedisKeys implements DryRedisGeoOperations, Dry
         return this.listCommands.lset(key, index, value);
     }
     
-    public void ltrim(String key, int start, int stop) {
+    public String ltrim(String key, int start, int stop) {
         matchKeyType(key, DryRedisCacheType.LIST);
-        this.listCommands.ltrim(key, start, stop);
+        return this.listCommands.ltrim(key, start, stop);
     }
     
     public String rpop(String key) {
@@ -333,6 +338,12 @@ public class DryRedis extends DryRedisKeys implements DryRedisGeoOperations, Dry
         return this.setCommands.spop(key, count);
     }
     
+    @Override
+    public String srandmember(String key) {
+        matchKeyType(key, DryRedisCacheType.SET);
+        return this.setCommands.srandmember(key);
+    }
+
     public List<String> srandmember(String key, int count) {
         matchKeyType(key, DryRedisCacheType.SET);
         return this.setCommands.srandmember(key, count);

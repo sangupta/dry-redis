@@ -5,17 +5,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.sangupta.dryredis.cache.DryRedisHyperLogLogOperations;
 import com.sangupta.dryredis.ds.HyperLogLog;
 import com.sangupta.dryredis.support.DryRedisCache;
 import com.sangupta.dryredis.support.DryRedisCacheType;
 
-public class DryRedisHyperLogLog implements DryRedisCache {
+public class DryRedisHyperLogLog implements DryRedisCache, DryRedisHyperLogLogOperations {
 	
 	private final Map<String, HyperLogLog> store = new HashMap<String, HyperLogLog>();
 	
 	// redis commands
 	
-	public int pfadd(String key) {
+	/* (non-Javadoc)
+     * @see com.sangupta.dryredis.cache.impl.DryRedisHyperLogLogOperations#pfadd(java.lang.String)
+     */
+	@Override
+    public int pfadd(String key) {
 		if(this.store.containsKey(key)) {
 			return 0;
 		}
@@ -25,7 +30,11 @@ public class DryRedisHyperLogLog implements DryRedisCache {
 		return 1;
 	}
 	
-	public int pfadd(String key, String element) {
+	/* (non-Javadoc)
+     * @see com.sangupta.dryredis.cache.impl.DryRedisHyperLogLogOperations#pfadd(java.lang.String, java.lang.String)
+     */
+	@Override
+    public int pfadd(String key, String element) {
 		HyperLogLog hll = this.store.get(key);
 		if(hll == null) {
 			hll = getNewHLL();
@@ -36,7 +45,11 @@ public class DryRedisHyperLogLog implements DryRedisCache {
 		return 1;
 	}
 	
-	public long pfcount(String key) {
+	/* (non-Javadoc)
+     * @see com.sangupta.dryredis.cache.impl.DryRedisHyperLogLogOperations#pfcount(java.lang.String)
+     */
+	@Override
+    public long pfcount(String key) {
 		HyperLogLog hll = this.store.get(key);
 		if(hll == null) {
 			return 0;
@@ -45,7 +58,11 @@ public class DryRedisHyperLogLog implements DryRedisCache {
 		return hll.cardinality();
 	}
 	
-	public long pfcount(List<String> keys) {
+	/* (non-Javadoc)
+     * @see com.sangupta.dryredis.cache.impl.DryRedisHyperLogLogOperations#pfcount(java.util.List)
+     */
+	@Override
+    public long pfcount(List<String> keys) {
 		if(keys == null || keys.isEmpty()) {
 			throw new IllegalArgumentException("Keys cannot be empty");
 		}
@@ -80,7 +97,11 @@ public class DryRedisHyperLogLog implements DryRedisCache {
 		return cloned.cardinality();
 	}
 	
-	public String pfmerge(String destination, List<String> keys) {
+	/* (non-Javadoc)
+     * @see com.sangupta.dryredis.cache.impl.DryRedisHyperLogLogOperations#pfmerge(java.lang.String, java.util.List)
+     */
+	@Override
+    public String pfmerge(String destination, List<String> keys) {
 		if(keys == null || keys.isEmpty()) {
 			throw new IllegalArgumentException("Keys cannot be empty");
 		}
