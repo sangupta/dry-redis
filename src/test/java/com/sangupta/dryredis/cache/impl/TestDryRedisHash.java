@@ -58,7 +58,7 @@ public class TestDryRedisHash {
         
         redis.hset("key", "field1", "value1");
         redis.hset("key", "field2", "value1");
-        Assert.assertEquals(TestUtils.asList("field1", "field2"), redis.hkeys("key"));
+        TestUtils.equalUnsorted(TestUtils.asList("field1", "field2"), redis.hkeys("key"));
     }
     
     @Test
