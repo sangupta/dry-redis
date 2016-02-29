@@ -51,4 +51,21 @@ public class TestUtils {
         return true;
     }
 
+    public static boolean equalUnsorted(List<String> list1, List<String> list2) {
+        if(list1 == null || list2 == null) {
+            return false;
+        }
+        
+        for(String item : list2) {
+            if(!list1.remove(item)) {
+                return false;
+            }
+        }
+        
+        if(list1.isEmpty()) {
+            return true;
+        }
+        
+        return false;
+    }
 }
