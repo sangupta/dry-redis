@@ -32,7 +32,6 @@ public class DryRedisRangeArgument {
         
         this.infinity = false;
         
-        // TODO: parsing and sanity check
         if(value.startsWith("(") || value.startsWith("[")) {
             this.value = value.substring(1);
         } else {

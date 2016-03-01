@@ -146,13 +146,12 @@ public class DryRedisSortedSet implements DryRedisCache, DryRedisSortedSetOperat
             return null;
         }
         
-        final int size = set.size();
-        Iterator<ElementWithPriority<String>> iterator = set.iterator();
+        Iterator<ElementWithPriority<String>> iterator = set.descendingIterator();
         int rank = 0;
         while(iterator.hasNext()) {
             ElementWithPriority<String> element = iterator.next();
             if(element.getData().equals(member)) {
-                return size - rank - 1; // reverse rank
+                return rank;
             }
             
             rank++;
@@ -557,10 +556,8 @@ public class DryRedisSortedSet implements DryRedisCache, DryRedisSortedSetOperat
             stop = size;
         }
         
-        // TODO: fix this function for reverse ordering
-        
         List<String> result = new ArrayList<String>();
-        Iterator<ElementWithPriority<String>> iterator = set.iterator();
+        Iterator<ElementWithPriority<String>> iterator = set.descendingIterator();
         int index = 0;
         while(iterator.hasNext()) {
             ElementWithPriority<String> element = iterator.next();
@@ -592,12 +589,19 @@ public class DryRedisSortedSet implements DryRedisCache, DryRedisSortedSetOperat
      */
     @Override
     public int zinterstore(String destination, List<String> keys, double[] weights, DryRedisSetAggregationType aggregation) {
-//        // just clone the same
-//        SortedSetWithPriority<String> set = this.store.get(key);
-//        if(newSet == null) {
-//            newSet = new TreeSet<Element>();
-//            this.store.put(destination, newSet);
-//            return 0;
+        SortedSetWithPriority<String> firstSet = this.store.get(keys.get(0));
+        if(firstSet == null || firstSet.isEmpty()) {
+            // intersection with an empty set is empty
+            this.store.put(destination, new SortedSetWithPriority<String>());
+            return 0;
+        }
+        
+//        SortedSetWithPriority<String> cloned = firstSet.clone();
+//        for(int index = 1; index < keys.size(); index++) {
+//            SortedSetWithPriority<String> set = this.store.get(keys.get(index));
+//            cloned.retainAll(set);
+//            
+//            // for remaining elements adjust the priority
 //        }
         
         // TODO: fix intersection

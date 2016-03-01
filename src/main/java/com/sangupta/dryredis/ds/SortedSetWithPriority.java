@@ -16,7 +16,7 @@ import java.util.TreeSet;
  *
  * @param <E>
  */
-public class SortedSetWithPriority<E extends Comparable<E>> implements SortedSet<ElementWithPriority<E>> {
+public class SortedSetWithPriority<E extends Comparable<E>> implements SortedSet<ElementWithPriority<E>>, Cloneable {
 
     private final TreeSet<ElementWithPriority<E>> delegate;
 
@@ -113,8 +113,7 @@ public class SortedSetWithPriority<E extends Comparable<E>> implements SortedSet
 
     @Override
     public boolean containsAll(Collection<?> c) {
-        // TODO Auto-generated method stub
-        return false;
+        return this.delegate.containsAll(c);
     }
 
     @Override

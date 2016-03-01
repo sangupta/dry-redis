@@ -26,6 +26,31 @@ public class TestDryRedisSortedSet {
     }
     
     @Test
+    public void testZREVRANGE() {
+        DryRedisSortedSetOperations redis = getRedis();
+        
+        redis.zadd("key", 1, "one");
+        redis.zadd("key", 2, "two");
+        redis.zadd("key", 3, "three");
+        
+        Assert.assertEquals(TestUtils.asList("three", "two", "one"), redis.zrevrange("key", 0, -1, false));
+        Assert.assertEquals(TestUtils.asList("one"), redis.zrevrange("key", 2, 3, false));
+        Assert.assertEquals(TestUtils.asList("two", "one"), redis.zrevrange("key", -2, -1, false));
+    }
+    
+    @Test
+    public void testZREVRANK() {
+        DryRedisSortedSetOperations redis = getRedis();
+        
+        redis.zadd("key", 1, "one");
+        redis.zadd("key", 2, "two");
+        redis.zadd("key", 3, "three");
+        
+        Assert.assertEquals((Integer) 2, redis.zrevrank("key", "one"));
+        Assert.assertEquals((Integer) null, redis.zrevrank("key", "four"));
+    }
+    
+    @Test
     public void testZCARD() {
         DryRedisSortedSetOperations redis = getRedis();
         
