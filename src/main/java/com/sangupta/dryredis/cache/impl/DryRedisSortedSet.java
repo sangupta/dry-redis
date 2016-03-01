@@ -589,23 +589,44 @@ public class DryRedisSortedSet implements DryRedisCache, DryRedisSortedSetOperat
      */
     @Override
     public int zinterstore(String destination, List<String> keys, double[] weights, DryRedisSetAggregationType aggregation) {
-        SortedSetWithPriority<String> firstSet = this.store.get(keys.get(0));
-        if(firstSet == null || firstSet.isEmpty()) {
-            // intersection with an empty set is empty
-            this.store.put(destination, new SortedSetWithPriority<String>());
-            return 0;
+        if(keys == null) {
+            throw new IllegalArgumentException("Keys cannot be null");
+        }
+        if(weights != null && keys.size() != weights.length) {
+            throw new IllegalArgumentException("Size of keys must match the size of weights");
         }
         
-//        SortedSetWithPriority<String> cloned = firstSet.clone();
-//        for(int index = 1; index < keys.size(); index++) {
-//            SortedSetWithPriority<String> set = this.store.get(keys.get(index));
-//            cloned.retainAll(set);
-//            
-//            // for remaining elements adjust the priority
-//        }
+        SortedSetWithPriority<String> resultSet = null;
+        for(int index = 0; index < keys.size(); index++) {
+            String key = keys.get(index);
+
+            // get weight to be used
+            double weight = 1.0d;
+            if(weights != null) {
+                weight = weights[index];
+            }
+            
+            // find the set
+            SortedSetWithPriority<String> set = this.store.get(key);
+            if(set == null || set.isEmpty()) {
+                // no resulting set is needed - intersection with empty set is empty
+                this.store.put(destination, new SortedSetWithPriority<String>());
+                return 0;
+            }
+            
+            // clone the set and update weight if needed
+            if(index == 0) {
+                resultSet = set.clone();
+                resultSet.applyWeight(weight);
+                continue;
+            }
+            
+            // run intersection
+            resultSet.retainAll(set, weight, aggregation);
+        }
         
-        // TODO: fix intersection
-        return -1;
+        this.store.put(destination, resultSet);
+        return resultSet.size();
     }
     
     /* (non-Javadoc)
@@ -621,16 +642,33 @@ public class DryRedisSortedSet implements DryRedisCache, DryRedisSortedSetOperat
      */
     @Override
     public int zunionstore(String destination, List<String> keys, double[] weights, DryRedisSetAggregationType aggregation) {
-//        // just clone the same
-//        SortedSetWithPriority<String> set = this.store.get(key);
-//        if(newSet == null) {
-//            newSet = new TreeSet<Element>();
-//            this.store.put(destination, newSet);
-//            return 0;
-//        }
+        if(keys == null) {
+            throw new IllegalArgumentException("Keys cannot be null");
+        }
+        if(weights != null && keys.size() != weights.length) {
+            throw new IllegalArgumentException("Size of keys must match the size of weights");
+        }
         
-        // TODO: fix union
-        return -1;
+        SortedSetWithPriority<String> resultSet = new SortedSetWithPriority<String>();
+        
+        for(int index = 0; index < keys.size(); index++) {
+            String key = keys.get(index);
+            
+            SortedSetWithPriority<String> set = this.store.get(key);
+            if(set == null || set.isEmpty()) {
+                continue;
+            }
+            
+            double weight = 1.0d;
+            if(weights != null) {
+                weight = weights[index];
+            }
+            
+            resultSet.addAll(set, weight, aggregation);
+        }
+        
+        this.store.put(destination, resultSet);
+        return resultSet.size();
     }
     
     // from DryRedisCache interface

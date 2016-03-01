@@ -5,12 +5,13 @@ import org.junit.Test;
 
 import com.sangupta.dryredis.TestUtils;
 import com.sangupta.dryredis.cache.DryRedisSortedSetOperations;
+import com.sangupta.dryredis.support.DryRedisSetAggregationType;
 
 public class TestDryRedisSortedSet {
     
     @Test
     public void testZADD() {
-        DryRedisSortedSetOperations redis = new DryRedisSortedSet();
+        DryRedisSortedSetOperations redis = getRedis();
         
         Assert.assertEquals(1, redis.zadd("key", 0, "a"));
         Assert.assertEquals(1, redis.zadd("key", 0, "b"));
@@ -68,7 +69,7 @@ public class TestDryRedisSortedSet {
     
     @Test
     public void testZLEXCOUNT() {
-        DryRedisSortedSetOperations redis = new DryRedisSortedSet();
+        DryRedisSortedSetOperations redis = getRedis();
         
         redis.zadd("key", 0, "a");
         redis.zadd("key", 0, "b");
@@ -88,7 +89,7 @@ public class TestDryRedisSortedSet {
     
     @Test
     public void testZRANGEBYLEX() {
-        DryRedisSortedSetOperations redis = new DryRedisSortedSet();
+        DryRedisSortedSetOperations redis = getRedis();
         
         redis.zadd("key", 0, "a");
         redis.zadd("key", 0, "b");
@@ -101,6 +102,42 @@ public class TestDryRedisSortedSet {
         Assert.assertEquals(TestUtils.asList("a", "b", "c", "d", "e", "f", "g"), redis.zrangebylex("key", "-", "+"));
         Assert.assertEquals(TestUtils.asList("a", "b", "c"), redis.zrangebylex("key", "-", "[c"));
         Assert.assertEquals(TestUtils.asList("b", "c", "d", "e"), redis.zrangebylex("key", "[aaa", "(f"));
+    }
+    
+    @Test
+    public void testZINTERSTORE() {
+        DryRedisSortedSetOperations redis = getRedis();
+        
+        // same keys
+        redis.zadd("key1", 1, "a");
+        redis.zadd("key1", 2, "b");
+        
+        redis.zadd("key2", 3, "a");
+        redis.zadd("key2", 4, "b");
+        
+        redis.zadd("key3", 3, "c");
+        
+        // sum aggregate
+        Assert.assertEquals(2, redis.zinterstore("result", TestUtils.asList("key1", "key2"), new double[] { 2.0d, 3.0d }, DryRedisSetAggregationType.SUM));
+        Assert.assertTrue(TestUtils.equalUnsorted(TestUtils.asList("a", "b"), redis.zrange("result", 0, 10, false)));
+        Assert.assertEquals(11.0d, redis.zscore("result", "a"), 0d);
+        Assert.assertEquals(16.0d, redis.zscore("result", "b"), 0d);
+        Assert.assertEquals(1.0d, redis.zscore("key1", "a"), 0d);
+        Assert.assertEquals(2.0d, redis.zscore("key1", "b"), 0d);
+        Assert.assertEquals(3.0d, redis.zscore("key2", "a"), 0d);
+        Assert.assertEquals(4.0d, redis.zscore("key2", "b"), 0d);
+        
+        // min aggregate
+        Assert.assertEquals(2, redis.zinterstore("result", TestUtils.asList("key1", "key2"), new double[] { 2.0d, 3.0d }, DryRedisSetAggregationType.MIN));
+        Assert.assertTrue(TestUtils.equalUnsorted(TestUtils.asList("a", "b"), redis.zrange("result", 0, 10, false)));
+        Assert.assertEquals(2.0d, redis.zscore("result", "a"), 0d);
+        Assert.assertEquals(4.0d, redis.zscore("result", "b"), 0d);
+        
+        // min aggregate
+        Assert.assertEquals(2, redis.zinterstore("result", TestUtils.asList("key1", "key2"), new double[] { 2.0d, 3.0d }, DryRedisSetAggregationType.MAX));
+        Assert.assertTrue(TestUtils.equalUnsorted(TestUtils.asList("a", "b"), redis.zrange("result", 0, 10, false)));
+        Assert.assertEquals(9.0d, redis.zscore("result", "a"), 0d);
+        Assert.assertEquals(12.0d, redis.zscore("result", "b"), 0d);
     }
     
     // helper methods

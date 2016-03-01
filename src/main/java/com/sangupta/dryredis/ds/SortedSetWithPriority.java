@@ -1,12 +1,16 @@
 package com.sangupta.dryredis.ds;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
+
+import com.sangupta.dryredis.support.DryRedisSetAggregationType;
 
 /**
  * A {@link SortedSet} implementation that uses a floating-point priority for
@@ -52,12 +56,49 @@ public class SortedSetWithPriority<E extends Comparable<E>> implements SortedSet
         });
     }
     
+    @Override
+    public SortedSetWithPriority<E> clone() {
+        SortedSetWithPriority<E> newSet = new SortedSetWithPriority<E>();
+        
+        for(ElementWithPriority<E> element : this.delegate) {
+            newSet.add(element.clone());
+        }
+        
+        return newSet;
+    }
+    
+    /**
+     * Apply a new weight to priority of all elements in this set.
+     * 
+     * @param weight
+     */
+    public void applyWeight(double weight) {
+        if(weight == 1.0d) {
+            // nothing to do
+            return;
+        }
+        
+        // modify the weigths in original objects
+        Iterator<ElementWithPriority<E>> iterator = this.iterator();
+        while(iterator.hasNext()) {
+            ElementWithPriority<E> element = iterator.next();
+            element.setPriority(element.getPriority() * weight);
+
+            // for priority list
+            this.priorities.put(element, element.getPriority());
+        }
+    }
+
     public Iterator<ElementWithPriority<E>> descendingIterator() {
         return this.delegate.descendingIterator();
     }
     
-    public Double getPriority(E element) {
+    public Double getPriority(ElementWithPriority<E> element) {
         return this.priorities.get(element);
+    }
+    
+    public Double getPriority(E element) {
+        return this.priorities.get(new ElementWithPriority<E>(element, 0));
     }
 
     @Override
@@ -115,6 +156,58 @@ public class SortedSetWithPriority<E extends Comparable<E>> implements SortedSet
     public boolean containsAll(Collection<?> c) {
         return this.delegate.containsAll(c);
     }
+    
+    public boolean addAll(SortedSetWithPriority<E> set, double weight, DryRedisSetAggregationType aggregation) {
+        boolean modified = false;
+        
+        for(ElementWithPriority<E> incomingElement : set.delegate) {
+            Double existingPriority = this.priorities.get(incomingElement);
+            if(existingPriority != null) {
+                // update the existing priority
+                
+                double incomingPriority = set.getPriority(incomingElement);
+                incomingPriority = incomingPriority * weight;
+                
+                // choose final priority
+                double finalPriority;
+                
+                switch(aggregation) {
+                    case MAX:
+                        finalPriority = Math.max(existingPriority, incomingPriority);
+                        break;
+                    
+                    case MIN:
+                        finalPriority = Math.min(existingPriority, incomingPriority);
+                        break;
+
+                    case SUM:
+                        finalPriority = existingPriority + incomingPriority;
+                        break;
+
+                    default:
+                        throw new IllegalArgumentException("Unknown aggregation type");
+                }
+                
+                if(finalPriority != incomingPriority) {
+                    // priority needs to be updated
+                    // resorting will happen
+                    this.remove(incomingElement);
+                    
+                    // update priority of element
+                    this.add(new ElementWithPriority<E>(incomingElement.getData(), finalPriority));
+                    
+                    // updated
+                    modified = true;
+                }
+            } else {
+                // new element
+                this.add(incomingElement);
+                modified = true;
+            }
+        }
+        
+        return modified;
+    }
 
     @Override
     public boolean addAll(Collection<? extends ElementWithPriority<E>> c) {
@@ -128,10 +221,86 @@ public class SortedSetWithPriority<E extends Comparable<E>> implements SortedSet
         return added;
     }
 
+    public boolean retainAll(SortedSetWithPriority<E> set, double weight, DryRedisSetAggregationType aggregation) {
+        boolean modified = false;
+        
+        Iterator<ElementWithPriority<E>> iterator = this.iterator();
+        List<ElementWithPriority<E>> toBeAdded = new ArrayList<ElementWithPriority<E>>();
+        
+        while(iterator.hasNext()) {
+            ElementWithPriority<E> ourElement = iterator.next();
+            
+            Double incomingPriority = set.getPriority(ourElement);
+            if(incomingPriority == null) {
+                // the element is not present in the incoming set
+                // remove from current set
+                this.remove(ourElement);
+                modified = true;
+                continue;
+            }
+            
+            // update the existing priority
+            
+            double existingPriority = this.priorities.get(ourElement);
+            incomingPriority = incomingPriority * weight;
+            
+            // choose final priority
+            double finalPriority;
+            
+            switch(aggregation) {
+                case MAX:
+                    finalPriority = Math.max(existingPriority, incomingPriority);
+                    break;
+                
+                case MIN:
+                    finalPriority = Math.min(existingPriority, incomingPriority);
+                    break;
+
+                case SUM:
+                    finalPriority = existingPriority + incomingPriority;
+                    break;
+
+                default:
+                    throw new IllegalArgumentException("Unknown aggregation type");
+            }
+            
+            if(finalPriority != existingPriority) {
+                // priority needs to be updated
+                // resorting will happen
+                iterator.remove();
+                
+                // update priority of element
+                ourElement.setPriority(finalPriority);
+                
+                // these are added - to prevent concurrentmodificationexception
+                toBeAdded.add(ourElement);
+                
+                // updated
+                modified = true;
+            }
+        }
+        
+        if(!toBeAdded.isEmpty()) {
+            for(ElementWithPriority<E> element : toBeAdded) {
+                this.add(element);
+            }
+        }
+        
+        return modified;
+    }
+    
     @Override
     public boolean retainAll(Collection<?> c) {
+        boolean modified = false;
         
-        return false;
+        for(ElementWithPriority<E> ourElement : this.delegate) {
+            if(!c.contains(ourElement)) {
+                this.remove(ourElement);
+                modified = true;
+            }
+        }
+        
+        return modified;
     }
 
     @Override
@@ -181,5 +350,5 @@ public class SortedSetWithPriority<E extends Comparable<E>> implements SortedSet
     public ElementWithPriority<E> last() {
         return this.delegate.last();
     }
-    
+
 }
