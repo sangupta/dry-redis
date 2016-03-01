@@ -8,6 +8,7 @@ import com.sangupta.dryredis.cache.impl.DryRedisHash;
 import com.sangupta.dryredis.cache.impl.DryRedisHyperLogLog;
 import com.sangupta.dryredis.cache.impl.DryRedisList;
 import com.sangupta.dryredis.cache.impl.DryRedisSet;
+import com.sangupta.dryredis.cache.impl.DryRedisSortedSet;
 import com.sangupta.dryredis.cache.impl.DryRedisString;
 import com.sangupta.dryredis.support.DryRedisCache;
 import com.sangupta.dryredis.support.DryRedisCacheType;
@@ -37,6 +38,8 @@ public abstract class DryRedisKeys {
 	
 	protected final DryRedisString stringCommands = new DryRedisString();
 	
+	protected final DryRedisSortedSet sortedSetCommands = new DryRedisSortedSet();
+	
 	public DryRedisKeys() {
         caches.add(this.geoCommands);
         caches.add(this.hashCommands);
@@ -45,6 +48,7 @@ public abstract class DryRedisKeys {
         caches.add(this.setCommands);
         caches.add(this.geoCommands);
         caches.add(this.stringCommands);
+        caches.add(this.sortedSetCommands);
     }
 	
 	public int del(String key) {

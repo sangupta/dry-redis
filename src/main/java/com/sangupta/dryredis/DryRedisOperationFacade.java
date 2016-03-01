@@ -10,10 +10,13 @@ import com.sangupta.dryredis.cache.DryRedisHashOperations;
 import com.sangupta.dryredis.cache.DryRedisHyperLogLogOperations;
 import com.sangupta.dryredis.cache.DryRedisListOperations;
 import com.sangupta.dryredis.cache.DryRedisSetOperations;
+import com.sangupta.dryredis.cache.DryRedisSortedSetOperations;
 import com.sangupta.dryredis.cache.DryRedisStringOperations;
 import com.sangupta.dryredis.support.DryRedisCacheType;
 import com.sangupta.dryredis.support.DryRedisGeoUnit;
 import com.sangupta.dryredis.support.DryRedisInsertOrder;
+import com.sangupta.dryredis.support.DryRedisRangeArgument;
+import com.sangupta.dryredis.support.DryRedisSetAggregationType;
 
 /**
  * Provides a facade to all command operations of a particular group
@@ -24,7 +27,7 @@ import com.sangupta.dryredis.support.DryRedisInsertOrder;
  */
 public abstract class DryRedisOperationFacade extends DryRedisKeys implements DryRedisGeoOperations, 
                                                                      DryRedisHashOperations, DryRedisStringOperations, DryRedisListOperations,
-                                                                     DryRedisSetOperations, DryRedisHyperLogLogOperations {
+                                                                     DryRedisSetOperations, DryRedisHyperLogLogOperations, DryRedisSortedSetOperations {
 
     // GEO commands follow
 
@@ -383,6 +386,159 @@ public abstract class DryRedisOperationFacade extends DryRedisKeys implements Dr
     
     // SORTED-SET commands
     
+    public int zadd(String key, double score, String member) {
+        matchKeyType(key, DryRedisCacheType.SORTED_SET);
+        return this.sortedSetCommands.zadd(key, score, member);
+    }
+
+    public long zcard(String key) {
+        matchKeyType(key, DryRedisCacheType.SORTED_SET);
+        return this.sortedSetCommands.zcard(key);
+    }
+
+    public long zcount(String key, double min, double max) {
+        matchKeyType(key, DryRedisCacheType.SORTED_SET);
+        return this.sortedSetCommands.zcount(key, min, max);
+    }
+
+    public double zincrby(String key, double increment, String member) {
+        matchKeyType(key, DryRedisCacheType.SORTED_SET);
+        return this.sortedSetCommands.zincrby(key, increment, member);
+    }
+
+    public Integer zrank(String key, String member) {
+        matchKeyType(key, DryRedisCacheType.SORTED_SET);
+        return this.sortedSetCommands.zrank(key, member);
+    }
+
+    public Integer zrevrank(String key, String member) {
+        matchKeyType(key, DryRedisCacheType.SORTED_SET);
+        return this.sortedSetCommands.zrevrank(key, member);
+    }
+
+    public int zrem(String key, String member) {
+        matchKeyType(key, DryRedisCacheType.SORTED_SET);
+        return this.sortedSetCommands.zrem(key, member);
+    }
+
+    public int zrem(String key, Set<String> members) {
+        matchKeyType(key, DryRedisCacheType.SORTED_SET);
+        return this.sortedSetCommands.zrem(key, members);
+    }
+
+    public Double zscore(String key, String member) {
+        matchKeyType(key, DryRedisCacheType.SORTED_SET);
+        return this.sortedSetCommands.zscore(key, member);
+    }
+
+    public List<String> zrange(String key, int start, int stop, boolean withScores) {
+        matchKeyType(key, DryRedisCacheType.SORTED_SET);
+        return this.sortedSetCommands.zrange(key, start, stop, withScores);
+    }
+
+    public List<String> zrangebylex(String key, String min, String max) {
+        matchKeyType(key, DryRedisCacheType.SORTED_SET);
+        return this.sortedSetCommands.zrangebylex(key, min, max);
+    }
+
+    public List<String> zrangebylex(String key, DryRedisRangeArgument min, DryRedisRangeArgument max) {
+        matchKeyType(key, DryRedisCacheType.SORTED_SET);
+        return this.sortedSetCommands.zrangebylex(key, min, max);
+    }
+
+    public List<String> zrevrangebylex(String key, String min, String max) {
+        matchKeyType(key, DryRedisCacheType.SORTED_SET);
+        return this.sortedSetCommands.zrevrangebylex(key, min, max);
+    }
+
+    public List<String> zrevrangebylex(String key, DryRedisRangeArgument max, DryRedisRangeArgument min) {
+        matchKeyType(key, DryRedisCacheType.SORTED_SET);
+        return this.sortedSetCommands.zrevrangebylex(key, max, min);
+    }
+
+    public int zlexcount(String key, String min, String max) {
+        matchKeyType(key, DryRedisCacheType.SORTED_SET);
+        return this.sortedSetCommands.zlexcount(key, min, max);
+    }
+    
+    public int zlexcount(String key, DryRedisRangeArgument min, DryRedisRangeArgument max) {
+        matchKeyType(key, DryRedisCacheType.SORTED_SET);
+        return this.sortedSetCommands.zlexcount(key, min, max);
+    }
+
+    public int zremrangebylex(String key, String min, String max) {
+        matchKeyType(key, DryRedisCacheType.SORTED_SET);
+        return this.sortedSetCommands.zremrangebylex(key, min, max);
+    }
+
+    public int zremrangebylex(String key, DryRedisRangeArgument min, DryRedisRangeArgument max) {
+        matchKeyType(key, DryRedisCacheType.SORTED_SET);
+        return this.sortedSetCommands.zremrangebylex(key, min, max);
+    }
+
+    public int zremrangebyrank(String key, int start, int stop) {
+        matchKeyType(key, DryRedisCacheType.SORTED_SET);
+        return this.sortedSetCommands.zremrangebyrank(key, start, stop);
+    }
+
+    public int zremrangebyscore(String key, DryRedisRangeArgument min, DryRedisRangeArgument max) {
+        matchKeyType(key, DryRedisCacheType.SORTED_SET);
+        return this.sortedSetCommands.zremrangebyscore(key, min, max);
+    }
+
+    public List<String> zrevrange(String key, int start, int stop, boolean withScores) {
+        matchKeyType(key, DryRedisCacheType.SORTED_SET);
+        return this.sortedSetCommands.zrevrange(key, start, stop, withScores);
+    }
+
+    public int zinterstore(String destination, List<String> keys) {
+        if(keys == null) {
+            return 0;
+        }
+        
+        for(String key : keys) {
+            matchKeyType(key, DryRedisCacheType.SORTED_SET);
+        }
+        
+        return this.sortedSetCommands.zinterstore(destination, keys);
+    }
+
+    public int zinterstore(String destination, List<String> keys, double[] weights, DryRedisSetAggregationType aggregation) {
+        if(keys == null) {
+            return 0;
+        }
+        
+        for(String key : keys) {
+            matchKeyType(key, DryRedisCacheType.SORTED_SET);
+        }
+        
+        return this.sortedSetCommands.zinterstore(destination, keys, weights, aggregation);
+    }
+
+    public int zunionstore(String destination, List<String> keys) {
+        if(keys == null) {
+            return 0;
+        }
+        
+        for(String key : keys) {
+            matchKeyType(key, DryRedisCacheType.SORTED_SET);
+        }
+
+        return this.sortedSetCommands.zunionstore(destination, keys);
+    }
+
+    public int zunionstore(String destination, List<String> keys, double[] weights, DryRedisSetAggregationType aggregation) {
+        if(keys == null) {
+            return 0;
+        }
+        
+        for(String key : keys) {
+            matchKeyType(key, DryRedisCacheType.SORTED_SET);
+        }
+
+        return this.sortedSetCommands.zunionstore(destination, keys, weights, aggregation);
+    }
+    
     // STRING commands
 
     public int append(String key, String value) {
@@ -406,6 +562,10 @@ public abstract class DryRedisOperationFacade extends DryRedisKeys implements Dr
     }
     
     public List<String> mget(String[] keys) {
+        if(keys == null) {
+            return null;
+        }
+        
         for(String key : keys) {
             matchKeyType(key, DryRedisCacheType.STRING);
         }
@@ -414,6 +574,10 @@ public abstract class DryRedisOperationFacade extends DryRedisKeys implements Dr
     }
     
     public List<String> mget(Collection<String> keys) {
+        if(keys == null) {
+            return null;
+        }
+        
         for(String key : keys) {
             matchKeyType(key, DryRedisCacheType.STRING);
         }

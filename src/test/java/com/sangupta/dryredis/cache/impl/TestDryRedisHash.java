@@ -257,7 +257,7 @@ public class TestDryRedisHash {
         Assert.assertTrue(map.isEmpty());
     }
     
-    private DryRedisHashOperations getRedis() {
+    protected DryRedisHashOperations getRedis() {
         return new DryRedisHash();
     }
     

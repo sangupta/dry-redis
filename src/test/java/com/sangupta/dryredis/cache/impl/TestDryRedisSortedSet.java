@@ -7,6 +7,12 @@ import com.sangupta.dryredis.TestUtils;
 import com.sangupta.dryredis.cache.DryRedisSortedSetOperations;
 import com.sangupta.dryredis.support.DryRedisSetAggregationType;
 
+/**
+ * Unit tests for {@link DryRedisSortedSet}.
+ * 
+ * @author sangupta
+ *
+ */
 public class TestDryRedisSortedSet {
     
     @Test

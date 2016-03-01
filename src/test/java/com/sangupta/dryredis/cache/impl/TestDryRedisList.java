@@ -23,7 +23,7 @@ public class TestDryRedisList {
     
     @Test
     public void testLINDEX() {
-        DryRedisListOperations redis = new DryRedisList();
+        DryRedisListOperations redis = getRedis();
         
         // non existent
         Assert.assertNull(redis.lindex(listName, 0));
@@ -44,7 +44,7 @@ public class TestDryRedisList {
     
     @Test
     public void testLLEN() {
-        DryRedisListOperations redis = new DryRedisList();
+        DryRedisListOperations redis = getRedis();
         
         Assert.assertEquals(0, redis.llen(listName));
        
@@ -72,7 +72,7 @@ public class TestDryRedisList {
     
     @Test
     public void testLPOP() {
-        DryRedisListOperations redis = new DryRedisList();
+        DryRedisListOperations redis = getRedis();
         
         Assert.assertNull(redis.lpop(listName));
         
@@ -89,7 +89,7 @@ public class TestDryRedisList {
     
     @Test
     public void testLPUSH() {
-        DryRedisListOperations redis = new DryRedisList();
+        DryRedisListOperations redis = getRedis();
         
         Assert.assertNull(redis.lpop(listName));
         
@@ -116,7 +116,7 @@ public class TestDryRedisList {
     
     @Test
     public void testLPUSHX() {
-        DryRedisListOperations redis = new DryRedisList();
+        DryRedisListOperations redis = getRedis();
         
         Assert.assertNull(redis.lpop(listName));
         
@@ -139,7 +139,7 @@ public class TestDryRedisList {
     
     @Test
     public void testLRANGE() {
-        DryRedisListOperations redis = new DryRedisList();
+        DryRedisListOperations redis = getRedis();
         
         Assert.assertNull(redis.lrange("non-existent", 0, 1));
         
@@ -157,7 +157,7 @@ public class TestDryRedisList {
 
     @Test
     public void testRPUSH() {
-        DryRedisListOperations redis = new DryRedisList();
+        DryRedisListOperations redis = getRedis();
         
         Assert.assertNull(redis.lpop(listName));
         
@@ -179,7 +179,7 @@ public class TestDryRedisList {
 
     @Test
     public void testRPUSHX() {
-        DryRedisListOperations redis = new DryRedisList();
+        DryRedisListOperations redis = getRedis();
         
         Assert.assertNull(redis.lpop(listName));
         
@@ -196,7 +196,7 @@ public class TestDryRedisList {
     
     @Test
     public void testLREM() {
-        DryRedisListOperations list = new DryRedisList();
+        DryRedisListOperations list = getRedis();
         
         Assert.assertEquals(0, list.lrem("non-existent", 5, "v"));
         
@@ -228,7 +228,7 @@ public class TestDryRedisList {
     
     @Test
     public void testLSET() {
-        DryRedisListOperations list = new DryRedisList();
+        DryRedisListOperations list = getRedis();
         
         list.rpush("key", "v1");
         list.rpush("key", "v3");
@@ -239,7 +239,7 @@ public class TestDryRedisList {
     
     @Test
     public void testRPOPLPUSH() {
-        DryRedisListOperations list = new DryRedisList();
+        DryRedisListOperations list = getRedis();
         
         list.rpush("key", "v1");
         list.rpush("key", "v2");
@@ -255,7 +255,7 @@ public class TestDryRedisList {
     
     @Test
     public void testRPOP() {
-        DryRedisListOperations redis = new DryRedisList();
+        DryRedisListOperations redis = getRedis();
         
         Assert.assertNull(redis.rpop("non-existent"));
         
@@ -267,7 +267,7 @@ public class TestDryRedisList {
     
     @Test
     public void testLTRIM() {
-        DryRedisListOperations redis = new DryRedisList();
+        DryRedisListOperations redis = getRedis();
         
         List<String> list = TestUtils.asList("value1", "value2", "value3", "value4", "value5");
         redis.rpush("key", list);
@@ -299,14 +299,14 @@ public class TestDryRedisList {
     
     @Test
     public void testLINSERT() {
-        DryRedisListOperations redis = new DryRedisList();
+        DryRedisListOperations redis = getRedis();
         
         // TODO: fix this linsert tests
     }
     
     @Test
     public void testIntegration() {
-        DryRedisListOperations list = new DryRedisList();
+        DryRedisListOperations list = getRedis();
         
         // check that there are no elements and size is zero
         Assert.assertEquals(0, list.llen(listName));
@@ -322,6 +322,10 @@ public class TestDryRedisList {
         Assert.assertEquals(3, list.rpush(listName, "three"));
         
         Assert.assertEquals(3, list.llen(listName));
+    }
+    
+    protected DryRedisListOperations getRedis() {
+        return new DryRedisList();
     }
     
 }
