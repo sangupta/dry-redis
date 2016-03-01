@@ -26,6 +26,22 @@ public class TestDryRedisSortedSet {
     }
     
     @Test
+    public void testZCARD() {
+        DryRedisSortedSetOperations redis = getRedis();
+        
+        Assert.assertEquals(0, redis.zcard("key"));
+        
+        redis.zadd("key", 0, "v1");
+        Assert.assertEquals(1, redis.zcard("key"));
+        
+        redis.zadd("key", 0, "v1");
+        Assert.assertEquals(1, redis.zcard("key"));
+        
+        redis.zadd("key", 1, "v1");
+        Assert.assertEquals(1, redis.zcard("key"));
+    }
+    
+    @Test
     public void testZLEXCOUNT() {
         DryRedisSortedSetOperations redis = new DryRedisSortedSet();
         
@@ -60,6 +76,12 @@ public class TestDryRedisSortedSet {
         Assert.assertEquals(TestUtils.asList("a", "b", "c", "d", "e", "f", "g"), redis.zrangebylex("key", "-", "+"));
         Assert.assertEquals(TestUtils.asList("a", "b", "c"), redis.zrangebylex("key", "-", "[c"));
         Assert.assertEquals(TestUtils.asList("b", "c", "d", "e"), redis.zrangebylex("key", "[aaa", "(f"));
+    }
+    
+    // helper methods
+
+    protected DryRedisSortedSetOperations getRedis() {
+        return new DryRedisSortedSet();
     }
 
 }

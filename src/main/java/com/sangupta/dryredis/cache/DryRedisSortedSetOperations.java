@@ -8,54 +8,54 @@ import com.sangupta.dryredis.support.DryRedisSetAggregationType;
 
 public interface DryRedisSortedSetOperations {
 
-    int zadd(String key, double score, String member);
+    public int zadd(String key, double score, String member);
 
-    long zcard(String key);
+    public long zcard(String key);
 
-    long zcount(String key, double min, double max);
+    public long zcount(String key, double min, double max);
 
-    double zincrby(String key, double increment, String member);
+    public double zincrby(String key, double increment, String member);
 
-    Integer zrank(String key, String member);
+    public Integer zrank(String key, String member);
 
-    Integer zrevrank(String key, String member);
+    public Integer zrevrank(String key, String member);
 
-    int zrem(String key, String member);
+    public int zrem(String key, String member);
 
-    int zrem(String key, Set<String> members);
+    public int zrem(String key, Set<String> members);
 
-    Double zscore(String key, String member);
+    public Double zscore(String key, String member);
 
-    List<String> zrange(String key, int start, int stop, boolean withScores);
+    public List<String> zrange(String key, int start, int stop, boolean withScores);
 
-    List<String> zrangebylex(String key, String min, String max);
+    public List<String> zrangebylex(String key, String min, String max);
 
-    List<String> zrangebylex(String key, DryRedisRangeArgument min, DryRedisRangeArgument max);
+    public List<String> zrangebylex(String key, DryRedisRangeArgument min, DryRedisRangeArgument max);
 
-    List<String> zrevrangebylex(String key, String min, String max);
+    public List<String> zrevrangebylex(String key, String min, String max);
 
-    List<String> zrevrangebylex(String key, DryRedisRangeArgument max, DryRedisRangeArgument min);
+    public List<String> zrevrangebylex(String key, DryRedisRangeArgument max, DryRedisRangeArgument min);
 
-    int zlexcount(String key, String min, String max);
+    public int zlexcount(String key, String min, String max);
 
-    int zlexcount(String key, DryRedisRangeArgument min, DryRedisRangeArgument max);
+    public int zlexcount(String key, DryRedisRangeArgument min, DryRedisRangeArgument max);
 
-    int zremrangebylex(String key, String min, String max);
+    public int zremrangebylex(String key, String min, String max);
 
-    int zremrangebylex(String key, DryRedisRangeArgument min, DryRedisRangeArgument max);
+    public int zremrangebylex(String key, DryRedisRangeArgument min, DryRedisRangeArgument max);
 
-    int zremrangebyrank(String key, int start, int stop);
+    public int zremrangebyrank(String key, int start, int stop);
 
-    int zremrangebyscore(String key, DryRedisRangeArgument min, DryRedisRangeArgument max);
+    public int zremrangebyscore(String key, DryRedisRangeArgument min, DryRedisRangeArgument max);
 
-    List<String> zrevrange(String key, int start, int stop, boolean withScores);
+    public List<String> zrevrange(String key, int start, int stop, boolean withScores);
 
-    int zinterstore(String destination, List<String> keys);
+    public int zinterstore(String destination, List<String> keys);
 
-    int zinterstore(String destination, List<String> keys, double[] weights, DryRedisSetAggregationType aggregation);
+    public int zinterstore(String destination, List<String> keys, double[] weights, DryRedisSetAggregationType aggregation);
 
-    int zunionstore(String destination, List<String> keys);
+    public int zunionstore(String destination, List<String> keys);
 
-    int zunionstore(String destination, List<String> keys, double[] weights, DryRedisSetAggregationType aggregation);
+    public int zunionstore(String destination, List<String> keys, double[] weights, DryRedisSetAggregationType aggregation);
 
 }

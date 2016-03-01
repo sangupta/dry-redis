@@ -2,16 +2,15 @@ package com.sangupta.dryredis.cache.impl;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 import com.sangupta.dryredis.cache.DryRedisSortedSetOperations;
+import com.sangupta.dryredis.ds.ElementWithPriority;
+import com.sangupta.dryredis.ds.SortedSetWithPriority;
 import com.sangupta.dryredis.support.DryRedisCache;
 import com.sangupta.dryredis.support.DryRedisCacheType;
 import com.sangupta.dryredis.support.DryRedisRangeArgument;
@@ -19,20 +18,20 @@ import com.sangupta.dryredis.support.DryRedisSetAggregationType;
 
 public class DryRedisSortedSet implements DryRedisCache, DryRedisSortedSetOperations {
     
-    private Map<String, SortedSet<Element>> store = new HashMap<String, SortedSet<Element>>(); 
+    private Map<String, SortedSetWithPriority<String>> store = new HashMap<String, SortedSetWithPriority<String>>();
     
     /* (non-Javadoc)
      * @see com.sangupta.dryredis.cache.impl.DryRedisSortedSetOperations#zadd(java.lang.String, double, java.lang.String)
      */
     @Override
     public int zadd(String key, double score, String member) {
-        SortedSet<Element> set = this.store.get(key);
+        SortedSetWithPriority<String> set = this.store.get(key);
         if(set == null) {
-            set = new TreeSet<Element>();
+            set = new SortedSetWithPriority<String>();
             this.store.put(key, set);
         }
         
-        Element element = new Element(member, score);
+        ElementWithPriority<String> element = new ElementWithPriority<String>(member, score);
         boolean added = set.add(element);
         if(added) {
             return 1;
@@ -46,7 +45,7 @@ public class DryRedisSortedSet implements DryRedisCache, DryRedisSortedSetOperat
      */
     @Override
     public long zcard(String key) {
-        SortedSet<Element> set = this.store.get(key);
+        SortedSetWithPriority<String> set = this.store.get(key);
         if(set == null) {
             return 0;
         }
@@ -59,16 +58,16 @@ public class DryRedisSortedSet implements DryRedisCache, DryRedisSortedSetOperat
      */
     @Override
     public long zcount(String key, double min, double max) {
-        SortedSet<Element> set = this.store.get(key);
+        SortedSetWithPriority<String> set = this.store.get(key);
         if(set == null) {
             return 0;
         }
         
-        Iterator<Element> iterator = set.iterator();
+        Iterator<ElementWithPriority<String>> iterator = set.iterator();
         long count = 0;
         while(iterator.hasNext()) {
-            Element element = iterator.next();
-            if(element.score >= min && element.score <= max) {
+            ElementWithPriority<String> element = iterator.next();
+            if(element.getPriority() >= min && element.getPriority() <= max) {
                 count++;
             }
         }
@@ -81,22 +80,25 @@ public class DryRedisSortedSet implements DryRedisCache, DryRedisSortedSetOperat
      */
     @Override
     public double zincrby(String key, double increment, String member) {
-        SortedSet<Element> set = this.store.get(key);
+        SortedSetWithPriority<String> set = this.store.get(key);
         if(set == null) {
-            set = new TreeSet<Element>();
+            set = new SortedSetWithPriority<String>();
             this.store.put(key, set);
         }
         
-        Element current = findInSet(set, member);
-        if(current == null) {
-            current = new Element(member, increment);
-            set.add(current);
+        Double priority = set.getPriority(member);
+        if(priority == null) {
+            set.add(new ElementWithPriority<String>(member, increment));
             return increment;
         }
         
+        // remove first
+        ElementWithPriority<String> current = new ElementWithPriority<String>(member, priority);
         set.remove(current);
-        double newScore = current.score + increment;
-        current = new Element(member, newScore);
+        
+        // add again to resort
+        double newScore = priority + increment;
+        current = new ElementWithPriority<String>(member, newScore);
         set.add(current);
         
         return newScore;
@@ -107,7 +109,7 @@ public class DryRedisSortedSet implements DryRedisCache, DryRedisSortedSetOperat
      */
     @Override
     public Integer zrank(String key, String member) {
-        SortedSet<Element> set = this.store.get(key);
+        SortedSetWithPriority<String> set = this.store.get(key);
         if(set == null) {
             return null;
         }
@@ -116,11 +118,11 @@ public class DryRedisSortedSet implements DryRedisCache, DryRedisSortedSetOperat
             return null;
         }
         
-        Iterator<Element> iterator = set.iterator();
+        Iterator<ElementWithPriority<String>> iterator = set.iterator();
         int rank = 0;
         while(iterator.hasNext()) {
-            Element element = iterator.next();
-            if(element.value.equals(member)) {
+            ElementWithPriority<String> element = iterator.next();
+            if(element.getData().equals(member)) {
                 return rank;
             }
             
@@ -135,7 +137,7 @@ public class DryRedisSortedSet implements DryRedisCache, DryRedisSortedSetOperat
      */
     @Override
     public Integer zrevrank(String key, String member) {
-        SortedSet<Element> set = this.store.get(key);
+        SortedSetWithPriority<String> set = this.store.get(key);
         if(set == null) {
             return null;
         }
@@ -145,11 +147,11 @@ public class DryRedisSortedSet implements DryRedisCache, DryRedisSortedSetOperat
         }
         
         final int size = set.size();
-        Iterator<Element> iterator = set.iterator();
+        Iterator<ElementWithPriority<String>> iterator = set.iterator();
         int rank = 0;
         while(iterator.hasNext()) {
-            Element element = iterator.next();
-            if(element.value.equals(member)) {
+            ElementWithPriority<String> element = iterator.next();
+            if(element.getData().equals(member)) {
                 return size - rank - 1; // reverse rank
             }
             
@@ -164,7 +166,7 @@ public class DryRedisSortedSet implements DryRedisCache, DryRedisSortedSetOperat
      */
     @Override
     public int zrem(String key, String member) {
-        SortedSet<Element> set = this.store.get(key);
+        SortedSetWithPriority<String> set = this.store.get(key);
         if(set == null) {
             return 0;
         }
@@ -173,10 +175,10 @@ public class DryRedisSortedSet implements DryRedisCache, DryRedisSortedSetOperat
             return 0;
         }
         
-        Iterator<Element> iterator = set.iterator();
+        Iterator<ElementWithPriority<String>> iterator = set.iterator();
         while(iterator.hasNext()) {
-            Element element = iterator.next();
-            if(element.value.equals(member)) {
+            ElementWithPriority<String> element = iterator.next();
+            if(element.getData().equals(member)) {
                 iterator.remove();
                 return 1;
             }
@@ -190,7 +192,7 @@ public class DryRedisSortedSet implements DryRedisCache, DryRedisSortedSetOperat
      */
     @Override
     public int zrem(String key, Set<String> members) {
-        SortedSet<Element> set = this.store.get(key);
+        SortedSetWithPriority<String> set = this.store.get(key);
         if(set == null) {
             return 0;
         }
@@ -199,11 +201,11 @@ public class DryRedisSortedSet implements DryRedisCache, DryRedisSortedSetOperat
             return 0;
         }
         
-        Iterator<Element> iterator = set.iterator();
+        Iterator<ElementWithPriority<String>> iterator = set.iterator();
         int removed = 0;
         while(iterator.hasNext()) {
-            Element element = iterator.next();
-            if(members.contains(element.value)) {
+            ElementWithPriority<String> element = iterator.next();
+            if(members.contains(element.getData())) {
                 iterator.remove();
                 removed++;
             }
@@ -217,7 +219,7 @@ public class DryRedisSortedSet implements DryRedisCache, DryRedisSortedSetOperat
      */
     @Override
     public Double zscore(String key, String member) {
-        SortedSet<Element> set = this.store.get(key);
+        SortedSetWithPriority<String> set = this.store.get(key);
         if(set == null) {
             return null;
         }
@@ -226,12 +228,7 @@ public class DryRedisSortedSet implements DryRedisCache, DryRedisSortedSetOperat
             return null;
         }
         
-        Element element = this.findInSet(set, member);
-        if(element == null) {
-            return null;
-        }
-        
-        return element.score;
+        return set.getPriority(member);
     }
     
     /* (non-Javadoc)
@@ -239,7 +236,7 @@ public class DryRedisSortedSet implements DryRedisCache, DryRedisSortedSetOperat
      */
     @Override
     public List<String> zrange(String key, int start, int stop, boolean withScores) {
-        SortedSet<Element> set = this.store.get(key);
+        SortedSetWithPriority<String> set = this.store.get(key);
         if(set == null) {
             return null;
         }
@@ -264,15 +261,15 @@ public class DryRedisSortedSet implements DryRedisCache, DryRedisSortedSetOperat
         }
         
         List<String> result = new ArrayList<String>();
-        Iterator<Element> iterator = set.iterator();
+        Iterator<ElementWithPriority<String>> iterator = set.iterator();
         int index = 0;
         while(iterator.hasNext()) {
-            Element element = iterator.next();
+            ElementWithPriority<String> element = iterator.next();
             
             if(index >= start && index <= stop) {
-                result.add(element.value);
+                result.add(element.getData());
                 if(withScores) {
-                    result.add(String.valueOf(element.score));
+                    result.add(String.valueOf(element.getPriority()));
                 }
             }
             
@@ -296,7 +293,7 @@ public class DryRedisSortedSet implements DryRedisCache, DryRedisSortedSetOperat
      */
     @Override
     public List<String> zrangebylex(String key, DryRedisRangeArgument min, DryRedisRangeArgument max) {
-        SortedSet<Element> set = this.store.get(key);
+        SortedSetWithPriority<String> set = this.store.get(key);
         if(set == null) {
             return null;
         }
@@ -307,10 +304,10 @@ public class DryRedisSortedSet implements DryRedisCache, DryRedisSortedSetOperat
         
         List<String> result = new ArrayList<String>();
         
-        Iterator<Element> iterator = set.iterator();
+        Iterator<ElementWithPriority<String>> iterator = set.iterator();
         while(iterator.hasNext()) {
-            Element element = iterator.next();
-            String value = element.value;
+            ElementWithPriority<String> element = iterator.next();
+            String value = element.getData();
             
             if(min.lessThan(value) && max.greaterThan(value)) {
                 result.add(value);
@@ -336,7 +333,7 @@ public class DryRedisSortedSet implements DryRedisCache, DryRedisSortedSetOperat
      */
     @Override
     public List<String> zrevrangebylex(String key, DryRedisRangeArgument max, DryRedisRangeArgument min) {
-        SortedSet<Element> set = this.store.get(key);
+        SortedSetWithPriority<String> set = this.store.get(key);
         if(set == null) {
             return null;
         }
@@ -347,10 +344,10 @@ public class DryRedisSortedSet implements DryRedisCache, DryRedisSortedSetOperat
         
         List<String> result = new ArrayList<String>();
         
-        Iterator<Element> iterator = set.iterator();
+        Iterator<ElementWithPriority<String>> iterator = set.iterator();
         while(iterator.hasNext()) {
-            Element element = iterator.next();
-            String value = element.value;
+            ElementWithPriority<String> element = iterator.next();
+            String value = element.getData();
             
             if(min.lessThan(value) && max.greaterThan(value)) {
                 result.add(value);
@@ -376,7 +373,7 @@ public class DryRedisSortedSet implements DryRedisCache, DryRedisSortedSetOperat
      */
     @Override
     public int zlexcount(String key, DryRedisRangeArgument min, DryRedisRangeArgument max) {
-        SortedSet<Element> set = this.store.get(key);
+        SortedSetWithPriority<String> set = this.store.get(key);
         if(set == null) {
             return 0;
         }
@@ -385,11 +382,11 @@ public class DryRedisSortedSet implements DryRedisCache, DryRedisSortedSetOperat
             return 0;
         }
         
-        Iterator<Element> iterator = set.iterator();
+        Iterator<ElementWithPriority<String>> iterator = set.iterator();
         int count = 0;
         while(iterator.hasNext()) {
-            Element element = iterator.next();
-            String value = element.value;
+            ElementWithPriority<String> element = iterator.next();
+            String value = element.getData();
             
             if(min.lessThan(value) && max.greaterThan(value)) {
                 count++;
@@ -399,23 +396,23 @@ public class DryRedisSortedSet implements DryRedisCache, DryRedisSortedSetOperat
         return count;
     }
     
-    // private helper methods
-    
-    private Element findInSet(SortedSet<Element> set, String member) {
-        if(set.isEmpty()) {
-            return null;
-        }
-        
-        Iterator<Element> iterator = set.iterator();
-        while(iterator.hasNext()) {
-            Element element = iterator.next();
-            if(element.value.equals(member)) {
-                return element;
-            }
-        }
-        
-        return null;
-    }
+//    // private helper methods
+//    
+//    private Element findInSet(SortedSet<Element> set, String member) {
+//        if(set.isEmpty()) {
+//            return null;
+//        }
+//        
+//        Iterator<Element> iterator = set.iterator();
+//        while(iterator.hasNext()) {
+//            Element element = iterator.next();
+//            if(element.value.equals(member)) {
+//                return element;
+//            }
+//        }
+//        
+//        return null;
+//    }
     
     /* (non-Javadoc)
      * @see com.sangupta.dryredis.cache.impl.DryRedisSortedSetOperations#zremrangebylex(java.lang.String, java.lang.String, java.lang.String)
@@ -430,7 +427,7 @@ public class DryRedisSortedSet implements DryRedisCache, DryRedisSortedSetOperat
      */
     @Override
     public int zremrangebylex(String key, DryRedisRangeArgument min, DryRedisRangeArgument max) {
-        SortedSet<Element> set = this.store.get(key);
+        SortedSetWithPriority<String> set = this.store.get(key);
         if(set == null) {
             return 0;
         }
@@ -441,10 +438,10 @@ public class DryRedisSortedSet implements DryRedisCache, DryRedisSortedSetOperat
         
         int count = 0;
         
-        Iterator<Element> iterator = set.iterator();
+        Iterator<ElementWithPriority<String>> iterator = set.iterator();
         while(iterator.hasNext()) {
-            Element element = iterator.next();
-            String value = element.value;
+            ElementWithPriority<String> element = iterator.next();
+            String value = element.getData();
             
             if(min.lessThan(value) && max.greaterThan(value)) {
                 iterator.remove();
@@ -460,7 +457,7 @@ public class DryRedisSortedSet implements DryRedisCache, DryRedisSortedSetOperat
      */
     @Override
     public int zremrangebyrank(String key, int start, int stop) {
-        SortedSet<Element> set = this.store.get(key);
+        SortedSetWithPriority<String> set = this.store.get(key);
         if(set == null) {
             return 0;
         }
@@ -486,7 +483,7 @@ public class DryRedisSortedSet implements DryRedisCache, DryRedisSortedSetOperat
             stop = size;
         }
         
-        Iterator<Element> iterator = set.iterator();
+        Iterator<ElementWithPriority<String>> iterator = set.iterator();
         int rank = 0, removed = 0;
         while(iterator.hasNext()) {
             iterator.next(); // just move the pointer
@@ -508,7 +505,7 @@ public class DryRedisSortedSet implements DryRedisCache, DryRedisSortedSetOperat
      */
     @Override
     public int zremrangebyscore(String key, DryRedisRangeArgument min, DryRedisRangeArgument max) {
-        SortedSet<Element> set = this.store.get(key);
+        SortedSetWithPriority<String> set = this.store.get(key);
         if(set == null) {
             return 0;
         }
@@ -517,12 +514,12 @@ public class DryRedisSortedSet implements DryRedisCache, DryRedisSortedSetOperat
             return 0;
         }
         
-        Iterator<Element> iterator = set.iterator();
+        Iterator<ElementWithPriority<String>> iterator = set.iterator();
         int removed = 0;
         while(iterator.hasNext()) {
-            Element element = iterator.next();
+            ElementWithPriority<String> element = iterator.next();
             
-            if(min.lessThan(element.score) && max.greaterThan(element.score)) {
+            if(min.lessThan(element.getPriority()) && max.greaterThan(element.getPriority())) {
                 iterator.remove();
                 removed++;
             }
@@ -536,7 +533,7 @@ public class DryRedisSortedSet implements DryRedisCache, DryRedisSortedSetOperat
      */
     @Override
     public List<String> zrevrange(String key, int start, int stop, boolean withScores) {
-        SortedSet<Element> set = this.store.get(key);
+        SortedSetWithPriority<String> set = this.store.get(key);
         if(set == null) {
             return null;
         }
@@ -563,15 +560,15 @@ public class DryRedisSortedSet implements DryRedisCache, DryRedisSortedSetOperat
         // TODO: fix this function for reverse ordering
         
         List<String> result = new ArrayList<String>();
-        Iterator<Element> iterator = set.iterator();
+        Iterator<ElementWithPriority<String>> iterator = set.iterator();
         int index = 0;
         while(iterator.hasNext()) {
-            Element element = iterator.next();
+            ElementWithPriority<String> element = iterator.next();
             
             if(index >= start && index <= stop) {
-                result.add(element.value);
+                result.add(element.getData());
                 if(withScores) {
-                    result.add(String.valueOf(element.score));
+                    result.add(String.valueOf(element.getPriority()));
                 }
             }
             
@@ -595,13 +592,13 @@ public class DryRedisSortedSet implements DryRedisCache, DryRedisSortedSetOperat
      */
     @Override
     public int zinterstore(String destination, List<String> keys, double[] weights, DryRedisSetAggregationType aggregation) {
-        // just clone the same
-        SortedSet<Element> newSet = this.store.get(keys.get(0));
-        if(newSet == null) {
-            newSet = new TreeSet<Element>();
-            this.store.put(destination, newSet);
-            return 0;
-        }
+//        // just clone the same
+//        SortedSetWithPriority<String> set = this.store.get(key);
+//        if(newSet == null) {
+//            newSet = new TreeSet<Element>();
+//            this.store.put(destination, newSet);
+//            return 0;
+//        }
         
         // TODO: fix intersection
         return -1;
@@ -620,15 +617,15 @@ public class DryRedisSortedSet implements DryRedisCache, DryRedisSortedSetOperat
      */
     @Override
     public int zunionstore(String destination, List<String> keys, double[] weights, DryRedisSetAggregationType aggregation) {
-        // just clone the same
-        SortedSet<Element> newSet = this.store.get(keys.get(0));
-        if(newSet == null) {
-            newSet = new TreeSet<Element>();
-            this.store.put(destination, newSet);
-            return 0;
-        }
+//        // just clone the same
+//        SortedSetWithPriority<String> set = this.store.get(key);
+//        if(newSet == null) {
+//            newSet = new TreeSet<Element>();
+//            this.store.put(destination, newSet);
+//            return 0;
+//        }
         
-        // TODO: fix intersection
+        // TODO: fix union
         return -1;
     }
     
@@ -654,89 +651,4 @@ public class DryRedisSortedSet implements DryRedisCache, DryRedisSortedSetOperat
         
     }
     
-    // static class that holds each element
-    
-    private static class Element implements Comparable<Element> {
-        
-        String value;
-        
-        double score;
-        
-        public Element(String value, double score) {
-            this.value = value;
-            this.score = score;
-        }
-        
-        @Override
-        public int hashCode() {
-            if(value == null) {
-                return 0;
-            }
-            
-            return this.value.hashCode();
-        }
-        
-        @Override
-        public boolean equals(Object obj) {
-            if(obj == null) {
-                return false;
-            }
-            
-            if(this == obj) {
-                return true;
-            }
-            
-            if(!(obj instanceof Element)) {
-                return false;
-            }
-            
-            if(this.value == null) {
-                return false;
-            }
-            
-            return this.value.equals(((Element) obj).value);
-        }
-
-        @Override
-        public int compareTo(Element o) {
-            if(o == null) {
-                return -1;
-            }
-            
-            if(this == o) {
-                return 0;
-            }
-            
-            int compare = Double.compare(this.score, o.score);
-            if(compare == 0) {
-                return this.value.compareTo(o.value);
-            }
-            
-            return compare;
-        }
-        
-    }
-    
-    private static class ScoreComparator implements Comparator<Element> {
-        
-        private static final ScoreComparator INSTANCE = new ScoreComparator(); 
-
-        @Override
-        public int compare(Element o1, Element o2) {
-            if(o1 == null) {
-                return -1;
-            }
-            
-            if(o2 == null) {
-                return 1;
-            }
-            
-            if(o1 == o2) {
-                return 0;
-            }
-            
-            return o1.compareTo(o2);
-        }
-        
-    }
 }
