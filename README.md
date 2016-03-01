@@ -30,8 +30,10 @@ Commands not yet supported:
   * hscan
 * HyperLogLog
 * Geo
-* Sorted Set - all commands
-
+* Sorted Set
+  * zinterstore
+  * zunionstore
+  * zscan
 
 Important Notes
 ---------------

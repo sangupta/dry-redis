@@ -1,5 +1,12 @@
 package com.sangupta.dryredis.support;
 
+/**
+ * Value object that holds parameters for range arguments for
+ * REDIS SortedSet commands.
+ * 
+ * @author sangupta
+ *
+ */
 public class DryRedisRangeArgument {
     
     private final boolean infinity;

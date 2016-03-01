@@ -11,14 +11,20 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import com.sangupta.dryredis.cache.DryRedisSortedSetOperations;
 import com.sangupta.dryredis.support.DryRedisCache;
 import com.sangupta.dryredis.support.DryRedisCacheType;
 import com.sangupta.dryredis.support.DryRedisRangeArgument;
+import com.sangupta.dryredis.support.DryRedisSetAggregationType;
 
-public class DryRedisSortedSet implements DryRedisCache {
+public class DryRedisSortedSet implements DryRedisCache, DryRedisSortedSetOperations {
     
     private Map<String, SortedSet<Element>> store = new HashMap<String, SortedSet<Element>>(); 
     
+    /* (non-Javadoc)
+     * @see com.sangupta.dryredis.cache.impl.DryRedisSortedSetOperations#zadd(java.lang.String, double, java.lang.String)
+     */
+    @Override
     public int zadd(String key, double score, String member) {
         SortedSet<Element> set = this.store.get(key);
         if(set == null) {
@@ -35,6 +41,10 @@ public class DryRedisSortedSet implements DryRedisCache {
         return 0;
     }
     
+    /* (non-Javadoc)
+     * @see com.sangupta.dryredis.cache.impl.DryRedisSortedSetOperations#zcard(java.lang.String)
+     */
+    @Override
     public long zcard(String key) {
         SortedSet<Element> set = this.store.get(key);
         if(set == null) {
@@ -44,6 +54,10 @@ public class DryRedisSortedSet implements DryRedisCache {
         return set.size();
     }
     
+    /* (non-Javadoc)
+     * @see com.sangupta.dryredis.cache.impl.DryRedisSortedSetOperations#zcount(java.lang.String, double, double)
+     */
+    @Override
     public long zcount(String key, double min, double max) {
         SortedSet<Element> set = this.store.get(key);
         if(set == null) {
@@ -62,6 +76,10 @@ public class DryRedisSortedSet implements DryRedisCache {
         return count;
     }
     
+    /* (non-Javadoc)
+     * @see com.sangupta.dryredis.cache.impl.DryRedisSortedSetOperations#zincrby(java.lang.String, double, java.lang.String)
+     */
+    @Override
     public double zincrby(String key, double increment, String member) {
         SortedSet<Element> set = this.store.get(key);
         if(set == null) {
@@ -84,6 +102,10 @@ public class DryRedisSortedSet implements DryRedisCache {
         return newScore;
     }
     
+    /* (non-Javadoc)
+     * @see com.sangupta.dryredis.cache.impl.DryRedisSortedSetOperations#zrank(java.lang.String, java.lang.String)
+     */
+    @Override
     public Integer zrank(String key, String member) {
         SortedSet<Element> set = this.store.get(key);
         if(set == null) {
@@ -108,6 +130,10 @@ public class DryRedisSortedSet implements DryRedisCache {
         return null;
     }
     
+    /* (non-Javadoc)
+     * @see com.sangupta.dryredis.cache.impl.DryRedisSortedSetOperations#zrevrank(java.lang.String, java.lang.String)
+     */
+    @Override
     public Integer zrevrank(String key, String member) {
         SortedSet<Element> set = this.store.get(key);
         if(set == null) {
@@ -133,6 +159,10 @@ public class DryRedisSortedSet implements DryRedisCache {
         return null;
     }
     
+    /* (non-Javadoc)
+     * @see com.sangupta.dryredis.cache.impl.DryRedisSortedSetOperations#zrem(java.lang.String, java.lang.String)
+     */
+    @Override
     public int zrem(String key, String member) {
         SortedSet<Element> set = this.store.get(key);
         if(set == null) {
@@ -155,6 +185,10 @@ public class DryRedisSortedSet implements DryRedisCache {
         return 0;
     }
     
+    /* (non-Javadoc)
+     * @see com.sangupta.dryredis.cache.impl.DryRedisSortedSetOperations#zrem(java.lang.String, java.util.Set)
+     */
+    @Override
     public int zrem(String key, Set<String> members) {
         SortedSet<Element> set = this.store.get(key);
         if(set == null) {
@@ -178,6 +212,10 @@ public class DryRedisSortedSet implements DryRedisCache {
         return removed;
     }
     
+    /* (non-Javadoc)
+     * @see com.sangupta.dryredis.cache.impl.DryRedisSortedSetOperations#zscore(java.lang.String, java.lang.String)
+     */
+    @Override
     public Double zscore(String key, String member) {
         SortedSet<Element> set = this.store.get(key);
         if(set == null) {
@@ -196,6 +234,10 @@ public class DryRedisSortedSet implements DryRedisCache {
         return element.score;
     }
     
+    /* (non-Javadoc)
+     * @see com.sangupta.dryredis.cache.impl.DryRedisSortedSetOperations#zrange(java.lang.String, int, int, boolean)
+     */
+    @Override
     public List<String> zrange(String key, int start, int stop, boolean withScores) {
         SortedSet<Element> set = this.store.get(key);
         if(set == null) {
@@ -241,10 +283,18 @@ public class DryRedisSortedSet implements DryRedisCache {
         return result;
     }
     
+    /* (non-Javadoc)
+     * @see com.sangupta.dryredis.cache.impl.DryRedisSortedSetOperations#zrangebylex(java.lang.String, java.lang.String, java.lang.String)
+     */
+    @Override
     public List<String> zrangebylex(String key, String min, String max) {
         return this.zrangebylex(key, new DryRedisRangeArgument(min), new DryRedisRangeArgument(max));
     }
     
+    /* (non-Javadoc)
+     * @see com.sangupta.dryredis.cache.impl.DryRedisSortedSetOperations#zrangebylex(java.lang.String, com.sangupta.dryredis.support.DryRedisRangeArgument, com.sangupta.dryredis.support.DryRedisRangeArgument)
+     */
+    @Override
     public List<String> zrangebylex(String key, DryRedisRangeArgument min, DryRedisRangeArgument max) {
         SortedSet<Element> set = this.store.get(key);
         if(set == null) {
@@ -273,10 +323,18 @@ public class DryRedisSortedSet implements DryRedisCache {
         return result;
     }
     
+    /* (non-Javadoc)
+     * @see com.sangupta.dryredis.cache.impl.DryRedisSortedSetOperations#zrevrangebylex(java.lang.String, java.lang.String, java.lang.String)
+     */
+    @Override
     public List<String> zrevrangebylex(String key, String min, String max) {
         return this.zrevrangebylex(key, new DryRedisRangeArgument(max), new DryRedisRangeArgument(min));
     }
     
+    /* (non-Javadoc)
+     * @see com.sangupta.dryredis.cache.impl.DryRedisSortedSetOperations#zrevrangebylex(java.lang.String, com.sangupta.dryredis.support.DryRedisRangeArgument, com.sangupta.dryredis.support.DryRedisRangeArgument)
+     */
+    @Override
     public List<String> zrevrangebylex(String key, DryRedisRangeArgument max, DryRedisRangeArgument min) {
         SortedSet<Element> set = this.store.get(key);
         if(set == null) {
@@ -305,10 +363,18 @@ public class DryRedisSortedSet implements DryRedisCache {
         return result;
     }
     
+    /* (non-Javadoc)
+     * @see com.sangupta.dryredis.cache.impl.DryRedisSortedSetOperations#zlexcount(java.lang.String, java.lang.String, java.lang.String)
+     */
+    @Override
     public int zlexcount(String key, String min, String max) {
         return this.zlexcount(key, new DryRedisRangeArgument(min), new DryRedisRangeArgument(max));
     }
     
+    /* (non-Javadoc)
+     * @see com.sangupta.dryredis.cache.impl.DryRedisSortedSetOperations#zlexcount(java.lang.String, com.sangupta.dryredis.support.DryRedisRangeArgument, com.sangupta.dryredis.support.DryRedisRangeArgument)
+     */
+    @Override
     public int zlexcount(String key, DryRedisRangeArgument min, DryRedisRangeArgument max) {
         SortedSet<Element> set = this.store.get(key);
         if(set == null) {
@@ -351,10 +417,18 @@ public class DryRedisSortedSet implements DryRedisCache {
         return null;
     }
     
+    /* (non-Javadoc)
+     * @see com.sangupta.dryredis.cache.impl.DryRedisSortedSetOperations#zremrangebylex(java.lang.String, java.lang.String, java.lang.String)
+     */
+    @Override
     public int zremrangebylex(String key, String min, String max) {
         return this.zremrangebylex(key, new DryRedisRangeArgument(min), new DryRedisRangeArgument(max));
     }
     
+    /* (non-Javadoc)
+     * @see com.sangupta.dryredis.cache.impl.DryRedisSortedSetOperations#zremrangebylex(java.lang.String, com.sangupta.dryredis.support.DryRedisRangeArgument, com.sangupta.dryredis.support.DryRedisRangeArgument)
+     */
+    @Override
     public int zremrangebylex(String key, DryRedisRangeArgument min, DryRedisRangeArgument max) {
         SortedSet<Element> set = this.store.get(key);
         if(set == null) {
@@ -381,6 +455,10 @@ public class DryRedisSortedSet implements DryRedisCache {
         return count;
     }
     
+    /* (non-Javadoc)
+     * @see com.sangupta.dryredis.cache.impl.DryRedisSortedSetOperations#zremrangebyrank(java.lang.String, int, int)
+     */
+    @Override
     public int zremrangebyrank(String key, int start, int stop) {
         SortedSet<Element> set = this.store.get(key);
         if(set == null) {
@@ -425,6 +503,10 @@ public class DryRedisSortedSet implements DryRedisCache {
         return removed;
     }
     
+    /* (non-Javadoc)
+     * @see com.sangupta.dryredis.cache.impl.DryRedisSortedSetOperations#zremrangebyscore(java.lang.String, com.sangupta.dryredis.support.DryRedisRangeArgument, com.sangupta.dryredis.support.DryRedisRangeArgument)
+     */
+    @Override
     public int zremrangebyscore(String key, DryRedisRangeArgument min, DryRedisRangeArgument max) {
         SortedSet<Element> set = this.store.get(key);
         if(set == null) {
@@ -449,6 +531,10 @@ public class DryRedisSortedSet implements DryRedisCache {
         return removed;
     }
     
+    /* (non-Javadoc)
+     * @see com.sangupta.dryredis.cache.impl.DryRedisSortedSetOperations#zrevrange(java.lang.String, int, int, boolean)
+     */
+    @Override
     public List<String> zrevrange(String key, int start, int stop, boolean withScores) {
         SortedSet<Element> set = this.store.get(key);
         if(set == null) {
@@ -494,6 +580,56 @@ public class DryRedisSortedSet implements DryRedisCache {
         }
         
         return result;
+    }
+    
+    /* (non-Javadoc)
+     * @see com.sangupta.dryredis.cache.impl.DryRedisSortedSetOperations#zinterstore(java.lang.String, java.util.List)
+     */
+    @Override
+    public int zinterstore(String destination, List<String> keys) {
+        return this.zinterstore(destination, keys, null, DryRedisSetAggregationType.SUM);
+    }
+    
+    /* (non-Javadoc)
+     * @see com.sangupta.dryredis.cache.impl.DryRedisSortedSetOperations#zinterstore(java.lang.String, java.util.List, double[], com.sangupta.dryredis.support.DryRedisSetAggregationType)
+     */
+    @Override
+    public int zinterstore(String destination, List<String> keys, double[] weights, DryRedisSetAggregationType aggregation) {
+        // just clone the same
+        SortedSet<Element> newSet = this.store.get(keys.get(0));
+        if(newSet == null) {
+            newSet = new TreeSet<Element>();
+            this.store.put(destination, newSet);
+            return 0;
+        }
+        
+        // TODO: fix intersection
+        return -1;
+    }
+    
+    /* (non-Javadoc)
+     * @see com.sangupta.dryredis.cache.impl.DryRedisSortedSetOperations#zunionstore(java.lang.String, java.util.List)
+     */
+    @Override
+    public int zunionstore(String destination, List<String> keys) {
+        return this.zunionstore(destination, keys, null, DryRedisSetAggregationType.SUM);
+    }
+    
+    /* (non-Javadoc)
+     * @see com.sangupta.dryredis.cache.impl.DryRedisSortedSetOperations#zunionstore(java.lang.String, java.util.List, double[], com.sangupta.dryredis.support.DryRedisSetAggregationType)
+     */
+    @Override
+    public int zunionstore(String destination, List<String> keys, double[] weights, DryRedisSetAggregationType aggregation) {
+        // just clone the same
+        SortedSet<Element> newSet = this.store.get(keys.get(0));
+        if(newSet == null) {
+            newSet = new TreeSet<Element>();
+            this.store.put(destination, newSet);
+            return 0;
+        }
+        
+        // TODO: fix intersection
+        return -1;
     }
     
     // from DryRedisCache interface

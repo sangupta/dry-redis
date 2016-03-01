@@ -12,7 +12,7 @@ public class DryRedisUtils {
 		// TODO: fix this - remove problems with sublist
 		return list.subList(start, stop);
 	}
-
+	
 	public static double getGeoDistance(GeoPoint point1, GeoPoint point2) {
 		if(point1.equals(point2)) {
 			return 0d;

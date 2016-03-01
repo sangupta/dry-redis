@@ -4,12 +4,13 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.sangupta.dryredis.TestUtils;
+import com.sangupta.dryredis.cache.DryRedisSortedSetOperations;
 
 public class TestDryRedisSortedSet {
     
     @Test
     public void testZADD() {
-        DryRedisSortedSet redis = new DryRedisSortedSet();
+        DryRedisSortedSetOperations redis = new DryRedisSortedSet();
         
         Assert.assertEquals(1, redis.zadd("key", 0, "a"));
         Assert.assertEquals(1, redis.zadd("key", 0, "b"));
@@ -26,7 +27,7 @@ public class TestDryRedisSortedSet {
     
     @Test
     public void testZLEXCOUNT() {
-        DryRedisSortedSet redis = new DryRedisSortedSet();
+        DryRedisSortedSetOperations redis = new DryRedisSortedSet();
         
         redis.zadd("key", 0, "a");
         redis.zadd("key", 0, "b");
@@ -46,7 +47,7 @@ public class TestDryRedisSortedSet {
     
     @Test
     public void testZRANGEBYLEX() {
-        DryRedisSortedSet redis = new DryRedisSortedSet();
+        DryRedisSortedSetOperations redis = new DryRedisSortedSet();
         
         redis.zadd("key", 0, "a");
         redis.zadd("key", 0, "b");
