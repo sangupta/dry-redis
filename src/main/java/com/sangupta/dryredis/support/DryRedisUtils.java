@@ -9,7 +9,6 @@ public class DryRedisUtils {
 	private static final double RADIUS_OF_EARTH = 6371; // in kilometers
 
 	public static <V> List<V> subList(List<V> list, int start, int stop) {
-		// TODO: performance - fix this - remove problems with sublist
 		return list.subList(start, stop);
 	}
 	

@@ -111,7 +111,7 @@ public class DryRedisList implements DryRedisCache, DryRedisListOperations {
 	@Override
     public int linsert(String key, DryRedisInsertOrder order, String pivot, String value) {
 		List<String> list = this.store.get(key);
-		if(list == null) {
+		if(list == null || list.isEmpty()) {
 			return 0;
 		}
 		

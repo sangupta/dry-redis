@@ -10,6 +10,7 @@ import org.junit.Test;
 
 import com.sangupta.dryredis.TestUtils;
 import com.sangupta.dryredis.cache.DryRedisListOperations;
+import com.sangupta.dryredis.support.DryRedisInsertOrder;
 
 /**
  * Unit tests for {@link DryRedisList}.
@@ -301,7 +302,33 @@ public class TestDryRedisList {
     public void testLINSERT() {
         DryRedisListOperations redis = getRedis();
         
-        // TODO: fix this linsert tests
+        // non-existent list
+        Assert.assertEquals(0, redis.linsert("non-existent", DryRedisInsertOrder.BEFORE, "4", "3"));
+        Assert.assertEquals(0, redis.llen("non-existent"));
+        
+        // empty list
+        redis.rpush("empty", "1");
+        redis.rpop("empty");
+        Assert.assertEquals(0, redis.linsert("empty", DryRedisInsertOrder.BEFORE, "4", "3"));
+        Assert.assertEquals(0, redis.llen("empty"));
+        
+        // insert before
+        redis.rpush("key", "1");
+        redis.rpush("key", "2");
+        redis.rpush("key", "4");
+        Assert.assertEquals(3, redis.llen("key"));
+        Assert.assertEquals(4, redis.linsert("key", DryRedisInsertOrder.BEFORE, "4", "3"));
+        Assert.assertEquals(4, redis.llen("key"));
+        Assert.assertEquals(TestUtils.asList("1", "2", "3", "4"), redis.lrange("key", 0, 10));
+        
+        // insert after
+        Assert.assertEquals(5, redis.linsert("key", DryRedisInsertOrder.AFTER, "3", "5"));
+        Assert.assertEquals(5, redis.llen("key"));
+        Assert.assertEquals(TestUtils.asList("1", "2", "3", "5", "4"), redis.lrange("key", 0, 10));
+        
+        // before/after non-existent pivot
+        Assert.assertEquals(-1, redis.linsert("key", DryRedisInsertOrder.BEFORE, "7", "9"));
+        Assert.assertEquals(-1, redis.linsert("key", DryRedisInsertOrder.AFTER, "7", "9"));
     }
     
     @Test

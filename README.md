@@ -31,10 +31,28 @@ Commands not yet supported:
 * HyperLogLog
 * Geo
 * Sorted Set
-  * zinterstore
-  * zunionstore
   * zscan
-
+* Keys
+  * dump
+  * expire
+  * expireat
+  * keys
+  * migrate
+  * move
+  * object
+  * persist
+  * pexpire
+  * pexpireat
+  * pttl
+  * rename
+  * renamenx
+  * randomkey
+  * restore
+  * sort
+  * ttl
+  * wait
+  * scan
+  
 Important Notes
 ---------------
 
