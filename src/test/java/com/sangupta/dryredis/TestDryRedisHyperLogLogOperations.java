@@ -13,7 +13,7 @@ public class TestDryRedisHyperLogLogOperations extends TestDryRedisHyperLogLog {
     
     @Override
     protected DryRedisHyperLogLogOperations getRedis() {
-        return new DryRedis();
+        return DryRedis.getDatabase();
     }
 
 }

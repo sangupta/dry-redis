@@ -1,7 +1,9 @@
 package com.sangupta.dryredis;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.sangupta.dryredis.cache.impl.DryRedisGeo;
 import com.sangupta.dryredis.cache.impl.DryRedisHash;
@@ -23,6 +25,8 @@ import com.sangupta.dryredis.support.DryRedisCacheType;
  *
  */
 public abstract class DryRedisKeys {
+    
+    private final Map<String, Long> EXPIRE_TIMES = new HashMap<String, Long>();
 	
 	private final List<DryRedisCache> caches = new ArrayList<DryRedisCache>();
 	
@@ -65,7 +69,14 @@ public abstract class DryRedisKeys {
 	    
 	    return deleted;
 	}
-	
+
+	/**
+	 * Dump the given key into a byte[] array that could later be used
+	 * to restore the key back into this redis instance.
+	 * 
+	 * @param key
+	 * @return
+	 */
 	public byte[] dump(String key) {
 	    DryRedisCache cache = this.getCache(key);
 	    if(cache == null) {
@@ -84,11 +95,51 @@ public abstract class DryRedisKeys {
 	public int exists(String key) {
 	    for(DryRedisCache cache : caches) {
 	        if(cache.hasKey(key)) {
+	            // check for expiry
+	            if(isExpired(key)) {
+	                cache.del(key);
+	                return 0;
+	            }
+	            
 	            return 1;
 	        }
 	    }
 	    
 	    return 0;
+	}
+	
+	/**
+	 * Set the expiration time of the key to given number of seconds starting now.
+	 * 
+	 * @param key
+	 * @param seconds
+	 * @return
+	 */
+	public int expire(String key, int seconds) {
+	    if(this.exists(key) == 0) {
+	        return 0;
+	    }
+	    
+        long expireAt = System.currentTimeMillis() + seconds * 1000l;
+	    EXPIRE_TIMES.put(key, expireAt);
+	    return 1;
+	}
+	
+	/**
+	 * Set the expiration time of the key to the given epoch time in seconds.
+	 * 
+	 * @param key
+	 * @param epochAsSeconds
+	 * @return
+	 */
+	public int expireAt(String key, long epochAsSeconds) {
+        if(this.exists(key) == 0) {
+            return 0;
+        }
+        
+        long expireAt = epochAsSeconds * 1000l;
+        EXPIRE_TIMES.put(key, expireAt);
+        return 1;
 	}
 	
 	public List<String> keys(String pattern) {
@@ -141,6 +192,26 @@ public abstract class DryRedisKeys {
 	    }
 	    
 	    return cache.getType();
+	}
+	
+	/**
+	 * Check if a key has expired or not.
+	 * 
+	 * @param key
+	 * @return
+	 */
+	protected boolean isExpired(String key) {
+	    Long expiry = EXPIRE_TIMES.get(key);
+	    if(expiry == null) {
+	        return false;
+	    }
+	    
+	    long value = expiry.longValue();
+	    if(System.currentTimeMillis() >= value) {
+	        return true;
+	    }
+	    
+	    return false;
 	}
 
 	/**

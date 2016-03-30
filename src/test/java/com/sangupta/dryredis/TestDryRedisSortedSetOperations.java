@@ -13,7 +13,7 @@ public class TestDryRedisSortedSetOperations extends TestDryRedisSortedSet {
 
     @Override
     protected DryRedisSortedSetOperations getRedis() {
-        return new DryRedis();
+        return DryRedis.getDatabase();
     }
     
 }

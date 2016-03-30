@@ -47,7 +47,7 @@ public class TestDryRedisGeoOperations extends TestDryRedisGeo {
     
     @Override
     protected DryRedisGeoOperations getRedis() {
-        return new DryRedis();
+        return DryRedis.getDatabase();
     }
 
 }

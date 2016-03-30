@@ -13,7 +13,7 @@ public class TestDryRedisHashOperations extends TestDryRedisHash {
 
     @Override
     protected DryRedisHashOperations getRedis() {
-        return new DryRedis();
+        return DryRedis.getDatabase();
     }
     
 }
