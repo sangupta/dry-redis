@@ -10,4 +10,6 @@ package com.sangupta.dryredis;
  */
 public class DryRedis extends DryRedisOperationFacade {
     
+    public static final int DRY_REDIS_DUMP_VERSION = 1;
+    
 }

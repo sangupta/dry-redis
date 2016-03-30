@@ -33,7 +33,7 @@ Commands not yet supported:
 * Sorted Set
   * zscan
 * Keys
-  * dump
+  * -dump-
   * expire
   * expireat
   * keys
@@ -57,7 +57,7 @@ Important Notes
 ---------------
 
 * Geo algorithms currently use a brute-force method, a O(n) search and thus will be slower than `Redis`
-* Geo methods use `haversine` method to compute distance between two points
+* Geo methods use `haversine` method to compute distance between two points but return a slightly different distance than Redis
 * HyperLogLog implementation uses https://github.com/addthis/stream-lib libraries implementation and may thus slightly differ from `Redis`
 
 TODO

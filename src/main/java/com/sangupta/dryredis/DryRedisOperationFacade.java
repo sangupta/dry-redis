@@ -31,9 +31,9 @@ public abstract class DryRedisOperationFacade extends DryRedisKeys implements Dr
 
     // GEO commands follow
 
-    public void geoadd(String key, double latitude, double longitude, String member) {
+    public int geoadd(String key, double longitude, double latitude, String member) {
         matchKeyType(key, DryRedisCacheType.GEO);
-        this.geoCommands.geoadd(key, latitude, longitude, member);
+        return this.geoCommands.geoadd(key, latitude, longitude, member);
     }
     
     public String geohash(String key, String member) {
@@ -51,12 +51,12 @@ public abstract class DryRedisOperationFacade extends DryRedisKeys implements Dr
         return this.geoCommands.geodist(key, member1, member2, unit);
     }
     
-    public List<String> georadius(String key, double latitude, double longitude, double radius, DryRedisGeoUnit unit) {
+    public List<String> georadius(String key, double longitude, double latitude, double radius, DryRedisGeoUnit unit) {
         matchKeyType(key, DryRedisCacheType.GEO);
         return this.geoCommands.georadius(key, latitude, longitude, radius, unit);
     }
     
-    public List<String> georadius(String key, double latitude, double longitude, double radius, DryRedisGeoUnit unit, boolean withCoordinates, boolean withDistance, boolean withHash, int count) {
+    public List<String> georadius(String key, double longitude, double latitude, double radius, DryRedisGeoUnit unit, boolean withCoordinates, boolean withDistance, boolean withHash, int count) {
         matchKeyType(key, DryRedisCacheType.GEO);
         return this.geoCommands.georadius(key, latitude, longitude, radius, unit, withCoordinates, withDistance, withHash, count);
     }

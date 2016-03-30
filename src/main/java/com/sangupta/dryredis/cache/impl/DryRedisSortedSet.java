@@ -15,6 +15,7 @@ import com.sangupta.dryredis.support.DryRedisCache;
 import com.sangupta.dryredis.support.DryRedisCacheType;
 import com.sangupta.dryredis.support.DryRedisRangeArgument;
 import com.sangupta.dryredis.support.DryRedisSetAggregationType;
+import com.sangupta.dryredis.support.DryRedisUtils;
 
 public class DryRedisSortedSet implements DryRedisCache, DryRedisSortedSetOperations {
     
@@ -691,6 +692,11 @@ public class DryRedisSortedSet implements DryRedisCache, DryRedisSortedSetOperat
     @Override
     public void keys(String pattern, List<String> keys) {
         
+    }
+    
+    @Override
+    public byte[] dump(String key) {
+        return DryRedisUtils.createDump(this.getType(), key, this.store.get(key));
     }
     
 }

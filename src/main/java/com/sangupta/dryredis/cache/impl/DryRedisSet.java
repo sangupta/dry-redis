@@ -11,6 +11,7 @@ import java.util.Set;
 import com.sangupta.dryredis.cache.DryRedisSetOperations;
 import com.sangupta.dryredis.support.DryRedisCache;
 import com.sangupta.dryredis.support.DryRedisCacheType;
+import com.sangupta.dryredis.support.DryRedisUtils;
 
 public class DryRedisSet implements DryRedisCache, DryRedisSetOperations {
 	
@@ -395,4 +396,10 @@ public class DryRedisSet implements DryRedisCache, DryRedisSetOperations {
     public void keys(String pattern, List<String> keys) {
         
     }
+    
+    @Override
+    public byte[] dump(String key) {
+        return DryRedisUtils.createDump(this.getType(), key, this.store.get(key));
+    }
+    
 }

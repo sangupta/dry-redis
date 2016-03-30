@@ -9,6 +9,7 @@ import java.util.Map.Entry;
 import com.sangupta.dryredis.cache.DryRedisHashOperations;
 import com.sangupta.dryredis.support.DryRedisCache;
 import com.sangupta.dryredis.support.DryRedisCacheType;
+import com.sangupta.dryredis.support.DryRedisUtils;
 
 /**
  * Hash operations from Redis
@@ -319,4 +320,9 @@ public class DryRedisHash implements DryRedisCache, DryRedisHashOperations {
         
     }
 
+    @Override
+    public byte[] dump(String key) {
+        return DryRedisUtils.createDump(this.getType(), key, this.store.get(key));
+    }
+    
 }

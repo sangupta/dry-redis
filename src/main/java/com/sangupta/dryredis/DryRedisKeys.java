@@ -51,6 +51,12 @@ public abstract class DryRedisKeys {
         caches.add(this.sortedSetCommands);
     }
 	
+	/**
+	 * Delete the keys from this redis instance.
+	 * 
+	 * @param key
+	 * @return
+	 */
 	public int del(String key) {
 	    int deleted = 0;
 	    for(DryRedisCache cache : caches) {
@@ -60,6 +66,21 @@ public abstract class DryRedisKeys {
 	    return deleted;
 	}
 	
+	public byte[] dump(String key) {
+	    DryRedisCache cache = this.getCache(key);
+	    if(cache == null) {
+	        return null;
+	    }
+	    
+	    return cache.dump(key);
+	}
+	
+	/**
+	 * Check if a key exists in this redis instance.
+	 * 
+	 * @param key
+	 * @return
+	 */
 	public int exists(String key) {
 	    for(DryRedisCache cache : caches) {
 	        if(cache.hasKey(key)) {
@@ -91,16 +112,51 @@ public abstract class DryRedisKeys {
 	
 	// private methods
 	
+	/**
+	 * Find the exact cache in which a given key is present.
+	 * 
+	 * @param key
+	 * @return
+	 */
+	protected DryRedisCache getCache(String key) {
+        for(DryRedisCache cache : caches) {
+            if(cache.hasKey(key)) {
+                return cache;
+            }
+        }
+        
+        return null;
+	}
+	
+	/**
+     * Find the cache type for the cache in which the given key is present.
+     * 
+     * @param key
+     * @return
+     */
 	protected DryRedisCacheType keyType(String key) {
-	    for(DryRedisCache cache : caches) {
-	        if(cache.hasKey(key)) {
-	            return cache.getType();
-	        }
+	    DryRedisCache cache = this.getCache(key);
+	    if(cache == null) {
+	        return null;
 	    }
 	    
-	    return null;
+	    return cache.getType();
 	}
 
+	/**
+     * Check if the {@link DryRedisCacheType} for the given key is the same as
+     * the provided {@link DryRedisCacheType}. If not, an
+     * {@link IllegalArgumentException} is raised.
+     * 
+     * @param key
+     *            the key to check cache type for
+     * 
+     * @param type
+     *            the type to match with
+     * 
+     * @throws IllegalArgumentException
+     *             if there is a mismatch in cache type
+     */
 	protected void matchKeyType(String key, DryRedisCacheType type) {
 	    DryRedisCacheType foundKeyType = keyType(key);
 	    if(foundKeyType == null) {

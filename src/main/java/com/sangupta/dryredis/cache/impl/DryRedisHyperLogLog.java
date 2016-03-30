@@ -9,6 +9,7 @@ import com.sangupta.dryredis.cache.DryRedisHyperLogLogOperations;
 import com.sangupta.dryredis.ds.HyperLogLog;
 import com.sangupta.dryredis.support.DryRedisCache;
 import com.sangupta.dryredis.support.DryRedisCacheType;
+import com.sangupta.dryredis.support.DryRedisUtils;
 
 public class DryRedisHyperLogLog implements DryRedisCache, DryRedisHyperLogLogOperations {
 	
@@ -183,4 +184,10 @@ public class DryRedisHyperLogLog implements DryRedisCache, DryRedisHyperLogLogOp
     public void keys(String pattern, List<String> keys) {
         
     }
+    
+    @Override
+    public byte[] dump(String key) {
+        return DryRedisUtils.createDump(this.getType(), key, this.store.get(key));
+    }
+    
 }

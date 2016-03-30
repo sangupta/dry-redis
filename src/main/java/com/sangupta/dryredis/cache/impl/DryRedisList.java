@@ -491,4 +491,10 @@ public class DryRedisList implements DryRedisCache, DryRedisListOperations {
     public void keys(String pattern, List<String> keys) {
         
     }
+
+    @Override
+    public byte[] dump(String key) {
+        return DryRedisUtils.createDump(this.getType(), key, this.store.get(key));
+    }
+    
 }

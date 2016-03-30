@@ -10,14 +10,12 @@ import java.util.Map;
 import com.sangupta.dryredis.cache.DryRedisStringOperations;
 import com.sangupta.dryredis.support.DryRedisCache;
 import com.sangupta.dryredis.support.DryRedisCacheType;
+import com.sangupta.dryredis.support.DryRedisUtils;
 
 public class DryRedisString implements DryRedisCache, DryRedisStringOperations {
 	
 	private final Map<String, String> store = new HashMap<String, String>();
 	
-	/* (non-Javadoc)
-     * @see com.sangupta.dryredis.cache.DryRedisStringOperations#append(java.lang.String, java.lang.String)
-     */
 	@Override
     public int append(String key, String value) {
 		String oldValue = this.store.get(key);
@@ -31,17 +29,11 @@ public class DryRedisString implements DryRedisCache, DryRedisStringOperations {
 		return newValue.length();
 	}
 	
-	/* (non-Javadoc)
-     * @see com.sangupta.dryredis.cache.DryRedisStringOperations#incr(java.lang.String)
-     */
 	@Override
     public long incr(String key) {
 		return this.incrby(key, 1);
 	}
 	
-	/* (non-Javadoc)
-     * @see com.sangupta.dryredis.cache.DryRedisStringOperations#incrby(java.lang.String, long)
-     */
 	@Override
     public long incrby(String key, long delta) {
 		String value = this.store.get(key);
@@ -56,9 +48,6 @@ public class DryRedisString implements DryRedisCache, DryRedisStringOperations {
 		return longValue;
 	}
 	
-	/* (non-Javadoc)
-     * @see com.sangupta.dryredis.cache.DryRedisStringOperations#incrbyfloat(java.lang.String, double)
-     */
 	@Override
     public double incrbyfloat(String key, double delta) {
 		String value = this.store.get(key);
@@ -73,9 +62,6 @@ public class DryRedisString implements DryRedisCache, DryRedisStringOperations {
 		return doubleValue;
 	}
 	
-	/* (non-Javadoc)
-     * @see com.sangupta.dryredis.cache.DryRedisStringOperations#mget(java.lang.String[])
-     */
 	@Override
     public List<String> mget(String[] keys) {
 	    if(keys == null || keys.length == 0) {
@@ -91,9 +77,6 @@ public class DryRedisString implements DryRedisCache, DryRedisStringOperations {
 		return list;
 	}
 	
-	/* (non-Javadoc)
-     * @see com.sangupta.dryredis.cache.DryRedisStringOperations#mget(java.util.Collection)
-     */
 	@Override
     public List<String> mget(Collection<String> keys) {
 	    if(keys == null || keys.isEmpty()) {
@@ -109,18 +92,12 @@ public class DryRedisString implements DryRedisCache, DryRedisStringOperations {
 		return list;
 	}
 	
-	/* (non-Javadoc)
-     * @see com.sangupta.dryredis.cache.DryRedisStringOperations#set(java.lang.String, java.lang.String)
-     */
 	@Override
     public String set(String key, String value) {
 		this.store.put(key, value);
 		return "OK";
 	}
 	
-	/* (non-Javadoc)
-     * @see com.sangupta.dryredis.cache.DryRedisStringOperations#setnx(java.lang.String, java.lang.String)
-     */
 	@Override
     public String setnx(String key, String value) {
 		String oldValue = this.store.get(key);
@@ -132,9 +109,6 @@ public class DryRedisString implements DryRedisCache, DryRedisStringOperations {
 		return null;
 	}
 	
-	/* (non-Javadoc)
-     * @see com.sangupta.dryredis.cache.DryRedisStringOperations#setxx(java.lang.String, java.lang.String)
-     */
 	@Override
     public String setxx(String key, String value) {
 		if(!this.store.containsKey(key)) {
@@ -145,9 +119,6 @@ public class DryRedisString implements DryRedisCache, DryRedisStringOperations {
 		return "OK";
 	}
 	
-	/* (non-Javadoc)
-     * @see com.sangupta.dryredis.cache.DryRedisStringOperations#getrange(java.lang.String, int, int)
-     */
 	@Override
     public String getrange(String key, int start, int end) {
 		String value = this.store.get(key);
@@ -187,9 +158,6 @@ public class DryRedisString implements DryRedisCache, DryRedisStringOperations {
 		return value.substring(start, end);
 	}
 	
-	/* (non-Javadoc)
-     * @see com.sangupta.dryredis.cache.DryRedisStringOperations#setrange(java.lang.String, int, java.lang.String)
-     */
 	@Override
     public int setrange(String key, int offset, String value) {
         if(offset < 0) {
@@ -216,17 +184,11 @@ public class DryRedisString implements DryRedisCache, DryRedisStringOperations {
 		return source.length;
 	}
 	
-	/* (non-Javadoc)
-     * @see com.sangupta.dryredis.cache.DryRedisStringOperations#bitcount(java.lang.String)
-     */
 	@Override
     public long bitcount(String key) {
 	    return this.bitcount(key, 0, key.length());
 	}
 	
-	/* (non-Javadoc)
-     * @see com.sangupta.dryredis.cache.DryRedisStringOperations#bitcount(java.lang.String, int, int)
-     */
 	@Override
     public long bitcount(String key, int start, int end) {
 		String value = this.getrange(key, start, end);
@@ -247,33 +209,21 @@ public class DryRedisString implements DryRedisCache, DryRedisStringOperations {
 		return bits;
 	}
 	
-	/* (non-Javadoc)
-     * @see com.sangupta.dryredis.cache.DryRedisStringOperations#decr(java.lang.String)
-     */
 	@Override
     public long decr(String key) {
 		return this.incrby(key, -1);
 	}
 	
-	/* (non-Javadoc)
-     * @see com.sangupta.dryredis.cache.DryRedisStringOperations#decrby(java.lang.String, long)
-     */
 	@Override
     public long decrby(String key, long delta) {
 		return this.incrby(key, -delta);
 	}
 	
-	/* (non-Javadoc)
-     * @see com.sangupta.dryredis.cache.DryRedisStringOperations#get(java.lang.String)
-     */
 	@Override
     public String get(String key) {
 		return this.store.get(key);
 	}
 	
-	/* (non-Javadoc)
-     * @see com.sangupta.dryredis.cache.DryRedisStringOperations#strlen(java.lang.String)
-     */
 	@Override
     public int strlen(String key) {
 		String value = this.store.get(key);
@@ -284,9 +234,6 @@ public class DryRedisString implements DryRedisCache, DryRedisStringOperations {
 		return value.length();
 	}
 	
-	/* (non-Javadoc)
-     * @see com.sangupta.dryredis.cache.DryRedisStringOperations#getset(java.lang.String, java.lang.String)
-     */
 	@Override
     public String getset(String key, String value) {
 		String oldValue = this.store.get(key);
@@ -316,11 +263,14 @@ public class DryRedisString implements DryRedisCache, DryRedisStringOperations {
         return this.store.containsKey(key);
     }
     
-    /* (non-Javadoc)
-     * @see com.sangupta.dryredis.cache.DryRedisStringOperations#keys(java.lang.String, java.util.List)
-     */
     @Override
     public void keys(String pattern, List<String> keys) {
         
     }
+
+    @Override
+    public byte[] dump(String key) {
+        return DryRedisUtils.createDump(this.getType(), key, this.store.get(key));
+    }
+    
 }

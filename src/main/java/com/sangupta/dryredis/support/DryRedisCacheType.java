@@ -2,18 +2,28 @@ package com.sangupta.dryredis.support;
 
 public enum DryRedisCacheType {
 
-	LIST,
+	LIST(1),
 	
-	SET,
+	SET(2),
 	
-	SORTED_SET,
+	SORTED_SET(3),
 	
-	STRING,
+	STRING(4),
 	
-	HASH,
+	HASH(5),
 	
-	GEO,
+	GEO(6),
 	
-	HYPER_LOG_LOG;
+	HYPER_LOG_LOG(7);
+    
+    private byte code;
+    
+    private DryRedisCacheType(int code) {
+        this.code = (byte) code;
+    }
+    
+    public byte getCode() {
+        return this.code;
+    }
 	
 }

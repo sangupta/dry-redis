@@ -10,6 +10,8 @@ import com.sangupta.dryredis.support.DryRedisCache;
 import com.sangupta.dryredis.support.DryRedisCacheType;
 import com.sangupta.dryredis.support.DryRedisGeoUnit;
 import com.sangupta.dryredis.support.DryRedisUtils;
+import com.sangupta.dryredis.support.RedisGeoHash;
+import com.sangupta.dryredis.support.Haversine;
 
 public class DryRedisGeo implements DryRedisCache, DryRedisGeoOperations {
 	
@@ -21,14 +23,20 @@ public class DryRedisGeo implements DryRedisCache, DryRedisGeoOperations {
      * @see com.sangupta.dryredis.DryRedisGeoOperations#geoadd(java.lang.String, double, double, java.lang.String)
      */
 	@Override
-    public void geoadd(String key, double latitude, double longitude, String member) {
+    public int geoadd(String key, double longitude, double latitude, String member) {
 		Map<String, GeoPoint> points = this.store.get(key);
+		int result = 0;
+		
 		if(points == null) {
 			points = new HashMap<String, GeoPoint>();
 			this.store.put(key, points);
 		}
 		
+        if(!points.containsKey(member)) {
+            result = 1;
+        }
 		points.put(member, new GeoPoint(member, latitude, longitude));
+		return result;
 	}
 	
 	/* (non-Javadoc)
@@ -84,7 +92,7 @@ public class DryRedisGeo implements DryRedisCache, DryRedisGeoOperations {
 			return null;
 		}
 		
-		double distance = DryRedisUtils.getGeoDistance(point1, point2);
+		double distance = Haversine.distance(point1.latitude, point1.longitude, point2.latitude, point2.longitude);
 		
 		switch(unit) {
 			case Feet:
@@ -110,7 +118,7 @@ public class DryRedisGeo implements DryRedisCache, DryRedisGeoOperations {
      * @see com.sangupta.dryredis.DryRedisGeoOperations#georadius(java.lang.String, double, double, double, com.sangupta.dryredis.support.DryRedisGeoUnit)
      */
 	@Override
-    public List<String> georadius(String key, double latitude, double longitude, double radius, DryRedisGeoUnit unit) {
+    public List<String> georadius(String key, double longitude, double latitude, double radius, DryRedisGeoUnit unit) {
 		return this.georadius(key, latitude, longitude, radius, unit, false, false, false, 0);
 	}
 	
@@ -118,7 +126,7 @@ public class DryRedisGeo implements DryRedisCache, DryRedisGeoOperations {
      * @see com.sangupta.dryredis.DryRedisGeoOperations#georadius(java.lang.String, double, double, double, com.sangupta.dryredis.support.DryRedisGeoUnit, boolean, boolean, boolean, int)
      */
 	@Override
-    public List<String> georadius(String key, double latitude, double longitude, double radius, DryRedisGeoUnit unit, boolean withCoordinates, boolean withDistance, boolean withHash, int count) {
+    public List<String> georadius(String key, double longitude, double latitude, double radius, DryRedisGeoUnit unit, boolean withCoordinates, boolean withDistance, boolean withHash, int count) {
 		GeoPoint origin = new GeoPoint("origin", latitude, longitude);
 		return this.getUsingRadius(key, origin, radius, unit, withCoordinates, withDistance, withHash, count);
 	}
@@ -167,7 +175,7 @@ public class DryRedisGeo implements DryRedisCache, DryRedisGeoOperations {
 		
 		int pointsFound = 0;
 		for(GeoPoint point : points.values()) {
-			double distance = DryRedisUtils.getGeoDistance(origin, point);
+			double distance = Haversine.distance(origin.latitude, origin.longitude, point.latitude, point.longitude);
 			if(distance < radius) {
 				result.add(point.name);
 				pointsFound++;
@@ -257,6 +265,17 @@ public class DryRedisGeo implements DryRedisCache, DryRedisGeoOperations {
         
     }
     
+    @Override
+    public byte[] dump(String key) {
+        return DryRedisUtils.createDump(this.getType(), key, this.store.get(key));
+    }
+
+    /**
+     * Class that represents a geo-point.
+     * 
+     * @author sangupta
+     *
+     */
 	public static class GeoPoint {
 
 		public String name;
@@ -272,7 +291,7 @@ public class DryRedisGeo implements DryRedisCache, DryRedisGeoOperations {
 		}
 		
 		public String getGeoHash() {
-			return DryRedisUtils.getGeoHash(this.latitude, this.longitude);
+			return RedisGeoHash.hash(this.latitude, this.longitude);
 		}
 
 		public double[] getPoint() {
