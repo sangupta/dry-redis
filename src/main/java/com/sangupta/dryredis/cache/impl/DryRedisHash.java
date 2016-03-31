@@ -325,4 +325,9 @@ public class DryRedisHash implements DryRedisCache, DryRedisHashOperations {
         return DryRedisUtils.createDump(this.getType(), key, this.store.get(key));
     }
     
+    @Override
+    public void rename(String key, String newKey) {
+        Map<String, String> value = this.store.remove(key);
+        this.store.put(newKey, value);
+    }
 }

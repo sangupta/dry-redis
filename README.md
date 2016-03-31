@@ -33,16 +33,12 @@ Commands not yet supported:
 * Sorted Set
   * zscan
 * Keys
-  * -dump-
   * expire
-  * expireat
   * keys
   * migrate
   * move
   * object
   * persist
-  * pexpire
-  * pexpireat
   * pttl
   * rename
   * renamenx

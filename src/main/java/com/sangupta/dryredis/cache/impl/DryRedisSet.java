@@ -402,4 +402,9 @@ public class DryRedisSet implements DryRedisCache, DryRedisSetOperations {
         return DryRedisUtils.createDump(this.getType(), key, this.store.get(key));
     }
     
+    @Override
+    public void rename(String key, String newKey) {
+        Set<String> value = this.store.remove(key);
+        this.store.put(newKey, value);
+    }
 }

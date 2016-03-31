@@ -270,6 +270,12 @@ public class DryRedisGeo implements DryRedisCache, DryRedisGeoOperations {
         return DryRedisUtils.createDump(this.getType(), key, this.store.get(key));
     }
 
+    @Override
+    public void rename(String key, String newKey) {
+        Map<String, GeoPoint> value = this.store.remove(key);
+        this.store.put(newKey, value);
+    }
+
     /**
      * Class that represents a geo-point.
      * 

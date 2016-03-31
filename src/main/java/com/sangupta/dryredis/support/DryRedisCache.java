@@ -46,4 +46,12 @@ public interface DryRedisCache {
      */
     public byte[] dump(String key);
 
+    /**
+     * Rename the given key to the new key name.
+     * 
+     * @param key
+     * @param newKey
+     */
+    public void rename(String key, String newKey);
+
 }

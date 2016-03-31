@@ -272,5 +272,10 @@ public class DryRedisString implements DryRedisCache, DryRedisStringOperations {
     public byte[] dump(String key) {
         return DryRedisUtils.createDump(this.getType(), key, this.store.get(key));
     }
-    
+
+    @Override
+    public void rename(String key, String newKey) {
+        String value = this.store.remove(key);
+        this.store.put(newKey, value);
+    }
 }

@@ -190,4 +190,9 @@ public class DryRedisHyperLogLog implements DryRedisCache, DryRedisHyperLogLogOp
         return DryRedisUtils.createDump(this.getType(), key, this.store.get(key));
     }
     
+    @Override
+    public void rename(String key, String newKey) {
+        HyperLogLog value = this.store.remove(key);
+        this.store.put(newKey, value);
+    }
 }

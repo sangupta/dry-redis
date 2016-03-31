@@ -699,4 +699,9 @@ public class DryRedisSortedSet implements DryRedisCache, DryRedisSortedSetOperat
         return DryRedisUtils.createDump(this.getType(), key, this.store.get(key));
     }
     
+    @Override
+    public void rename(String key, String newKey) {
+        SortedSetWithPriority<String> value = this.store.remove(key);
+        this.store.put(newKey, value);
+    }
 }

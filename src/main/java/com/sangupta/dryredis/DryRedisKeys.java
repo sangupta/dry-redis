@@ -116,13 +116,7 @@ public abstract class DryRedisKeys {
 	 * @return
 	 */
 	public int expire(String key, int seconds) {
-	    if(this.exists(key) == 0) {
-	        return 0;
-	    }
-	    
-        long expireAt = System.currentTimeMillis() + seconds * 1000l;
-	    EXPIRE_TIMES.put(key, expireAt);
-	    return 1;
+	    return this.pexpireat(key, System.currentTimeMillis() + seconds * 1000l);
 	}
 	
 	/**
@@ -132,14 +126,39 @@ public abstract class DryRedisKeys {
 	 * @param epochAsSeconds
 	 * @return
 	 */
-	public int expireAt(String key, long epochAsSeconds) {
-        if(this.exists(key) == 0) {
+	public int expireat(String key, long epochAsSeconds) {
+        return this.pexpireat(key, epochAsSeconds * 1000l);
+	}
+	
+	public int pexpire(String key, long milliseconds) {
+	    return this.pexpireat(key, System.currentTimeMillis() + milliseconds);
+	}
+	
+	public int pexpireat(String key, long epochAsMilliseconds) {
+	    if(this.exists(key) == 0) {
             return 0;
         }
-        
-        long expireAt = epochAsSeconds * 1000l;
-        EXPIRE_TIMES.put(key, expireAt);
-        return 1;
+	    
+	    EXPIRE_TIMES.put(key, epochAsMilliseconds);
+	    return 1;
+	}
+	
+	public String rename(String key, String newKey) {
+	    if(key == null || newKey == null) {
+	        return "ERROR";
+	    }
+	    
+	    if(key.equals(newKey)) {
+	        return "ERROR";
+	    }
+	    
+	    if(this.exists(key) == 0) {
+	        return "ERROR";
+	    }
+	    
+	    DryRedisCache cache = this.getCache(key);
+	    cache.rename(key, newKey);
+	    return "OK";
 	}
 	
 	public List<String> keys(String pattern) {
