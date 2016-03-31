@@ -13,7 +13,9 @@ public class TestDryRedisStringOperations extends TestDryRedisString {
 
     @Override
     protected DryRedisStringOperations getRedis() {
-        return DryRedis.getDatabase();
+        DryRedis redis = DryRedis.getDatabase();
+        redis.flushdb();
+        return redis;
     }
     
 }

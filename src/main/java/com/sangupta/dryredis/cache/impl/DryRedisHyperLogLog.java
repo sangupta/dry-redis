@@ -195,4 +195,10 @@ public class DryRedisHyperLogLog implements DryRedisCache, DryRedisHyperLogLogOp
         HyperLogLog value = this.store.remove(key);
         this.store.put(newKey, value);
     }
+
+    @Override
+    public void flushCache() {
+        this.store.clear();
+    }
+
 }

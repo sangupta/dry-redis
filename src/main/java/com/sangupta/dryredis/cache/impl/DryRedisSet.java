@@ -407,4 +407,10 @@ public class DryRedisSet implements DryRedisCache, DryRedisSetOperations {
         Set<String> value = this.store.remove(key);
         this.store.put(newKey, value);
     }
+
+    @Override
+    public void flushCache() {
+        this.store.clear();
+    }
+
 }

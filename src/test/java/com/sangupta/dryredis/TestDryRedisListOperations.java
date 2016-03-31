@@ -13,7 +13,9 @@ public class TestDryRedisListOperations extends TestDryRedisList {
     
     @Override
     protected DryRedisListOperations getRedis() {
-        return DryRedis.getDatabase();
+        DryRedis redis = DryRedis.getDatabase();
+        redis.flushdb();
+        return redis;
     }
 
 }

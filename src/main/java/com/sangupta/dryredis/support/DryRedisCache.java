@@ -54,4 +54,10 @@ public interface DryRedisCache {
      */
     public void rename(String key, String newKey);
 
+    /**
+     * Flush the entire cache for the database.
+     * 
+     */
+    public void flushCache();
+
 }

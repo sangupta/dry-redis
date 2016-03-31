@@ -330,4 +330,10 @@ public class DryRedisHash implements DryRedisCache, DryRedisHashOperations {
         Map<String, String> value = this.store.remove(key);
         this.store.put(newKey, value);
     }
+
+    @Override
+    public void flushCache() {
+        this.store.clear();
+    }
+
 }

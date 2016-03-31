@@ -13,7 +13,9 @@ public class TestDryRedisHashOperations extends TestDryRedisHash {
 
     @Override
     protected DryRedisHashOperations getRedis() {
-        return DryRedis.getDatabase();
+        DryRedis redis = DryRedis.getDatabase();
+        redis.flushdb();
+        return redis;
     }
     
 }

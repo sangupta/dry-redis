@@ -86,6 +86,14 @@ public abstract class DryRedisKeys {
 	    return cache.dump(key);
 	}
 	
+	public String flushdb() {
+	    for(DryRedisCache cache : caches) {
+	        cache.flushCache();
+	    }
+	    
+	    return "OK";
+	}
+	
 	/**
 	 * Check if a key exists in this redis instance.
 	 * 
