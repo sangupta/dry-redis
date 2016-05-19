@@ -25,7 +25,7 @@ import com.sangupta.dryredis.support.DryRedisSetAggregationType;
  * @author sangupta
  *
  */
-public abstract class DryRedisOperationFacade extends DryRedisKeys implements DryRedisGeoOperations, 
+abstract class DryRedisOperationFacade extends DryRedisKeys implements DryRedisGeoOperations, 
                                                                      DryRedisHashOperations, DryRedisStringOperations, DryRedisListOperations,
                                                                      DryRedisSetOperations, DryRedisHyperLogLogOperations, DryRedisSortedSetOperations {
 
