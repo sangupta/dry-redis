@@ -1,4 +1,4 @@
-package com.sangupta.dryredis.vo;
+package com.sangupta.dryredis.support;
 
 import com.sangupta.dryredis.support.RedisGeoHash;
 

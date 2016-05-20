@@ -30,8 +30,8 @@ import com.sangupta.dryredis.cache.DryRedisGeoOperations;
 import com.sangupta.dryredis.support.DryRedisCache;
 import com.sangupta.dryredis.support.DryRedisCacheType;
 import com.sangupta.dryredis.support.DryRedisGeoUnit;
+import com.sangupta.dryredis.support.GeoPoint;
 import com.sangupta.dryredis.support.Haversine;
-import com.sangupta.dryredis.vo.GeoPoint;
 
 public class DryRedisGeo extends DryRedisAbstractCache<Map<String, GeoPoint>> implements DryRedisCache, DryRedisGeoOperations {
 	
