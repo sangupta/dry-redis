@@ -30,7 +30,6 @@ import java.util.Map.Entry;
 import com.sangupta.dryredis.cache.DryRedisHashOperations;
 import com.sangupta.dryredis.support.DryRedisCache;
 import com.sangupta.dryredis.support.DryRedisCacheType;
-import com.sangupta.dryredis.support.DryRedisUtils;
 
 /**
  * Hash operations from Redis
@@ -41,9 +40,7 @@ import com.sangupta.dryredis.support.DryRedisUtils;
  * @param <HK> type of hash key
  * @param <HV> type of hash value
  */
-public class DryRedisHash implements DryRedisCache, DryRedisHashOperations {
-	
-	private final Map<String, Map<String, String>> store = new HashMap<String, Map<String, String>>();
+public class DryRedisHash extends DryRedisAbstractCache<Map<String, String>> implements DryRedisCache, DryRedisHashOperations {
 	
 	// commands from redis
 	
@@ -317,44 +314,8 @@ public class DryRedisHash implements DryRedisCache, DryRedisHashOperations {
 	// commands for DryRedisCache
 
 	@Override
-	public int del(String key) {
-		Map<String, String> map = this.store.remove(key);
-		if(map == null) {
-			return 0;
-		}
-		
-		return 1;
-	}
-
-	@Override
 	public DryRedisCacheType getType() {
 		return DryRedisCacheType.HASH;
 	}
-
-    @Override
-    public boolean hasKey(String key) {
-        return this.store.containsKey(key);
-    }
-    
-    @Override
-    public void keys(String pattern, List<String> keys) {
-        
-    }
-
-    @Override
-    public byte[] dump(String key) {
-        return DryRedisUtils.createDump(this.getType(), key, this.store.get(key));
-    }
-    
-    @Override
-    public void rename(String key, String newKey) {
-        Map<String, String> value = this.store.remove(key);
-        this.store.put(newKey, value);
-    }
-
-    @Override
-    public void flushCache() {
-        this.store.clear();
-    }
 
 }

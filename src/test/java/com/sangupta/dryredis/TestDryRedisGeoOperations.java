@@ -21,12 +21,8 @@
 
 package com.sangupta.dryredis;
 
-import org.junit.Assert;
-import org.junit.Test;
-
 import com.sangupta.dryredis.cache.DryRedisGeoOperations;
 import com.sangupta.dryredis.cache.impl.TestDryRedisGeo;
-import com.sangupta.dryredis.support.DryRedisGeoUnit;
 
 /**
  * Test {@link DryRedisGeoOperations} using {@link DryRedis} instance.

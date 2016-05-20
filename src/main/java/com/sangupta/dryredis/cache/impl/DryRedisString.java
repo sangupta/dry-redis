@@ -24,18 +24,13 @@ package com.sangupta.dryredis.cache.impl;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import com.sangupta.dryredis.cache.DryRedisStringOperations;
 import com.sangupta.dryredis.support.DryRedisCache;
 import com.sangupta.dryredis.support.DryRedisCacheType;
-import com.sangupta.dryredis.support.DryRedisUtils;
 
-public class DryRedisString implements DryRedisCache, DryRedisStringOperations {
-	
-	private final Map<String, String> store = new HashMap<String, String>();
+public class DryRedisString extends DryRedisAbstractCache<String> implements DryRedisCache, DryRedisStringOperations {
 	
 	@Override
     public int append(String key, String value) {
@@ -265,44 +260,8 @@ public class DryRedisString implements DryRedisCache, DryRedisStringOperations {
 	// interface commands
 
 	@Override
-	public int del(String key) {
-		String removed = this.store.remove(key);
-		if(removed == null) {
-			return 0;
-		}
-		
-		return 1;
-	}
-
-	@Override
 	public DryRedisCacheType getType() {
 		return DryRedisCacheType.STRING;
 	}
-
-    @Override
-    public boolean hasKey(String key) {
-        return this.store.containsKey(key);
-    }
-    
-    @Override
-    public void keys(String pattern, List<String> keys) {
-        
-    }
-
-    @Override
-    public byte[] dump(String key) {
-        return DryRedisUtils.createDump(this.getType(), key, this.store.get(key));
-    }
-
-    @Override
-    public void rename(String key, String newKey) {
-        String value = this.store.remove(key);
-        this.store.put(newKey, value);
-    }
-
-    @Override
-    public void flushCache() {
-        this.store.clear();
-    }
 
 }

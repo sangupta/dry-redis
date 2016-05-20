@@ -30,13 +30,10 @@ import com.sangupta.dryredis.cache.DryRedisGeoOperations;
 import com.sangupta.dryredis.support.DryRedisCache;
 import com.sangupta.dryredis.support.DryRedisCacheType;
 import com.sangupta.dryredis.support.DryRedisGeoUnit;
-import com.sangupta.dryredis.support.DryRedisUtils;
-import com.sangupta.dryredis.support.RedisGeoHash;
 import com.sangupta.dryredis.support.Haversine;
+import com.sangupta.dryredis.vo.GeoPoint;
 
-public class DryRedisGeo implements DryRedisCache, DryRedisGeoOperations {
-	
-	private final Map<String, Map<String, GeoPoint>> store = new HashMap<String, Map<String, GeoPoint>>();
+public class DryRedisGeo extends DryRedisAbstractCache<Map<String, GeoPoint>> implements DryRedisCache, DryRedisGeoOperations {
 	
 	// redis commands
 	
@@ -262,77 +259,8 @@ public class DryRedisGeo implements DryRedisCache, DryRedisGeoOperations {
 	// from interface
 
 	@Override
-	public int del(String key) {
-		Map<String, GeoPoint> removed = this.store.remove(key);
-		if(removed == null) {
-			return 0;
-		}
-		
-		return 1;
-	}
-
-	@Override
 	public DryRedisCacheType getType() {
 		return DryRedisCacheType.GEO;
 	}
 
-    @Override
-    public boolean hasKey(String key) {
-        return this.store.containsKey(key);
-    }
-    
-    @Override
-    public void keys(String pattern, List<String> keys) {
-        
-    }
-    
-    @Override
-    public byte[] dump(String key) {
-        return DryRedisUtils.createDump(this.getType(), key, this.store.get(key));
-    }
-
-    @Override
-    public void rename(String key, String newKey) {
-        Map<String, GeoPoint> value = this.store.remove(key);
-        this.store.put(newKey, value);
-    }
-    
-    @Override
-    public void flushCache() {
-        this.store.clear();
-    }
-
-    /**
-     * Class that represents a geo-point.
-     * 
-     * @author sangupta
-     *
-     */
-	public static class GeoPoint {
-
-		public String name;
-		
-		public double latitude;
-		
-		public double longitude;
-
-		public GeoPoint(String name, double latitude, double longitude) {
-			this.name = name;
-			this.latitude = latitude;
-			this.longitude = longitude;
-		}
-		
-		public String getGeoHash() {
-			return RedisGeoHash.hash(this.latitude, this.longitude);
-		}
-
-		public double[] getPoint() {
-			double[] array = new double[2];
-			array[0] = this.latitude;
-			array[1] = this.longitude;
-			
-			return array;
-		}
-	}
-	
 }

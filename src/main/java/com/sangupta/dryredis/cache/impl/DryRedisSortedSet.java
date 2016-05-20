@@ -23,10 +23,8 @@ package com.sangupta.dryredis.cache.impl;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import com.sangupta.dryredis.cache.DryRedisSortedSetOperations;
@@ -36,11 +34,8 @@ import com.sangupta.dryredis.support.DryRedisCache;
 import com.sangupta.dryredis.support.DryRedisCacheType;
 import com.sangupta.dryredis.support.DryRedisRangeArgument;
 import com.sangupta.dryredis.support.DryRedisSetAggregationType;
-import com.sangupta.dryredis.support.DryRedisUtils;
 
-public class DryRedisSortedSet implements DryRedisCache, DryRedisSortedSetOperations {
-    
-    private Map<String, SortedSetWithPriority<String>> store = new HashMap<String, SortedSetWithPriority<String>>();
+public class DryRedisSortedSet extends DryRedisAbstractCache<SortedSetWithPriority<String>> implements DryRedisCache, DryRedisSortedSetOperations {
     
     /* (non-Javadoc)
      * @see com.sangupta.dryredis.cache.impl.DryRedisSortedSetOperations#zadd(java.lang.String, double, java.lang.String)
@@ -696,39 +691,8 @@ public class DryRedisSortedSet implements DryRedisCache, DryRedisSortedSetOperat
     // from DryRedisCache interface
 
     @Override
-    public int del(String key) {
-        return 0;
-    }
-
-    @Override
     public DryRedisCacheType getType() {
         return DryRedisCacheType.SORTED_SET;
-    }
-
-    @Override
-    public boolean hasKey(String key) {
-        return false;
-    }
-
-    @Override
-    public void keys(String pattern, List<String> keys) {
-        
-    }
-    
-    @Override
-    public byte[] dump(String key) {
-        return DryRedisUtils.createDump(this.getType(), key, this.store.get(key));
-    }
-    
-    @Override
-    public void rename(String key, String newKey) {
-        SortedSetWithPriority<String> value = this.store.remove(key);
-        this.store.put(newKey, value);
-    }
-
-    @Override
-    public void flushCache() {
-        this.store.clear();
     }
 
 }
