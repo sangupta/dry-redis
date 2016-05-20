@@ -23,7 +23,9 @@ package com.sangupta.dryredis;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -175,6 +177,10 @@ public class TestDryRedisString {
         str.set("hello", "world");
         Assert.assertEquals("", str.getrange("hello", 7, 9));
         Assert.assertEquals("", str.getrange("hello", 16, 9));
+        Assert.assertEquals("", str.getrange("hello", 16, 90));
+        
+        str.set("non-existent", "");
+        Assert.assertEquals("", str.getrange("non-existent", 1, 3));
     }
     
     @Test
@@ -228,11 +234,79 @@ public class TestDryRedisString {
     
     @Test
     public void testGETSET() {
-        DryRedisStringOperations str = getRedis();
+        DryRedisStringOperations redis = getRedis();
         
-        Assert.assertNull(str.getset("key", "value"));
-        Assert.assertEquals("value", str.getset("key", "value2"));
-        Assert.assertEquals("value2", str.getset("key", "value3"));
+        Assert.assertNull(redis.getset("key", "value"));
+        Assert.assertEquals("value", redis.getset("key", "value2"));
+        Assert.assertEquals("value2", redis.getset("key", "value3"));
+    }
+    
+    @Test
+    public void testMSET() {
+        DryRedisStringOperations redis = getRedis();
+        
+        Assert.assertEquals("OK", redis.mset(null));
+        
+        Map<String, String> map = new HashMap<String, String>();
+        Assert.assertEquals("OK", redis.mset(map));
+        
+        Assert.assertNull(redis.get("key1"));
+        Assert.assertNull(redis.get("key2"));
+        Assert.assertNull(redis.get("key3"));
+        
+        map.put("key1", "value1");
+        map.put("key2", "value2");
+        map.put("key3", "value3");
+
+        Assert.assertEquals("OK", redis.mset(map));
+        
+        Assert.assertNotNull(redis.get("key1"));
+        Assert.assertNotNull(redis.get("key2"));
+        Assert.assertNotNull(redis.get("key3"));
+        
+        Assert.assertEquals("value1", redis.get("key1"));
+        Assert.assertEquals("value2", redis.get("key2"));
+        Assert.assertEquals("value3", redis.get("key3"));
+    }
+    
+    @Test
+    public void testMSETNX() {
+        DryRedisStringOperations redis = getRedis();
+        
+        Assert.assertEquals("OK", redis.mset(null));
+        
+        Map<String, String> map = new HashMap<String, String>();
+        Assert.assertEquals(0, redis.msetnx(map));
+        
+        Assert.assertNull(redis.get("key1"));
+        Assert.assertNull(redis.get("key2"));
+        Assert.assertNull(redis.get("key3"));
+        
+        map.put("key1", "value1");
+        map.put("key2", "value2");
+        map.put("key3", "value3");
+
+        Assert.assertEquals(1, redis.msetnx(map));
+        
+        Assert.assertNotNull(redis.get("key1"));
+        Assert.assertNotNull(redis.get("key2"));
+        Assert.assertNotNull(redis.get("key3"));
+        
+        Assert.assertEquals("value1", redis.get("key1"));
+        Assert.assertEquals("value2", redis.get("key2"));
+        Assert.assertEquals("value3", redis.get("key3"));
+        
+        // will not add now
+        
+        map.put("key4", "value4");
+        map.put("key5", "value5");
+        map.put("key6", "value6");
+        
+        Assert.assertEquals(0, redis.msetnx(map));
+        
+        Assert.assertNull(redis.get("key4"));
+        Assert.assertNull(redis.get("key5"));
+        Assert.assertNull(redis.get("key6"));
     }
     
     @Test
