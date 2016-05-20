@@ -90,5 +90,23 @@ public class TestElementWithPriority {
         Assert.assertEquals("hello".hashCode(), ewp1.hashCode());
         Assert.assertEquals(ewp1.hashCode(), ewp2.hashCode());
         Assert.assertEquals(ewp1, ewp2);
+        
+        ewp1.setData("hello2");
+        ewp2.setData("hello2");
+        Assert.assertEquals("hello2".hashCode(), ewp1.hashCode());
+        Assert.assertEquals(ewp1.hashCode(), ewp2.hashCode());
+        Assert.assertEquals(ewp1, ewp2);
+    }
+    
+    @Test
+    public void testCompare() {
+        String str1 = "hello-1";
+        String str2 = "hello-2";
+        
+        ElementWithPriority<String> ewp1 = new ElementWithPriority<String>(str1, 1d);
+        ElementWithPriority<String> ewp2 = new ElementWithPriority<String>(str2, 1d);
+        
+        Assert.assertEquals(str1.compareTo(str2), ewp1.compareTo(str2));
+        Assert.assertEquals(str2.compareTo(str1), ewp2.compareTo(str1));
     }
 }

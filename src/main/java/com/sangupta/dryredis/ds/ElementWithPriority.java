@@ -32,12 +32,27 @@ package com.sangupta.dryredis.ds;
  *
  * @param <E>
  */
-public class ElementWithPriority<E> implements Comparable<E>, Cloneable {
+public class ElementWithPriority<E extends Comparable<E>> implements Comparable<E>, Cloneable {
     
+    /**
+     * The data that we store
+     */
     private E data;
     
+    /**
+     * Associated priority of the element
+     */
     private double priority;
     
+    /**
+     * Convenience constructor.
+     * 
+     * @param data
+     *            the data to be contained in this element
+     * 
+     * @param priority
+     *            the priority of this element
+     */
     public ElementWithPriority(E data, double priority) {
         this.data = data;
         this.priority = priority;
@@ -88,8 +103,16 @@ public class ElementWithPriority<E> implements Comparable<E>, Cloneable {
     }
 
     @Override
-    public int compareTo(E o) {
-        return this.compareTo(o);
+    public int compareTo(E other) {
+        if(other == null) {
+            return -1;
+        }
+        
+        if(this.data == other) {
+            return 0;
+        }
+        
+        return this.data.compareTo(other);
     }
     
     @Override
