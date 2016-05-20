@@ -23,6 +23,7 @@ package com.sangupta.dryredis.cache;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import com.sangupta.dryredis.support.DryRedisBitOperation;
 
@@ -73,5 +74,13 @@ public interface DryRedisStringOperations {
     int getbit(String key, long offset);
  
     int setbit(String key, long offset, boolean onOrOff);
+    
+    String mset(Map<String, String> values);
+    
+    String msetnx(Map<String, String> values);
+    
+    String setx(String key, long secondsToExpire, String value);
+    
+    String psetx(String key, long milliSecondsToExpire, String value);
     
 }

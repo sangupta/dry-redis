@@ -563,6 +563,28 @@ abstract class DryRedisOperationFacade extends DryRedisKeys implements DryRedisG
     
     // STRING commands
 
+    @Override
+    public String mset(Map<String, String> values) {
+        return this.stringCommands.mset(values);
+    }
+
+    @Override
+    public String msetnx(Map<String, String> values) {
+        return this.stringCommands.msetnx(values);
+    }
+
+    @Override
+    public String setx(String key, long secondsToExpire, String value) {
+        matchKeyType(key, DryRedisCacheType.STRING);
+        return this.stringCommands.setx(key, secondsToExpire, value);
+    }
+
+    @Override
+    public String psetx(String key, long milliSecondsToExpire, String value) {
+        matchKeyType(key, DryRedisCacheType.STRING);
+        return this.stringCommands.psetx(key, milliSecondsToExpire, value);
+    }
+    
     public int append(String key, String value) {
         matchKeyType(key, DryRedisCacheType.STRING);
         return this.stringCommands.append(key, value);

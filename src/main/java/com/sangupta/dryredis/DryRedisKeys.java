@@ -190,6 +190,10 @@ public abstract class DryRedisKeys {
 	    return "OK";
 	}
 	
+	public String renamenx(String key, String newKey) {
+	    throw new RuntimeException("not yet implemented");
+	}
+	
 	public List<String> keys(String pattern) {
 	    List<String> keys = new ArrayList<String>();
 	    
@@ -209,6 +213,63 @@ public abstract class DryRedisKeys {
 	    return type.toString().toLowerCase();
 	}
 	
+	public String migrate(String database, String key) {
+	    throw new RuntimeException("not yet implemented");
+	}
+	
+	public String migrate(String database, boolean copy, boolean replace, String key) {
+	    throw new RuntimeException("not yet implemented");
+	}
+	
+    public String migrate(String database, boolean copy, boolean replace, String... key) {
+        throw new RuntimeException("not yet implemented");
+    }
+    
+    public int move(String key, String database) {
+        throw new RuntimeException("not yet implemented");
+    }
+    
+    public Object object(String subCommand, String... arguments) {
+        throw new RuntimeException("not yet implemented");
+    }
+    
+    public int persist(String key) {
+        throw new RuntimeException("not yet implemented");
+    }
+    
+    public Object randomkey() {
+        throw new RuntimeException("not yet implemented");
+    }
+    
+    public String restore(String key, byte[] data) {
+        throw new RuntimeException("not yet implemented");
+    }
+    
+    public void sort(String key) {
+        throw new RuntimeException("not yet implemented");
+    }
+    
+    public long ttl(String key) {
+        throw new RuntimeException("not yet implemented");
+    }
+    
+    public long pttl(String key) {
+        throw new RuntimeException("not yet implemented");
+    }
+    
+    /**
+     * Being an in-memory and single-machine instance of Redis - there are no slaves
+     * for us. Thus, there is nothing to do in the WAIT command. Thus we return <code>0</code>
+     * to signify that we updated zero slaves.
+     * 
+     * @param numSlaves
+     * @param timeOutInMilliseconds
+     * @return
+     */
+    public int wait(int numSlaves, long timeOutInMilliseconds) {
+        return 0; 
+    }
+    
 	// private methods
 	
 	/**

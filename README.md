@@ -19,10 +19,6 @@ DryRedis supports all `Redis` commands as of version 3.0 (stable) except the fol
 * Set
   * sscan
 * Strings
-  * mset
-  * msetnx
-  * psetex
-  * setex
 * Hash
   * hscan
 * HyperLogLog
@@ -30,18 +26,7 @@ DryRedis supports all `Redis` commands as of version 3.0 (stable) except the fol
 * Sorted Set
   * zscan
 * Keys
-  * expire
-  * migrate
-  * move
-  * object
-  * persist
-  * pttl
-  * renamenx
-  * randomkey
-  * restore
   * sort
-  * ttl
-  * wait
   * scan
   
 ## Behaviour differences from Redis

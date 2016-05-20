@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import com.sangupta.dryredis.cache.DryRedisStringOperations;
 import com.sangupta.dryredis.support.DryRedisBitOperation;
@@ -260,32 +261,27 @@ public class DryRedisString extends DryRedisAbstractCache<String> implements Dry
 	
     @Override
     public int bitop(DryRedisBitOperation operation, String destinationKey, String sourceKey, String... otherKeys) {
-        // TODO Auto-generated method stub
-        return 0;
+        throw new RuntimeException("not yet implemented");
     }
 
     @Override
     public int bitpos(String key, boolean onOrOff) {
-        // TODO Auto-generated method stub
-        return 0;
+        throw new RuntimeException("not yet implemented");
     }
 
     @Override
     public int bitpos(String key, boolean onOrOff, int startByte, int endByte) {
-        // TODO Auto-generated method stub
-        return 0;
+        throw new RuntimeException("not yet implemented");
     }
 
     @Override
     public int getbit(String key, long offset) {
-        // TODO Auto-generated method stub
-        return 0;
+        throw new RuntimeException("not yet implemented");
     }
 
     @Override
     public int setbit(String key, long offset, boolean onOrOff) {
-        // TODO Auto-generated method stub
-        return 0;
+        throw new RuntimeException("not yet implemented");
     }
 
 	// interface commands
@@ -294,5 +290,25 @@ public class DryRedisString extends DryRedisAbstractCache<String> implements Dry
 	public DryRedisCacheType getType() {
 		return DryRedisCacheType.STRING;
 	}
+
+    @Override
+    public String mset(Map<String, String> values) {
+        throw new RuntimeException("not yet implemented");
+    }
+
+    @Override
+    public String msetnx(Map<String, String> values) {
+        throw new RuntimeException("not yet implemented");
+    }
+
+    @Override
+    public String setx(String key, long secondsToExpire, String value) {
+        throw new RuntimeException("not yet implemented");
+    }
+
+    @Override
+    public String psetx(String key, long milliSecondsToExpire, String value) {
+        throw new RuntimeException("not yet implemented");
+    }
 
 }
