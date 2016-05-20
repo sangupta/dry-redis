@@ -13,19 +13,15 @@ that `Redis` supports. There are many other implementation available like:
 
 ## Commands not yet supported:
 
-DryRedis supports all `Redis` commands as of version 3.2 (stable) except the following ones:
+DryRedis supports all `Redis` commands as of version 3.0 (stable) except the following ones:
 
 * List
 * Set
   * sscan
 * Strings
-  * bitop
-  * bitpos
-  * getbit
   * mset
   * msetnx
   * psetex
-  * setbit
   * setex
 * Hash
   * hscan

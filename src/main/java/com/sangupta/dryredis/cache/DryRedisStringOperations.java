@@ -24,6 +24,8 @@ package com.sangupta.dryredis.cache;
 import java.util.Collection;
 import java.util.List;
 
+import com.sangupta.dryredis.support.DryRedisBitOperation;
+
 public interface DryRedisStringOperations {
 
     int append(String key, String value);
@@ -62,4 +64,14 @@ public interface DryRedisStringOperations {
 
     String getset(String key, String value);
 
+    int bitop(DryRedisBitOperation operation, String destinationKey, String sourceKey, String... otherKeys);
+    
+    int bitpos(String key, boolean onOrOff);
+
+    int bitpos(String key, boolean onOrOff, int startByte, int endByte);
+    
+    int getbit(String key, long offset);
+ 
+    int setbit(String key, long offset, boolean onOrOff);
+    
 }

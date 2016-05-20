@@ -33,6 +33,7 @@ import com.sangupta.dryredis.cache.DryRedisListOperations;
 import com.sangupta.dryredis.cache.DryRedisSetOperations;
 import com.sangupta.dryredis.cache.DryRedisSortedSetOperations;
 import com.sangupta.dryredis.cache.DryRedisStringOperations;
+import com.sangupta.dryredis.support.DryRedisBitOperation;
 import com.sangupta.dryredis.support.DryRedisCacheType;
 import com.sangupta.dryredis.support.DryRedisGeoUnit;
 import com.sangupta.dryredis.support.DryRedisInsertOrder;
@@ -664,6 +665,31 @@ abstract class DryRedisOperationFacade extends DryRedisKeys implements DryRedisG
     public long bitcount(String key) {
         matchKeyType(key, DryRedisCacheType.STRING);
         return this.stringCommands.bitcount(key);
+    }
+    
+    public int bitop(DryRedisBitOperation operation, String destinationKey, String sourceKey, String... otherKeys) {
+        matchKeyType(sourceKey, DryRedisCacheType.STRING);
+        return this.stringCommands.bitop(operation, destinationKey, sourceKey, otherKeys);
+    }
+    
+    public int bitpos(String key, boolean onOrOff) {
+        matchKeyType(key, DryRedisCacheType.STRING);
+        return this.stringCommands.bitpos(key, onOrOff);
+    }
+
+    public int bitpos(String key, boolean onOrOff, int startByte, int endByte) {
+        matchKeyType(key, DryRedisCacheType.STRING);
+        return this.stringCommands.bitpos(key, onOrOff, startByte, endByte);
+    }
+    
+    public int getbit(String key, long offset) {
+        matchKeyType(key, DryRedisCacheType.STRING);
+        return this.stringCommands.getbit(key, offset);
+    }
+ 
+    public int setbit(String key, long offset, boolean onOrOff) {
+        matchKeyType(key, DryRedisCacheType.STRING);
+        return this.stringCommands.setbit(key, offset, onOrOff);
     }
 
 }
