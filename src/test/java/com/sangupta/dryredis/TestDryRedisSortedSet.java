@@ -19,13 +19,11 @@
  * 
  */
 
-package com.sangupta.dryredis.cache.impl;
+package com.sangupta.dryredis;
 
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.sangupta.dryredis.TestUtils;
-import com.sangupta.dryredis.cache.DryRedisSortedSetOperations;
 import com.sangupta.dryredis.support.DryRedisSetAggregationType;
 
 /**

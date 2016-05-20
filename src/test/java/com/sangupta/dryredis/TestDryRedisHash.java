@@ -19,7 +19,7 @@
  * 
  */
 
-package com.sangupta.dryredis.cache.impl;
+package com.sangupta.dryredis;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,9 +30,6 @@ import java.util.UUID;
 
 import org.junit.Assert;
 import org.junit.Test;
-
-import com.sangupta.dryredis.TestUtils;
-import com.sangupta.dryredis.cache.DryRedisHashOperations;
 
 public class TestDryRedisHash {
 

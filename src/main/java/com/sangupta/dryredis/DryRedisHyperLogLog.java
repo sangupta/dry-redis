@@ -19,17 +19,16 @@
  * 
  */
 
-package com.sangupta.dryredis.cache.impl;
+package com.sangupta.dryredis;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.sangupta.dryredis.cache.DryRedisHyperLogLogOperations;
 import com.sangupta.dryredis.ds.HyperLogLog;
 import com.sangupta.dryredis.support.DryRedisCache;
 import com.sangupta.dryredis.support.DryRedisCacheType;
 
-public class DryRedisHyperLogLog extends DryRedisAbstractCache<HyperLogLog> implements DryRedisCache, DryRedisHyperLogLogOperations {
+class DryRedisHyperLogLog extends DryRedisAbstractCache<HyperLogLog> implements DryRedisCache, DryRedisHyperLogLogOperations {
 	
 	// redis commands
 	

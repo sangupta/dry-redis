@@ -19,7 +19,7 @@
  * 
  */
 
-package com.sangupta.dryredis.cache.impl;
+package com.sangupta.dryredis;
 
 import java.util.HashMap;
 import java.util.List;

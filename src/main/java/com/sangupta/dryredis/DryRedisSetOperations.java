@@ -19,12 +19,12 @@
  * 
  */
 
-package com.sangupta.dryredis.cache;
+package com.sangupta.dryredis;
 
 import java.util.List;
 import java.util.Set;
 
-public interface DryRedisSetOperations {
+interface DryRedisSetOperations {
 
     int sadd(String key, String value);
 

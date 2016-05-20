@@ -19,21 +19,20 @@
  * 
  */
 
-package com.sangupta.dryredis.cache.impl;
+package com.sangupta.dryredis;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.sangupta.dryredis.cache.DryRedisGeoOperations;
 import com.sangupta.dryredis.support.DryRedisCache;
 import com.sangupta.dryredis.support.DryRedisCacheType;
+import com.sangupta.dryredis.support.DryRedisGeoPoint;
 import com.sangupta.dryredis.support.DryRedisGeoUnit;
-import com.sangupta.dryredis.support.GeoPoint;
 import com.sangupta.dryredis.support.Haversine;
 
-public class DryRedisGeo extends DryRedisAbstractCache<Map<String, GeoPoint>> implements DryRedisCache, DryRedisGeoOperations {
+class DryRedisGeo extends DryRedisAbstractCache<Map<String, DryRedisGeoPoint>> implements DryRedisCache, DryRedisGeoOperations {
 	
 	// redis commands
 	
@@ -42,18 +41,18 @@ public class DryRedisGeo extends DryRedisAbstractCache<Map<String, GeoPoint>> im
      */
 	@Override
     public int geoadd(String key, double longitude, double latitude, String member) {
-		Map<String, GeoPoint> points = this.store.get(key);
+		Map<String, DryRedisGeoPoint> points = this.store.get(key);
 		int result = 0;
 		
 		if(points == null) {
-			points = new HashMap<String, GeoPoint>();
+			points = new HashMap<String, DryRedisGeoPoint>();
 			this.store.put(key, points);
 		}
 		
         if(!points.containsKey(member)) {
             result = 1;
         }
-		points.put(member, new GeoPoint(member, latitude, longitude));
+		points.put(member, new DryRedisGeoPoint(member, latitude, longitude));
 		return result;
 	}
 	
@@ -62,12 +61,12 @@ public class DryRedisGeo extends DryRedisAbstractCache<Map<String, GeoPoint>> im
      */
 	@Override
     public String geohash(String key, String member) {
-		Map<String, GeoPoint> points = this.store.get(key);
+		Map<String, DryRedisGeoPoint> points = this.store.get(key);
 		if(points == null) {
 			return null;
 		}
 		
-		GeoPoint point = points.get(member);
+		DryRedisGeoPoint point = points.get(member);
 		if(point == null) {
 			return null;
 		}
@@ -80,12 +79,12 @@ public class DryRedisGeo extends DryRedisAbstractCache<Map<String, GeoPoint>> im
      */
 	@Override
     public double[] geopos(String key, String member) {
-		Map<String, GeoPoint> points = this.store.get(key);
+		Map<String, DryRedisGeoPoint> points = this.store.get(key);
 		if(points == null) {
 			return null;
 		}
 		
-		GeoPoint geoPoint = points.get(member);
+		DryRedisGeoPoint geoPoint = points.get(member);
 		if(geoPoint == null) {
 			return null;
 		}
@@ -98,13 +97,13 @@ public class DryRedisGeo extends DryRedisAbstractCache<Map<String, GeoPoint>> im
      */
 	@Override
     public Double geodist(String key, String member1, String member2, DryRedisGeoUnit unit) {
-		Map<String, GeoPoint> points = this.store.get(key);
+		Map<String, DryRedisGeoPoint> points = this.store.get(key);
 		if(points == null) {
 			return null;
 		}
 		
-		GeoPoint point1 = points.get(member1);
-		GeoPoint point2 = points.get(member2);
+		DryRedisGeoPoint point1 = points.get(member1);
+		DryRedisGeoPoint point2 = points.get(member2);
 		
 		if(point1 == null || point2 == null) {
 			return null;
@@ -145,7 +144,7 @@ public class DryRedisGeo extends DryRedisAbstractCache<Map<String, GeoPoint>> im
      */
 	@Override
     public List<String> georadius(String key, double longitude, double latitude, double radius, DryRedisGeoUnit unit, boolean withCoordinates, boolean withDistance, boolean withHash, int count) {
-		GeoPoint origin = new GeoPoint("origin", latitude, longitude);
+		DryRedisGeoPoint origin = new DryRedisGeoPoint("origin", latitude, longitude);
 		return this.getUsingRadius(key, origin, radius, unit, withCoordinates, withDistance, withHash, count);
 	}
 	
@@ -162,12 +161,12 @@ public class DryRedisGeo extends DryRedisAbstractCache<Map<String, GeoPoint>> im
      */
 	@Override
     public List<String> georadiusbymember(String key, String member, double radius, DryRedisGeoUnit unit, boolean withCoordinates, boolean withDistance, boolean withHash, int count) {
-		Map<String, GeoPoint> points = this.store.get(key);
+		Map<String, DryRedisGeoPoint> points = this.store.get(key);
 		if(points == null) {
 			return null;
 		}
 		
-		GeoPoint origin = points.get(member);
+		DryRedisGeoPoint origin = points.get(member);
 		if(origin == null) {
 			return null;
 		}
@@ -175,8 +174,8 @@ public class DryRedisGeo extends DryRedisAbstractCache<Map<String, GeoPoint>> im
 		return this.getUsingRadius(key, origin, radius, unit, withCoordinates, withDistance, withHash, count);
 	}
 	
-	private List<String> getUsingRadius(String key, GeoPoint origin, double radius, DryRedisGeoUnit unit, boolean withCoordinates, boolean withDistance, boolean withHash, int count) {
-		Map<String, GeoPoint> points = this.store.get(key);
+	private List<String> getUsingRadius(String key, DryRedisGeoPoint origin, double radius, DryRedisGeoUnit unit, boolean withCoordinates, boolean withDistance, boolean withHash, int count) {
+		Map<String, DryRedisGeoPoint> points = this.store.get(key);
 		if(points == null) {
 			return null;
 		}
@@ -192,7 +191,7 @@ public class DryRedisGeo extends DryRedisAbstractCache<Map<String, GeoPoint>> im
 		}
 		
 		int pointsFound = 0;
-		for(GeoPoint point : points.values()) {
+		for(DryRedisGeoPoint point : points.values()) {
 			double distance = Haversine.distance(origin.latitude, origin.longitude, point.latitude, point.longitude);
 			if(distance < radius) {
 				result.add(point.name);

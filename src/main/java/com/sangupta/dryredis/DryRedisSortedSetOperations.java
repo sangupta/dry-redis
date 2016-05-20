@@ -19,7 +19,7 @@
  * 
  */
 
-package com.sangupta.dryredis.cache;
+package com.sangupta.dryredis;
 
 import java.util.List;
 import java.util.Set;
@@ -27,7 +27,7 @@ import java.util.Set;
 import com.sangupta.dryredis.support.DryRedisRangeArgument;
 import com.sangupta.dryredis.support.DryRedisSetAggregationType;
 
-public interface DryRedisSortedSetOperations {
+interface DryRedisSortedSetOperations {
 
     public int zadd(String key, double score, String member);
 

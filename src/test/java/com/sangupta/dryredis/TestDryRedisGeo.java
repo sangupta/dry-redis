@@ -19,11 +19,9 @@
  * 
  */
 
-package com.sangupta.dryredis.cache.impl;
+package com.sangupta.dryredis;
 
 import org.junit.Test;
-
-import com.sangupta.dryredis.cache.DryRedisGeoOperations;
 
 /**
  * Unit tests for {@link DryRedisGeo}.

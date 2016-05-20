@@ -19,7 +19,7 @@
  * 
  */
 
-package com.sangupta.dryredis.cache.impl;
+package com.sangupta.dryredis;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -27,8 +27,6 @@ import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
-
-import com.sangupta.dryredis.cache.DryRedisStringOperations;
 
 public class TestDryRedisString {
 

@@ -29,7 +29,7 @@ import com.sangupta.dryredis.support.RedisGeoHash;
  * @author sangupta
  *
  */
-public class GeoPoint {
+public class DryRedisGeoPoint {
     
     public static final int THOUSAND = 1000;
 
@@ -41,7 +41,7 @@ public class GeoPoint {
     
     public double longitude;
 
-    public GeoPoint(String name, double latitude, double longitude) {
+    public DryRedisGeoPoint(String name, double latitude, double longitude) {
         this.name = name;
         this.latitude = latitude;
         this.longitude = longitude;
@@ -79,11 +79,11 @@ public class GeoPoint {
             return true;
         }
         
-        if(!(obj instanceof GeoPoint)) {
+        if(!(obj instanceof DryRedisGeoPoint)) {
             return false;
         }
         
-        GeoPoint gp = (GeoPoint) obj;
+        DryRedisGeoPoint gp = (DryRedisGeoPoint) obj;
         return this.latitude == gp.latitude && this.longitude == gp.longitude;
     }
 }

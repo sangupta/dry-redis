@@ -19,13 +19,13 @@
  * 
  */
 
-package com.sangupta.dryredis.cache;
+package com.sangupta.dryredis;
 
 import java.util.List;
 
 import com.sangupta.dryredis.support.DryRedisInsertOrder;
 
-public interface DryRedisListOperations {
+interface DryRedisListOperations {
 
     String blpop(String key, int maxSecondsToBlock);
 

@@ -21,9 +21,6 @@
 
 package com.sangupta.dryredis;
 
-import com.sangupta.dryredis.cache.DryRedisSortedSetOperations;
-import com.sangupta.dryredis.cache.impl.TestDryRedisSortedSet;
-
 /**
  * Test {@link DryRedisSortedSetOperations} using {@link DryRedis} instance.
  * 

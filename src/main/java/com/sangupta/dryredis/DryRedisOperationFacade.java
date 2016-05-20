@@ -26,13 +26,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.sangupta.dryredis.cache.DryRedisGeoOperations;
-import com.sangupta.dryredis.cache.DryRedisHashOperations;
-import com.sangupta.dryredis.cache.DryRedisHyperLogLogOperations;
-import com.sangupta.dryredis.cache.DryRedisListOperations;
-import com.sangupta.dryredis.cache.DryRedisSetOperations;
-import com.sangupta.dryredis.cache.DryRedisSortedSetOperations;
-import com.sangupta.dryredis.cache.DryRedisStringOperations;
 import com.sangupta.dryredis.support.DryRedisBitOperation;
 import com.sangupta.dryredis.support.DryRedisCacheType;
 import com.sangupta.dryredis.support.DryRedisGeoUnit;

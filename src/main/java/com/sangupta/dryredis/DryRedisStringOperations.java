@@ -19,7 +19,7 @@
  * 
  */
 
-package com.sangupta.dryredis.cache;
+package com.sangupta.dryredis;
 
 import java.util.Collection;
 import java.util.List;
@@ -27,7 +27,7 @@ import java.util.Map;
 
 import com.sangupta.dryredis.support.DryRedisBitOperation;
 
-public interface DryRedisStringOperations {
+interface DryRedisStringOperations {
 
     int append(String key, String value);
 

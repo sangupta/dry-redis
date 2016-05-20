@@ -19,11 +19,11 @@
  * 
  */
 
-package com.sangupta.dryredis.cache;
+package com.sangupta.dryredis;
 
 import java.util.List;
 
-public interface DryRedisHyperLogLogOperations {
+interface DryRedisHyperLogLogOperations {
 
     int pfadd(String key);
 

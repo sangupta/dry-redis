@@ -19,7 +19,7 @@
  * 
  */
 
-package com.sangupta.dryredis.cache.impl;
+package com.sangupta.dryredis;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.sangupta.dryredis.cache.DryRedisHashOperations;
 import com.sangupta.dryredis.support.DryRedisCache;
 import com.sangupta.dryredis.support.DryRedisCacheType;
 
@@ -40,7 +39,7 @@ import com.sangupta.dryredis.support.DryRedisCacheType;
  * @param <HK> type of hash key
  * @param <HV> type of hash value
  */
-public class DryRedisHash extends DryRedisAbstractCache<Map<String, String>> implements DryRedisCache, DryRedisHashOperations {
+class DryRedisHash extends DryRedisAbstractCache<Map<String, String>> implements DryRedisCache, DryRedisHashOperations {
 	
 	// commands from redis
 	

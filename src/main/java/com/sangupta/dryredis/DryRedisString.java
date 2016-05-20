@@ -19,7 +19,7 @@
  * 
  */
 
-package com.sangupta.dryredis.cache.impl;
+package com.sangupta.dryredis;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,13 +29,12 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import com.sangupta.dryredis.cache.DryRedisStringOperations;
 import com.sangupta.dryredis.support.DryRedisBitOperation;
 import com.sangupta.dryredis.support.DryRedisCache;
 import com.sangupta.dryredis.support.DryRedisCacheType;
 import com.sangupta.dryredis.support.DryRedisUtils;
 
-public class DryRedisString extends DryRedisAbstractCache<String> implements DryRedisCache, DryRedisStringOperations {
+class DryRedisString extends DryRedisAbstractCache<String> implements DryRedisCache, DryRedisStringOperations {
 	
 	@Override
     public int append(String key, String value) {

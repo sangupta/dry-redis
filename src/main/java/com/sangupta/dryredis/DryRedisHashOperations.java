@@ -19,12 +19,12 @@
  * 
  */
 
-package com.sangupta.dryredis.cache;
+package com.sangupta.dryredis;
 
 import java.util.List;
 import java.util.Map;
 
-public interface DryRedisHashOperations {
+interface DryRedisHashOperations {
 
     public int hdel(String key, String field);
 

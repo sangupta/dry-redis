@@ -19,7 +19,7 @@
  * 
  */
 
-package com.sangupta.dryredis.cache.impl;
+package com.sangupta.dryredis;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,7 +27,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import com.sangupta.dryredis.cache.DryRedisSortedSetOperations;
 import com.sangupta.dryredis.ds.ElementWithPriority;
 import com.sangupta.dryredis.ds.SortedSetWithPriority;
 import com.sangupta.dryredis.support.DryRedisCache;
@@ -35,7 +34,7 @@ import com.sangupta.dryredis.support.DryRedisCacheType;
 import com.sangupta.dryredis.support.DryRedisRangeArgument;
 import com.sangupta.dryredis.support.DryRedisSetAggregationType;
 
-public class DryRedisSortedSet extends DryRedisAbstractCache<SortedSetWithPriority<String>> implements DryRedisCache, DryRedisSortedSetOperations {
+class DryRedisSortedSet extends DryRedisAbstractCache<SortedSetWithPriority<String>> implements DryRedisCache, DryRedisSortedSetOperations {
     
     /* (non-Javadoc)
      * @see com.sangupta.dryredis.cache.impl.DryRedisSortedSetOperations#zadd(java.lang.String, double, java.lang.String)

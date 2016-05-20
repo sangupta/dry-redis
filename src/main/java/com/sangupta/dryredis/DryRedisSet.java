@@ -19,7 +19,7 @@
  * 
  */
 
-package com.sangupta.dryredis.cache.impl;
+package com.sangupta.dryredis;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -27,11 +27,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import com.sangupta.dryredis.cache.DryRedisSetOperations;
 import com.sangupta.dryredis.support.DryRedisCache;
 import com.sangupta.dryredis.support.DryRedisCacheType;
 
-public class DryRedisSet extends DryRedisAbstractCache<Set<String>> implements DryRedisCache, DryRedisSetOperations {
+class DryRedisSet extends DryRedisAbstractCache<Set<String>> implements DryRedisCache, DryRedisSetOperations {
 	
 	// commands from redis
 	

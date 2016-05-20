@@ -19,19 +19,18 @@
  * 
  */
 
-package com.sangupta.dryredis.cache.impl;
+package com.sangupta.dryredis;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import com.sangupta.dryredis.cache.DryRedisListOperations;
 import com.sangupta.dryredis.support.DryRedisCache;
 import com.sangupta.dryredis.support.DryRedisCacheType;
 import com.sangupta.dryredis.support.DryRedisInsertOrder;
 import com.sangupta.dryredis.support.DryRedisUtils;
 
-public class DryRedisList extends DryRedisAbstractCache<List<String>> implements DryRedisCache, DryRedisListOperations {
+class DryRedisList extends DryRedisAbstractCache<List<String>> implements DryRedisCache, DryRedisListOperations {
 	
 	private final Object blockingMonitor = new Object();
 	

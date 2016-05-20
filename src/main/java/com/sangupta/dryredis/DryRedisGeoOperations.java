@@ -19,13 +19,13 @@
  * 
  */
 
-package com.sangupta.dryredis.cache;
+package com.sangupta.dryredis;
 
 import java.util.List;
 
 import com.sangupta.dryredis.support.DryRedisGeoUnit;
 
-public interface DryRedisGeoOperations {
+interface DryRedisGeoOperations {
 
     public int geoadd(String key, double longitude, double latitude, String member);
 
