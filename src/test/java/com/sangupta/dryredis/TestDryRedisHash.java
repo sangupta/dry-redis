@@ -141,7 +141,7 @@ public class TestDryRedisHash {
     }
     
     @Test
-    public void HVALS() {
+    public void testHVALS() {
         DryRedisHashOperations redis = getRedis();
         
         redis.hset("key", "field1", "value1");
@@ -158,6 +158,7 @@ public class TestDryRedisHash {
         redis.hdel("key", "field2");
         redis.hdel("key", "field3");
         redis.hdel("key", "field4");
+        TestUtils.equalUnsorted(TestUtils.asList(""), redis.hvals("key"));
         TestUtils.equalUnsorted(TestUtils.asList(""), redis.hvals("non-existent"));
     }
     
@@ -195,6 +196,10 @@ public class TestDryRedisHash {
     public void testHGETALL() {
         DryRedisHashOperations redis = getRedis();
         
+        // test non-existent
+        Assert.assertNull(redis.hgetall("non-existent"));
+        
+        // valid cases
         Map<String, String> map = new HashMap<String, String>();
         for(int index = 0; index < 1000; index++) {
             String field = UUID.randomUUID().toString();
@@ -234,6 +239,8 @@ public class TestDryRedisHash {
                 keys.add(field);
             }
         }
+        
+        Assert.assertNull(redis.hmget("non-existent", keys));
         
         // start testing
         List<String> list = redis.hmget("key", keys);

@@ -273,7 +273,7 @@ class DryRedisSet extends DryRedisAbstractCache<Set<String>> implements DryRedis
 			return null;
 		}
 		
-		if(count == 0) {
+		if(count <= 0) {
 		    return null;
 		}
 		

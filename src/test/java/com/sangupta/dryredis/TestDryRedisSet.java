@@ -315,6 +315,10 @@ public class TestDryRedisSet {
         Assert.assertEquals(8, redis.scard("key"));
         Assert.assertEquals(3, redis.srem("key", TestUtils.asList("value1", "value2", "v", "value3")));
         Assert.assertEquals(5, redis.scard("key"));
+        
+        // remove non-existent key
+        redis = getRedis();
+        Assert.assertEquals(0, redis.srem("key", TestUtils.asList("value1", "value2", "v", "value3")));
     }
     
     @Test
@@ -377,13 +381,19 @@ public class TestDryRedisSet {
     }
     
     @Test
-    public void SRANDMEMBER() {
+    public void testSRANDMEMBER() {
         DryRedisSetOperations redis = getRedis();
         
         Assert.assertNull(redis.srandmember("non-existent"));
         Assert.assertNull(redis.srandmember("non-existent", 5));
         
+        // invalid count
+        redis.sadd("key", "value1");
+        Assert.assertNull(redis.srandmember("key", 0));
+        Assert.assertNull(redis.srandmember("key", -1));
+
         // valid cases
+        redis = getRedis();
         redis.sadd("key", "value1");
         redis.sadd("key", "value2");
         redis.sadd("key", "value3");
