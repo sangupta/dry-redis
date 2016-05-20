@@ -26,11 +26,14 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import com.sangupta.dryredis.cache.DryRedisStringOperations;
 import com.sangupta.dryredis.support.DryRedisBitOperation;
 import com.sangupta.dryredis.support.DryRedisCache;
 import com.sangupta.dryredis.support.DryRedisCacheType;
+import com.sangupta.dryredis.support.DryRedisUtils;
 
 public class DryRedisString extends DryRedisAbstractCache<String> implements DryRedisCache, DryRedisStringOperations {
 	
@@ -266,17 +269,50 @@ public class DryRedisString extends DryRedisAbstractCache<String> implements Dry
 
     @Override
     public int bitpos(String key, boolean onOrOff) {
-        throw new RuntimeException("not yet implemented");
+        String value = this.store.get(key);
+        if(key == null || key.isEmpty()) {
+            if(onOrOff) {
+                return -1;
+            }
+            
+            return 0;
+        }
+        
+        byte[] bytes = value.getBytes();
+        return DryRedisUtils.getNextBit(bytes, onOrOff, 0, bytes.length);
     }
 
     @Override
     public int bitpos(String key, boolean onOrOff, int startByte, int endByte) {
-        throw new RuntimeException("not yet implemented");
+        String value = this.store.get(key);
+        if(key == null || key.isEmpty()) {
+            if(onOrOff) {
+                return -1;
+            }
+            
+            return 0;
+        }
+        
+        byte[] bytes = value.getBytes();
+        return DryRedisUtils.getNextBit(bytes, onOrOff, startByte, endByte);
     }
 
     @Override
     public int getbit(String key, long offset) {
-        throw new RuntimeException("not yet implemented");
+        String value = this.store.get(key);
+        if(key == null || key.isEmpty()) {
+            return 0;
+        }
+        
+        byte[] bytes = value.getBytes();
+        int byteNum = (int) (offset / 8);
+        if(byteNum >= bytes.length) {
+            return 0;
+        }
+        
+        byte bite = bytes[byteNum];
+        int bit = (int) (offset % 8);
+        return (bite >> bit) & 1;
     }
 
     @Override
@@ -293,22 +329,49 @@ public class DryRedisString extends DryRedisAbstractCache<String> implements Dry
 
     @Override
     public String mset(Map<String, String> values) {
-        throw new RuntimeException("not yet implemented");
+        if(values == null || values.isEmpty()) {
+            return "OK";
+        }
+        
+        for(Entry<String, String> entry : values.entrySet()) {
+            this.store.put(entry.getKey(), entry.getValue());
+        }
+        
+        return "OK";
     }
 
     @Override
-    public String msetnx(Map<String, String> values) {
-        throw new RuntimeException("not yet implemented");
+    public int msetnx(Map<String, String> values) {
+        if(values == null || values.isEmpty()) {
+            return 0;
+        }
+        
+        Set<String> keys = values.keySet();
+        for(String key : keys) {
+            if(this.hasKey(key)) {
+                return 0;
+            }
+        }
+        
+        for(String key : keys) {
+            this.store.put(key, values.get(key));
+        }
+        
+        return 1;
     }
 
     @Override
-    public String setx(String key, long secondsToExpire, String value) {
-        throw new RuntimeException("not yet implemented");
+    public String setex(String key, long secondsToExpire, String value) {
+        this.set(key, value);
+        this.pexpireat(key, System.currentTimeMillis() + secondsToExpire * 1000l);
+        return "OK";
     }
 
     @Override
-    public String psetx(String key, long milliSecondsToExpire, String value) {
-        throw new RuntimeException("not yet implemented");
+    public String psetex(String key, long milliSecondsToExpire, String value) {
+        this.set(key, value);
+        this.pexpireat(key, System.currentTimeMillis() + milliSecondsToExpire);
+        return "OK";
     }
 
 }

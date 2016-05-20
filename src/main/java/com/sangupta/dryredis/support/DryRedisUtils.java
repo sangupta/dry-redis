@@ -104,5 +104,9 @@ public class DryRedisUtils {
 
         return j == pattern.length();
     }
+
+    public static int getNextBit(byte[] bytes, boolean onOrOff, int start, int end) {
+        throw new RuntimeException("not yet implemented");
+    }
 	
 }

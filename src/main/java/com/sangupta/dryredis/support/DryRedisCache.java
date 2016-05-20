@@ -80,5 +80,7 @@ public interface DryRedisCache {
      * 
      */
     public void flushCache();
+    
+    public int pexpireat(String key, long epochAsMilliseconds);
 
 }

@@ -77,10 +77,10 @@ public interface DryRedisStringOperations {
     
     String mset(Map<String, String> values);
     
-    String msetnx(Map<String, String> values);
+    int msetnx(Map<String, String> values);
     
-    String setx(String key, long secondsToExpire, String value);
+    String setex(String key, long secondsToExpire, String value);
     
-    String psetx(String key, long milliSecondsToExpire, String value);
+    String psetex(String key, long milliSecondsToExpire, String value);
     
 }

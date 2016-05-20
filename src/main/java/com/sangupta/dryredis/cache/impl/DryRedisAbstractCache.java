@@ -41,6 +41,38 @@ abstract class DryRedisAbstractCache<T> implements DryRedisCache {
     
     protected final Map<String, T> store = new HashMap<String, T>();
 
+    // TODO: change this into guava cache - so that we can clean up old timers
+    private final Map<String, Long> EXPIRE_TIMES = new HashMap<String, Long>();
+    
+    public int pexpireat(String key, long epochAsMilliseconds) {
+        if(!this.hasKey(key)) {
+            return 0;
+        }
+        
+        EXPIRE_TIMES.put(key, epochAsMilliseconds);
+        return 1;
+    }
+    
+    /**
+     * Check if a key has expired or not.
+     * 
+     * @param key
+     * @return
+     */
+    protected boolean isExpired(String key) {
+        Long expiry = EXPIRE_TIMES.get(key);
+        if(expiry == null) {
+            return false;
+        }
+        
+        long value = expiry.longValue();
+        if(System.currentTimeMillis() >= value) {
+            return true;
+        }
+        
+        return false;
+    }
+
     @Override
     public int del(String key) {
         T removed = this.store.remove(key);
@@ -53,7 +85,17 @@ abstract class DryRedisAbstractCache<T> implements DryRedisCache {
 
     @Override
     public boolean hasKey(String key) {
-        return this.store.containsKey(key);
+        if(!this.store.containsKey(key)) {
+            return false;
+        }
+
+        // check for expiry
+        if(isExpired(key)) {
+            this.del(key);
+            return false;
+        }
+        
+        return true;
     }
     
     @Override

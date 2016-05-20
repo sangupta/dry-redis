@@ -22,9 +22,7 @@
 package com.sangupta.dryredis;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import com.sangupta.dryredis.cache.impl.DryRedisGeo;
 import com.sangupta.dryredis.cache.impl.DryRedisHash;
@@ -47,24 +45,50 @@ import com.sangupta.dryredis.support.DryRedisCacheType;
  */
 public abstract class DryRedisKeys {
     
-    private final Map<String, Long> EXPIRE_TIMES = new HashMap<String, Long>();
-	
+    /**
+     * A list of all {@link DryRedisCache} implementations that reflect a
+     * category of redis commands.
+     */
 	private final List<DryRedisCache> caches = new ArrayList<DryRedisCache>();
 	
+	/**
+	 * Redis GEO commands implementation
+	 */
 	protected final DryRedisGeo geoCommands = new DryRedisGeo();
 	
+	/**
+	 * Redis HASH commands implementation
+	 */
 	protected final DryRedisHash hashCommands = new DryRedisHash();
 	
+	/**
+	 * Redis HyperLogLog commands implementation
+	 */
 	protected final DryRedisHyperLogLog hyperLogLogCommands = new DryRedisHyperLogLog();
 	
+	/**
+	 * Redis LIST commands implementation
+	 */
 	protected final DryRedisList listCommands = new DryRedisList();
 	
+	/**
+	 * Redis SET commands implementation
+	 */
 	protected final DryRedisSet setCommands = new DryRedisSet();
 	
+	/**
+	 * Redis STRING commands implementation
+	 */
 	protected final DryRedisString stringCommands = new DryRedisString();
 	
+	/**
+	 * Redis SORTED SET commands implementation
+	 */
 	protected final DryRedisSortedSet sortedSetCommands = new DryRedisSortedSet();
 	
+	/**
+	 * Constructor
+	 */
 	public DryRedisKeys() {
         caches.add(this.geoCommands);
         caches.add(this.hashCommands);
@@ -124,12 +148,6 @@ public abstract class DryRedisKeys {
 	public int exists(String key) {
 	    for(DryRedisCache cache : caches) {
 	        if(cache.hasKey(key)) {
-	            // check for expiry
-	            if(isExpired(key)) {
-	                cache.del(key);
-	                return 0;
-	            }
-	            
 	            return 1;
 	        }
 	    }
@@ -164,12 +182,14 @@ public abstract class DryRedisKeys {
 	}
 	
 	public int pexpireat(String key, long epochAsMilliseconds) {
-	    if(this.exists(key) == 0) {
-            return 0;
-        }
+	    for(DryRedisCache cache : this.caches) {
+	        int result = cache.pexpireat(key, epochAsMilliseconds);
+	        if(result > 0) {
+	            return result;
+	        }
+	    }
 	    
-	    EXPIRE_TIMES.put(key, epochAsMilliseconds);
-	    return 1;
+	    return 0;
 	}
 	
 	public String rename(String key, String newKey) {
@@ -303,26 +323,6 @@ public abstract class DryRedisKeys {
 	    return cache.getType();
 	}
 	
-	/**
-	 * Check if a key has expired or not.
-	 * 
-	 * @param key
-	 * @return
-	 */
-	protected boolean isExpired(String key) {
-	    Long expiry = EXPIRE_TIMES.get(key);
-	    if(expiry == null) {
-	        return false;
-	    }
-	    
-	    long value = expiry.longValue();
-	    if(System.currentTimeMillis() >= value) {
-	        return true;
-	    }
-	    
-	    return false;
-	}
-
 	/**
      * Check if the {@link DryRedisCacheType} for the given key is the same as
      * the provided {@link DryRedisCacheType}. If not, an
