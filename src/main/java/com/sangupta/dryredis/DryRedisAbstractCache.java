@@ -22,6 +22,7 @@
 package com.sangupta.dryredis;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -74,8 +75,34 @@ abstract class DryRedisAbstractCache<T> implements DryRedisCache {
     }
 
     @Override
-    public int del(String key) {
-        T removed = this.store.remove(key);
+    public int del(String keyPattern) {
+        if(keyPattern.contains("*") || keyPattern.contains("?")) {
+            // wildcard-match
+            Set<String> keySet = this.store.keySet();
+            if(keySet == null || keySet.isEmpty()) {
+                return 0;
+            }
+            
+            Set<String> toRemove = new HashSet<String>();
+            for(String key : keySet) {
+                if(DryRedisUtils.wildcardMatch(key, keyPattern)) {
+                    toRemove.add(key);
+                }
+            }
+            
+            if(toRemove.isEmpty()) {
+                return 0;
+            }
+
+            for(String key : toRemove) {
+                this.store.remove(key);
+            }
+            
+            return toRemove.size();
+        }
+        
+        // normal key
+        T removed = this.store.remove(keyPattern);
         if(removed == null) {
             return 0;
         }

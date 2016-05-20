@@ -203,8 +203,26 @@ abstract class DryRedisKeys {
 	    return "OK";
 	}
 	
-	public String renamenx(String key, String newKey) {
-	    throw new RuntimeException("not yet implemented");
+	public int renamenx(String key, String newKey) {
+	    if(key == null || newKey == null) {
+            return 0;
+        }
+        
+        if(key.equals(newKey)) {
+            return 0;
+        }
+        
+        if(this.exists(key) == 0) {
+            return 0;
+        }
+        
+        if(this.exists(newKey) == 1) {
+            return 0;
+        }
+        
+        DryRedisCache cache = this.getCache(key);
+        cache.rename(key, newKey);
+        return 1;
 	}
 	
 	public List<String> keys(String pattern) {
