@@ -48,7 +48,7 @@ public class DryRedis extends DryRedisOperationFacade {
      * use the {@link #getDatabase(String)} method to obtain instance.
      */
     private DryRedis() {
-        
+        // do nothing
     }
     
     public static DryRedis getDatabase() {
