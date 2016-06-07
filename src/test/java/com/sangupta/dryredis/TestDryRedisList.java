@@ -42,6 +42,97 @@ public class TestDryRedisList {
     final String listName = UUID.randomUUID().toString();
     
     @Test
+    public void testBLPOP() {
+        final DryRedisListOperations redis = getRedis();
+        
+        Assert.assertNull(redis.blpop("test", 1));
+        
+        redis.lpush("test", "values");
+        Assert.assertNotNull(redis.blpop("test", 1));
+        
+        Assert.assertNull(redis.lpop("test"));
+        new Thread(new Runnable() {
+            
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    // eat up
+                }
+                
+                redis.lpush("test", "values");
+            }
+            
+        }).start();
+        
+        Assert.assertNotNull(redis.blpop("test", 3));
+    }
+    
+    @Test
+    public void testBRPOP() {
+        final DryRedisListOperations redis = getRedis();
+        
+        Assert.assertNull(redis.brpop("test", 1));
+        
+        redis.lpush("test", "values");
+        Assert.assertNotNull(redis.brpop("test", 1));
+        
+        Assert.assertNull(redis.lpop("test"));
+        new Thread(new Runnable() {
+            
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    // eat up
+                }
+                
+                redis.lpush("test", "values");
+            }
+            
+        }).start();
+        
+        Assert.assertNotNull(redis.brpop("test", 3));
+    }
+    
+    @Test
+    public void testBRPOPLPUSH() {
+        final DryRedisListOperations redis = getRedis();
+        
+        Assert.assertNull(redis.brpoplpush("test", "test2", 1));
+        Assert.assertEquals(0, redis.llen("test2"));
+        
+        redis.lpush("test", "values");
+        Assert.assertNotNull(redis.brpoplpush("test", "test2", 1));
+        
+        Assert.assertEquals(1, redis.llen("test2"));
+        Assert.assertNotNull(redis.lpop("test2"));
+        Assert.assertNull(redis.lpop("test2"));
+        
+        new Thread(new Runnable() {
+            
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    // eat up
+                }
+                
+                redis.lpush("test", "values");
+            }
+            
+        }).start();
+        
+        Assert.assertNotNull(redis.brpoplpush("test", "test2", 1));
+        Assert.assertEquals(1, redis.llen("test2"));
+        Assert.assertNotNull(redis.lpop("test2"));
+        Assert.assertNull(redis.lpop("test2"));
+    }
+    
+    @Test
     public void testLINDEX() {
         DryRedisListOperations redis = getRedis();
         

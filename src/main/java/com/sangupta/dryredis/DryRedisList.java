@@ -24,6 +24,10 @@ package com.sangupta.dryredis;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import com.sangupta.dryredis.support.DryRedisCache;
 import com.sangupta.dryredis.support.DryRedisCacheType;
@@ -32,32 +36,41 @@ import com.sangupta.dryredis.support.DryRedisUtils;
 
 class DryRedisList extends DryRedisAbstractCache<List<String>> implements DryRedisCache, DryRedisListOperations {
 	
-	private final Object blockingMonitor = new Object();
+	private final Lock reEntrantLock = new ReentrantLock();
+	
+	private final Condition waitingCondition = this.reEntrantLock.newCondition();
 	
 	/* (non-Javadoc)
      * @see com.sangupta.dryredis.cache.impl.DryRedisListOperations#blpop(java.lang.String, int)
      */
 	@Override
     public String blpop(String key, int maxSecondsToBlock) {
-	    final long millis = maxSecondsToBlock * 1000l;
-	    final long end = System.currentTimeMillis() + millis;
-		
-	    do {
-		    String result = this.lpop(key);
-		    if(result != null) {
-		        return result;
-		    }
-		    
-            if(System.currentTimeMillis() > end) {
-                return null;
-            }
+        final long millis = maxSecondsToBlock * 1000l;
+        final long end = System.currentTimeMillis() + millis;
 
-            try {
-                this.blockingMonitor.wait(maxSecondsToBlock * 1000l);
-            } catch (InterruptedException e) {
-                return null;
-            }
-		} while(true);
+        try {
+            this.reEntrantLock.lockInterruptibly();
+            
+    	    do {
+    		    String result = this.lpop(key);
+    		    if(result != null) {
+    		        return result;
+    		    }
+    		    
+    		    long current = System.currentTimeMillis();
+                if(current > end) {
+                    break;
+                }
+    
+                this.waitingCondition.await(maxSecondsToBlock, TimeUnit.SECONDS);
+    		} while(true);
+    	    
+    	    return null;
+        } catch(InterruptedException e) {
+            return null;
+        } finally {
+            this.reEntrantLock.unlock();
+        }
 	}
 	
 	/* (non-Javadoc)
@@ -65,25 +78,32 @@ class DryRedisList extends DryRedisAbstractCache<List<String>> implements DryRed
      */
 	@Override
     public String brpop(String key, int maxSecondsToBlock) {
-        final long millis = maxSecondsToBlock * 1000l;
+	    final long millis = maxSecondsToBlock * 1000l;
         final long end = System.currentTimeMillis() + millis;
-        
-        do {
-            String result = this.rpop(key);
-            if(result != null) {
-                return result;
-            }
-            
-            if(System.currentTimeMillis() > end) {
-                return null;
-            }
 
-            try {
-                this.blockingMonitor.wait(maxSecondsToBlock * 1000l);
-            } catch (InterruptedException e) {
-                return null;
-            }
-        } while(true);
+        try {
+            this.reEntrantLock.lockInterruptibly();
+            
+            do {
+                String result = this.rpop(key);
+                if(result != null) {
+                    return result;
+                }
+                
+                long current = System.currentTimeMillis();
+                if(current > end) {
+                    break;
+                }
+    
+                this.waitingCondition.await(maxSecondsToBlock, TimeUnit.SECONDS);
+            } while(true);
+            
+            return null;
+        } catch(InterruptedException e) {
+            return null;
+        } finally {
+            this.reEntrantLock.unlock();
+        }
 	}
 	
 	/* (non-Javadoc)
@@ -187,15 +207,23 @@ class DryRedisList extends DryRedisAbstractCache<List<String>> implements DryRed
      */
 	@Override
     public int lpush(String key, String value) {
-		List<String> list = this.store.get(key);
-		if(list == null) {
-			list = new ArrayList<String>();
-			this.store.put(key, list);
-		}
-		
-		list.add(0, value);
-//		this.blockingMonitor.notify();
-		return list.size();
+	    try {
+	        this.reEntrantLock.lockInterruptibly();
+	        
+    		List<String> list = this.store.get(key);
+    		if(list == null) {
+    			list = new ArrayList<String>();
+    			this.store.put(key, list);
+    		}
+    		
+    		list.add(0, value);
+    		this.waitingCondition.signal();
+    		return list.size();
+	    } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        } finally {
+	        this.reEntrantLock.unlock();
+	    }
 	}
 	
 	/* (non-Javadoc)
@@ -203,18 +231,26 @@ class DryRedisList extends DryRedisAbstractCache<List<String>> implements DryRed
      */
 	@Override
     public int lpush(String key, List<String> values) {
-		List<String> list = this.store.get(key);
-		if(list == null) {
-			list = new ArrayList<String>();
-			this.store.put(key, list);
-		}
-		
-		for(String item : values) {
-			list.add(0, item);
-		}
-		
-//		this.blockingMonitor.notifyAll();
-		return list.size();
+	    try {
+	        this.reEntrantLock.lockInterruptibly();
+	        
+    		List<String> list = this.store.get(key);
+    		if(list == null) {
+    			list = new ArrayList<String>();
+    			this.store.put(key, list);
+    		}
+    		
+    		for(String item : values) {
+    			list.add(0, item);
+    		}
+    		
+    		this.waitingCondition.signal();
+    		return list.size();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        } finally {
+            this.reEntrantLock.unlock();
+        }
 	}
 	
 	/* (non-Javadoc)
@@ -222,17 +258,25 @@ class DryRedisList extends DryRedisAbstractCache<List<String>> implements DryRed
      */
 	@Override
     public int lpushx(String key, List<String> values) {
-		List<String> list = this.store.get(key);
-		if(list == null) {
-			return -1;
-		}
-		
-		for(String item : values) {
-			list.add(0, item);
-		}
-		
-//		this.blockingMonitor.notifyAll();
-		return list.size();
+	    try {
+	        this.reEntrantLock.lockInterruptibly();
+	        
+    		List<String> list = this.store.get(key);
+    		if(list == null) {
+    			return -1;
+    		}
+    		
+    		for(String item : values) {
+    			list.add(0, item);
+    		}
+    		
+    		this.waitingCondition.signal();
+    		return list.size();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        } finally {
+            this.reEntrantLock.unlock();
+        }
 	}
 	
 	/* (non-Javadoc)
@@ -384,14 +428,24 @@ class DryRedisList extends DryRedisAbstractCache<List<String>> implements DryRed
      */
 	@Override
     public int rpush(String key, String value) {
-		List<String> list = this.store.get(key);
-		if(list == null) {
-			list = new ArrayList<String>();
-			this.store.put(key, list);
-		}
-		
-		list.add(value);
-		return list.size();
+	    try {
+	        this.reEntrantLock.lockInterruptibly();
+	        
+    		List<String> list = this.store.get(key);
+    		if(list == null) {
+    			list = new ArrayList<String>();
+    			this.store.put(key, list);
+    		}
+    		
+    		list.add(value);
+    		
+    		this.waitingCondition.signal();
+    		return list.size();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        } finally {
+            this.reEntrantLock.unlock();
+        }
 	}
 	
 	/* (non-Javadoc)
@@ -399,11 +453,20 @@ class DryRedisList extends DryRedisAbstractCache<List<String>> implements DryRed
      */
 	@Override
     public int rpushx(String key, String value) {
-	    if(this.store.containsKey(key)) {
-	        this.rpush(key, value);	        
-	    }
-	    
-	    return this.llen(key);
+	    try {
+	        this.reEntrantLock.lockInterruptibly();
+	        
+    	    if(this.store.containsKey(key)) {
+    	        this.rpush(key, value);	        
+    	    }
+    	    
+    	    this.waitingCondition.signal();
+    	    return this.llen(key);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        } finally {
+            this.reEntrantLock.unlock();
+        }
 	}
 	
 	/* (non-Javadoc)
@@ -411,17 +474,26 @@ class DryRedisList extends DryRedisAbstractCache<List<String>> implements DryRed
      */
 	@Override
     public int rpush(String key, List<String> value) {
-		List<String> list = this.store.get(key);
-		if(list == null) {
-			list = new ArrayList<String>();
-			this.store.put(key, list);
-		}
-		
-		for(String item : value) {
-			list.add(item);
-		}
-		
-		return list.size();
+	    try {
+	        this.reEntrantLock.lockInterruptibly();
+	        
+    		List<String> list = this.store.get(key);
+    		if(list == null) {
+    			list = new ArrayList<String>();
+    			this.store.put(key, list);
+    		}
+    		
+    		for(String item : value) {
+    			list.add(item);
+    		}
+    		
+    		this.waitingCondition.signal();
+    		return list.size();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        } finally {
+            this.reEntrantLock.unlock();
+        }
 	}
 	
 	/* (non-Javadoc)
@@ -429,14 +501,23 @@ class DryRedisList extends DryRedisAbstractCache<List<String>> implements DryRed
      */
 	@Override
     public int lpushx(String key, String value) {
-		List<String> list = this.store.get(key);
-		if(list == null) {
-			return -1;
-		}
-		
-		list.add(value);
-//		this.blockingMonitor.notify();
-		return list.size();
+	    try {
+	        this.reEntrantLock.lockInterruptibly();
+	        
+    		List<String> list = this.store.get(key);
+    		if(list == null) {
+    			return -1;
+    		}
+    		
+    		list.add(value);
+    		
+    		this.waitingCondition.signal();
+    		return list.size();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        } finally {
+            this.reEntrantLock.unlock();
+        }
 	}
 	
 	/* (non-Javadoc)
