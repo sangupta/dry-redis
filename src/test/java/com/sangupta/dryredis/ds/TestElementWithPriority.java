@@ -108,5 +108,9 @@ public class TestElementWithPriority {
         
         Assert.assertEquals(str1.compareTo(str2), ewp1.compareTo(str2));
         Assert.assertEquals(str2.compareTo(str1), ewp2.compareTo(str1));
+        
+        // null checks
+        Assert.assertEquals(-1, ewp1.compareTo(null));
+        Assert.assertEquals(0, ewp1.compareTo(str1));
     }
 }
