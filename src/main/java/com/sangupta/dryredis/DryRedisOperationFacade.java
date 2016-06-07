@@ -211,7 +211,7 @@ abstract class DryRedisOperationFacade extends DryRedisKeys implements DryRedisG
     public String brpoplpush(String source, String destination, int maxSecondsToBlock) {
         matchKeyType(source, DryRedisCacheType.LIST);
         matchKeyType(destination, DryRedisCacheType.LIST);
-        return this.brpoplpush(source, destination, maxSecondsToBlock);
+        return this.listCommands.brpoplpush(source, destination, maxSecondsToBlock);
     }
     
     public String lindex(String key, int index) {

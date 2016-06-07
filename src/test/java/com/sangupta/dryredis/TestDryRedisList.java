@@ -126,7 +126,7 @@ public class TestDryRedisList {
             
         }).start();
         
-        Assert.assertNotNull(redis.brpoplpush("test", "test2", 1));
+        Assert.assertNotNull(redis.brpoplpush("test", "test2", 3));
         Assert.assertEquals(1, redis.llen("test2"));
         Assert.assertNotNull(redis.lpop("test2"));
         Assert.assertNull(redis.lpop("test2"));
