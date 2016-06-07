@@ -277,29 +277,16 @@ class DryRedisSet extends DryRedisAbstractCache<Set<String>> implements DryRedis
 		    return null;
 		}
 		
-		if(count > 0) {
-		    Set<String> newSet = new HashSet<String>();
-		    for(String s : set) {
-		        newSet.add(s);
-		        
-		        if(newSet.size() == count) {
-		            break;
-		        }
-		    }
-		    
-		    return new ArrayList<String>(newSet);
-		}
-		
-		List<String> result = new ArrayList<String>();
-		for(String item : set) {
-			result.add(item);
-			
-			if(result.size() == count) {
-				break;
-			}
-		}
-		
-		return result;
+	    Set<String> newSet = new HashSet<String>();
+	    for(String s : set) {
+	        newSet.add(s);
+	        
+	        if(newSet.size() == count) {
+	            break;
+	        }
+	    }
+	    
+	    return new ArrayList<String>(newSet);
 	}
 	
 	/* (non-Javadoc)
