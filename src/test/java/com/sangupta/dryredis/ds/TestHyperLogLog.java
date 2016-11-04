@@ -30,6 +30,8 @@ import org.junit.Test;
 public class TestHyperLogLog {
     
     private static final Random RANDOM = new Random();
+    
+    private static int MAX_SIZE = 1000000;
 
     @Test
     public void testComputeCount() {
@@ -50,7 +52,7 @@ public class TestHyperLogLog {
     @Test
     public void testHighCardinality() {
         HyperLogLog hyperLogLog = new HyperLogLog(10);
-        int size = 10000000;
+        int size = MAX_SIZE;
         for (int i = 0; i < size; i++) {
             hyperLogLog.offer(streamElement(i));
         }
@@ -64,7 +66,7 @@ public class TestHyperLogLog {
     @Test
     public void testHighCardinality_withDefinedRSD() {
         HyperLogLog hyperLogLog = new HyperLogLog(0.01);
-        int size = 100000000;
+        int size = MAX_SIZE;
         for (int i = 0; i < size; i++) {
             hyperLogLog.offer(streamElement(i));
         }
