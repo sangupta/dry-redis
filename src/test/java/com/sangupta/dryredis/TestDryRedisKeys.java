@@ -125,7 +125,7 @@ public class TestDryRedisKeys {
         Assert.assertEquals(0, redis.wait(0, 0l));
         Assert.assertEquals(0, redis.wait(10, 10l));
     }
-
+    
     protected DryRedis getRedis() {
         DryRedis redis = DryRedis.getDatabase();
         redis.flushdb();
