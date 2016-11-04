@@ -40,10 +40,7 @@ class RegisterSet {
 			throw new IllegalArgumentException("Cannot set from null RegisterSet");
 		}
 
-		// TODO: check for count and size
-    	for(int index = 0; index < other.M.length; index++) {
-    		this.M[index] = other.M[index];
-    	}
+		System.arraycopy(other.M, 0, this.M, 0, other.M.length);
     }
 
 	public RegisterSet(int count, int[] initialValues) {

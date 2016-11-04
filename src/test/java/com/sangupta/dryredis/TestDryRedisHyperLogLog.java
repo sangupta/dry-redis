@@ -21,6 +21,10 @@
 
 package com.sangupta.dryredis;
 
+import java.util.Arrays;
+import java.util.Random;
+
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -33,8 +37,37 @@ public class TestDryRedisHyperLogLog {
 
     @Test
     public void test() {
+    	DryRedisHyperLogLogOperations hll = getRedis();
+    			
+        Assert.assertEquals(1, hll.pfadd("test"));
+        Assert.assertEquals(0, hll.pfadd("test"));
         
+        Assert.assertEquals(0, hll.pfcount("test"));
+        Random random = new Random();
+        int size = 1000 * 1000;
+        for(int index = 0; index < size; index++) {
+        	hll.pfadd("test", String.valueOf(random.nextInt()));
+        }
+        
+        double actual = hll.pfcount("test");
+        double error = (actual - size) / size;
+        Assert.assertTrue(error < 0.1d);
     }
+    
+//    @Test
+//    public void testUnionCount() {
+//    	DryRedisHyperLogLogOperations hll = getRedis();
+//		
+//        hll.pfadd("test", "foo");
+//        hll.pfadd("test", "bar");
+//        hll.pfadd("test", "zap");
+//        
+//        hll.pfadd("test2", "1");
+//        hll.pfadd("test2", "2");
+//        hll.pfadd("test2", "3");
+//        
+//        Assert.assertEquals(6, hll.pfcount(Arrays.asList("test", "test2")));
+//    }
     
     protected DryRedisHyperLogLogOperations getRedis() {
         return new DryRedisHyperLogLog();

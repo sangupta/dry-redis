@@ -170,7 +170,7 @@ class DryRedisHyperLogLog extends DryRedisAbstractCache<HyperLogLog> implements 
 	 * @return
 	 */
 	private HyperLogLog getNewHLL() {
-		return new HyperLogLog(0.81d);
+		return new HyperLogLog(24);
 	}
 	
 	// for interface
