@@ -28,9 +28,13 @@ package com.sangupta.dryredis.support;
  * @author sangupta
  *
  */
-public abstract class Haversine {
+public class Haversine {
 
     private static final int EARTH_RADIUS = 6371; // Approx Earth radius in KM
+    
+    private Haversine() {
+    	// prevent initialization
+    }
 
     public static double distance(double startLat, double startLong, double endLat, double endLong) {
 

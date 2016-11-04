@@ -34,5 +34,10 @@ public class TestDryRedisGeoPoint {
         
         Assert.assertEquals(point1.hashCode(), point2.hashCode());
         Assert.assertEquals(point1, point2);
+        
+        // basic equals testing
+        Assert.assertFalse(point1.equals(null));
+        Assert.assertTrue(point1.equals(point1));
+        Assert.assertFalse(point1.equals(DryRedisCacheType.LIST));
     }
 }
