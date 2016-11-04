@@ -16,9 +16,11 @@ that `Redis` supports. There are many other implementation available like:
 DryRedis supports all `Redis` commands as of version 3.0 (stable) except the following ones:
 
 * List
+  * <all implemented>
 * Set
   * sscan
 * Strings
+  * setbit
 * Hash
   * hscan
 * HyperLogLog
@@ -28,6 +30,16 @@ DryRedis supports all `Redis` commands as of version 3.0 (stable) except the fol
 * Keys
   * sort
   * scan
+  * migrate
+  * move
+  * object
+  * persist
+  * randomkey
+  * restore
+  * sort
+  * ttl
+  * pttl
+  
   
 ## Behaviour differences from Redis
 
