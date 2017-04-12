@@ -20,7 +20,7 @@ Other implementations available include:
 DryRedis supports all `Redis` commands as of version 3.0 (stable) except the following ones:
 
 * List
-  * <all implemented>
+  * (all methods implemented)
 * Set
   * [sscan](https://redis.io/commands/sscan)
 * Strings
