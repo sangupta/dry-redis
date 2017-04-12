@@ -22,27 +22,27 @@ DryRedis supports all `Redis` commands as of version 3.0 (stable) except the fol
 * List
   * <all implemented>
 * Set
-  * sscan
+  * [sscan](https://redis.io/commands/sscan)
 * Strings
-  * setbit
+  * [setbit](https://redis.io/commands/setbit)
 * Hash
-  * hscan
+  * [hscan](https://redis.io/commands/hscan)
 * HyperLogLog
 * Geo
 * Sorted Set
-  * zscan
+  * [zscan](https://redis.io/commands/zscan)
 * Keys
-  * sort
-  * scan
-  * migrate
-  * move
-  * object
-  * persist
-  * randomkey
-  * restore
-  * sort
-  * ttl
-  * pttl
+  * [sort](https://redis.io/commands/hscan)
+  * [scan](https://redis.io/commands/scan)
+  * [migrate](https://redis.io/commands/migrate)
+  * [move](https://redis.io/commands/move)
+  * [object](https://redis.io/commands/object)
+  * [persist](https://redis.io/commands/persist)
+  * [randomkey](https://redis.io/commands/randomkey)
+  * [restore](https://redis.io/commands/restore)
+  * [sort](https://redis.io/commands/sort)
+  * [ttl](https://redis.io/commands/ttl)
+  * [pttl](https://redis.io/commands/pttl)
   
   
 ## Behaviour differences from Redis
