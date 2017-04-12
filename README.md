@@ -17,20 +17,16 @@ Other implementations available include:
 
 ## Commands not yet supported:
 
-DryRedis supports all `Redis` commands as of version 3.0 (stable) except the following ones:
+DryRedis supports all `Redis` commands as of version 3.2 (stable) except the following ones:
 
-* List
-  * (all methods implemented)
-* Set
-  * [sscan](https://redis.io/commands/sscan)
-* Strings
-  * [setbit](https://redis.io/commands/setbit)
-* Hash
+* Cluster
+  * none of the commands is supported
+* Connection
+  * none of the commands is supported
+* Geo
+* Hashes
   * [hscan](https://redis.io/commands/hscan)
 * HyperLogLog
-* Geo
-* Sorted Set
-  * [zscan](https://redis.io/commands/zscan)
 * Keys
   * [sort](https://redis.io/commands/hscan)
   * [scan](https://redis.io/commands/scan)
@@ -43,7 +39,22 @@ DryRedis supports all `Redis` commands as of version 3.0 (stable) except the fol
   * [sort](https://redis.io/commands/sort)
   * [ttl](https://redis.io/commands/ttl)
   * [pttl](https://redis.io/commands/pttl)
-  
+* Lists
+  * all commands supported
+* Pub/Sub
+  * none of the commands is supported
+* Scripting
+  * none of the commands is supported
+* Server
+  * none of the commands is supported
+* Sets
+  * [sscan](https://redis.io/commands/sscan)
+* Sorted Set
+  * [zscan](https://redis.io/commands/zscan)
+* Strings
+  * [setbit](https://redis.io/commands/setbit)
+* Transactions
+  * none of the commands is supported
   
 ## Behaviour differences from Redis
 
@@ -78,6 +89,24 @@ redis.setnx("dryredis-version", "2"); // fails
 ```
 
 For a list of all Redis commands, refer http://redis.io/commands.
+
+## Versioning
+
+For transparency and insight into our release cycle, and for striving to maintain 
+backward compatibility, `dry-redis` will be maintained under the Semantic 
+Versioning guidelines as much as possible.
+
+Releases will be numbered with the follow format:
+
+<major>.<minor>.<patch>
+
+And constructed with the following guidelines:
+
+* Breaking backward compatibility bumps the major
+* New additions without breaking backward compatibility bumps the minor
+* Bug fixes and misc changes bump the patch
+
+For more information on SemVer, please visit http://semver.org/.
 
 ## License
 
