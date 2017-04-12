@@ -9,6 +9,12 @@ Pure-Java in-memory implementation to `Redis` that makes testing with Redis supe
 the use of `dry-run` library project. The objective is to at-par with all commands
 that `Redis` supports. 
 
+The library is tested on the following JDK versions:
+
+* Oracle JDK 8
+* Oracle JDK 7
+* Open JDK 7
+
 Other implementations available include:
 
 * [Mock Jedis](https://github.com/50onRed/mock-jedis) - Last updated 3 Mar 2015
@@ -45,6 +51,25 @@ For a list of all Redis commands, refer http://redis.io/commands.
 * Increase unit-test code-coverage
 * Implement missing Redis commands (see below for details)
 * Remove differences from actual Redis implementations (see below for details)
+
+## Download
+
+The latest released binaries are available from Maven Central using:
+
+```xml
+<dependency>
+    <groupId>com.sangupta</groupId>
+    <artifactId>dry-redis</artifactId>
+    <version>0.8.0</version>
+</dependency>
+```
+
+## Changelog
+
+**Version 0.8.0** - 12 Apr 2017
+
+* 8 type of command-groups are now implemented
+* initial release
 
 ## Commands not yet supported:
 
