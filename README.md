@@ -5,9 +5,9 @@
 [![Coverage Status](https://coveralls.io/repos/github/sangupta/dry-redis/badge.svg?branch=master)](https://coveralls.io/github/sangupta/dry-redis?branch=master)
 [![Maven Version](https://maven-badges.herokuapp.com/maven-central/com.sangupta/dry-redis/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.sangupta/dry-redis)
 
-Pure-Java in-memory implementation to `Redis` that makes testing with Redis super-easy via
-the use of `dry-run` library project. The objective is to at-par with all commands
-that `Redis` supports. 
+Pure-Java in-memory implementation to `Redis` that makes testing with `Redis` super-easy via
+the use of [dry-run](https://github.com/sangupta/dry-run) library project. The objective is 
+to at-par with all commands that `Redis` supports. 
 
 The library is tested on the following JDK versions:
 
