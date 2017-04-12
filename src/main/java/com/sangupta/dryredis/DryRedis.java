@@ -56,12 +56,14 @@ public class DryRedis extends DryRedisOperationFacade {
     }
     
     /**
-     * Get the {@link DryRedis} instance for the given database. For a given name
-     * the same database instance is returned always.
-     * 
-     * @param dbName
-     * @return
-     */
+	 * Get the {@link DryRedis} instance for the given database. For a given
+	 * name the same database instance is returned always.
+	 * 
+	 * @param dbName
+	 *            the name of the database
+	 * 
+	 * @return the {@link DryRedis} instance for that database
+	 */
     public static DryRedis getDatabase(String dbName) {
         if(dbName == null || dbName.trim().isEmpty()) {
             return DEFAULT_DATABASE;

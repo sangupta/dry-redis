@@ -40,6 +40,7 @@ import com.sangupta.dryredis.support.DryRedisSetAggregationType;
  * @author sangupta
  *
  * @param <E>
+ *            the type of element being stored
  */
 public class SortedSetWithPriority<E extends Comparable<E>> implements SortedSet<ElementWithPriority<E>>, Cloneable {
 
@@ -89,10 +90,11 @@ public class SortedSetWithPriority<E extends Comparable<E>> implements SortedSet
     }
     
     /**
-     * Apply a new weight to priority of all elements in this set.
-     * 
-     * @param weight
-     */
+	 * Apply a new weight to priority of all elements in this set.
+	 * 
+	 * @param weight
+	 *            the weight value to use
+	 */
     public void applyWeight(double weight) {
         if(weight == 1.0d) {
             // nothing to do

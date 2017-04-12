@@ -97,7 +97,9 @@ abstract class DryRedisKeys {
 	 * Delete the keys from this redis instance.
 	 * 
 	 * @param key
-	 * @return
+	 *            the key pattern to remove
+	 * 
+	 * @return the total number of keys removed
 	 */
 	public int del(String key) {
 	    int deleted = 0;
@@ -109,11 +111,13 @@ abstract class DryRedisKeys {
 	}
 
 	/**
-	 * Dump the given key into a byte[] array that could later be used
-	 * to restore the key back into this redis instance.
+	 * Dump the given key into a byte[] array that could later be used to
+	 * restore the key back into this redis instance.
 	 * 
 	 * @param key
-	 * @return
+	 *            the key that needs to be dumped in to a byte-array
+	 * 
+	 * @return the dumped byte-array, or <code>null</code> if no such key exists
 	 */
 	public byte[] dump(String key) {
 	    DryRedisCache cache = this.getCache(key);
@@ -124,6 +128,11 @@ abstract class DryRedisKeys {
 	    return cache.dump(key);
 	}
 	
+	/**
+	 * Flush the database by clearing up all keys.
+	 * 
+	 * @return "OK" at the end
+	 */
 	public String flushdb() {
 	    for(DryRedisCache cache : caches) {
 	        cache.flushCache();
@@ -136,7 +145,9 @@ abstract class DryRedisKeys {
 	 * Check if a key exists in this redis instance.
 	 * 
 	 * @param key
-	 * @return
+	 *            the key to look for
+	 * 
+	 * @return <code>1</code> if key is found, <code>0</code> otherwise
 	 */
 	public int exists(String key) {
 	    for(DryRedisCache cache : caches) {
@@ -149,11 +160,17 @@ abstract class DryRedisKeys {
 	}
 	
 	/**
-	 * Set the expiration time of the key to given number of seconds starting now.
+	 * Set the expiration time of the key to given number of seconds starting
+	 * now.
 	 * 
 	 * @param key
+	 *            the key for which expiration is to be set
+	 * 
 	 * @param seconds
-	 * @return
+	 *            the number of seconds to expiration
+	 * 
+	 * @return <code>0</code> if we could not set expire, or key was not found.
+	 *         <code>1</code> if expiration was set
 	 */
 	public int expire(String key, int seconds) {
 	    return this.pexpireat(key, System.currentTimeMillis() + seconds * 1000l);
@@ -163,8 +180,13 @@ abstract class DryRedisKeys {
 	 * Set the expiration time of the key to the given epoch time in seconds.
 	 * 
 	 * @param key
+	 *            the key for which expiration is to be set
+	 * 
 	 * @param epochAsSeconds
-	 * @return
+	 *            the epoch millis for expiration
+	 * 
+	 * @return <code>0</code> if we could not set expire, or key was not found.
+	 *         <code>1</code> if expiration was set
 	 */
 	public int expireat(String key, long epochAsSeconds) {
         return this.pexpireat(key, epochAsSeconds * 1000l);
@@ -185,6 +207,17 @@ abstract class DryRedisKeys {
 	    return 0;
 	}
 	
+	/**
+	 * Rename key provided to a new name.
+	 * 
+	 * @param key
+	 *            the key name as of now
+	 * 
+	 * @param newKey
+	 *            the destination key name to use
+	 * 
+	 * @return "OK" if renaming succeeds, "ERROR" otherwise
+	 */
 	public String rename(String key, String newKey) {
 	    if(key == null || newKey == null) {
 	        return "ERROR";
@@ -289,14 +322,18 @@ abstract class DryRedisKeys {
     }
     
     /**
-     * Being an in-memory and single-machine instance of Redis - there are no slaves
-     * for us. Thus, there is nothing to do in the WAIT command. Thus we return <code>0</code>
-     * to signify that we updated zero slaves.
-     * 
-     * @param numSlaves
-     * @param timeOutInMilliseconds
-     * @return
-     */
+	 * Being an in-memory and single-machine instance of Redis - there are no
+	 * slaves for us. Thus, there is nothing to do in the WAIT command. Thus we
+	 * return <code>0</code> to signify that we updated zero slaves.
+	 * 
+	 * @param numSlaves
+	 *            the number-of-slaves
+	 * 
+	 * @param timeOutInMilliseconds
+	 *            the time out value in milliseconds
+	 * 
+	 * @return the number of slaves that were updated
+	 */
     public int wait(int numSlaves, long timeOutInMilliseconds) {
         return 0; 
     }
@@ -307,7 +344,10 @@ abstract class DryRedisKeys {
 	 * Find the exact cache in which a given key is present.
 	 * 
 	 * @param key
-	 * @return
+	 *            the key we are looking for
+	 * 
+	 * @return the {@link DryRedisCache} where key is present, <code>null</code>
+	 *         otherwise
 	 */
 	protected DryRedisCache getCache(String key) {
         for(DryRedisCache cache : caches) {
@@ -320,11 +360,14 @@ abstract class DryRedisKeys {
 	}
 	
 	/**
-     * Find the cache type for the cache in which the given key is present.
-     * 
-     * @param key
-     * @return
-     */
+	 * Find the cache type for the cache in which the given key is present.
+	 * 
+	 * @param key
+	 *            the key we are looking for
+	 * 
+	 * @return the {@link DryRedisCacheType} where key is present,
+	 *         <code>null</code> otherwise
+	 */
 	protected DryRedisCacheType keyType(String key) {
 	    DryRedisCache cache = this.getCache(key);
 	    if(cache == null) {

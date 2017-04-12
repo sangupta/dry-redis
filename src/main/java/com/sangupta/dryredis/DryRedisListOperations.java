@@ -47,13 +47,6 @@ interface DryRedisListOperations {
 
     int lpushx(String key, List<String> values);
 
-    /**
-     * 
-     * @param key
-     * @param start inclusive
-     * @param stop inclusive
-     * @return
-     */
     List<String> lrange(String key, int start, int stop);
 
     int lrem(String key, int count, String value);

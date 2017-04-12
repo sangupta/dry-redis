@@ -22,15 +22,18 @@
 package com.sangupta.dryredis.ds;
 
 /**
- * An element that has a given priority in the sorted set. The {@link Comparable#compareTo(Object)}
- * method should NOT take this priority into account. That is taken care of by the {@link SortedSetWithPriority}
+ * An element that has a given priority in the sorted set. The
+ * {@link Comparable#compareTo(Object)} method should NOT take this priority
+ * into account. That is taken care of by the {@link SortedSetWithPriority}
  * during insertion into its own internal data structures.
  * 
- * This helps in getting an element's priority when they are inserted using other methods.
+ * This helps in getting an element's priority when they are inserted using
+ * other methods.
  * 
  * @author sangupta
  *
  * @param <E>
+ *            the type of element being stored
  */
 public class ElementWithPriority<E extends Comparable<E>> implements Comparable<E>, Cloneable {
     

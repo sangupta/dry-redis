@@ -33,18 +33,20 @@ import java.util.List;
 public interface DryRedisCache {
 	
     /**
-     * Delete the keys matching the pattern and return the number of keys
-     * removed.
-     * 
-     * @param key
-     * @return
-     */
+	 * Delete the keys matching the pattern and return the number of keys
+	 * removed.
+	 * 
+	 * @param key
+	 *            the key to remove
+	 * 
+	 * @return the number of keys removed
+	 */
 	public int del(String key);
 	
 	/**
 	 * Get the {@link DryRedisCacheType} for this cache.
 	 * 
-	 * @return
+	 * @return the {@link DryRedisCacheType} for this cache
 	 */
 	public DryRedisCacheType getType();
 
@@ -52,27 +54,34 @@ public interface DryRedisCache {
 	 * Check if a key is present in this cache or not.
 	 * 
 	 * @param key
-	 * @return
+	 *            the key being looked for
+	 * 
+	 * @return <code>true</code> if found, <code>false</code> otherwise
 	 */
     public boolean hasKey(String key);
 
     public void keys(String pattern, List<String> keys);
 
     /**
-     * Dump the value stored against the key so that it can be later restored
-     * using the RESTORE command.
-     * 
-     * @param key
-     * @return
-     */
+	 * Dump the value stored against the key so that it can be later restored
+	 * using the RESTORE command.
+	 * 
+	 * @param key
+	 *            the key to dump
+	 * 
+	 * @return the byte-array representation
+	 */
     public byte[] dump(String key);
 
     /**
-     * Rename the given key to the new key name.
-     * 
-     * @param key
-     * @param newKey
-     */
+	 * Rename the given key to the new key name.
+	 * 
+	 * @param key
+	 *            the source key name
+	 * 
+	 * @param newKey
+	 *            the destiantion key name
+	 */
     public void rename(String key, String newKey);
 
     /**
