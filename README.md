@@ -33,11 +33,9 @@ redis = DryRedis.getDatabase("myDatabase");
 
 // fetching an instance for "myDatabase" again will return the same instance
 redis =  DryRedis.getDatabase("myDatabase"); // the instance is same as before
-```
 
-All `Redis` commands are available on this instance:
+// All `Redis` commands are available on this instance:
 
-```java
 redis.setnx("dryredis-version", "1"); // succeeds
 redis.setnx("dryredis-version", "2"); // fails
 ```
