@@ -101,7 +101,9 @@ Versioning guidelines as much as possible.
 
 Releases will be numbered with the follow format:
 
+```
 <major>.<minor>.<patch>
+```
 
 And constructed with the following guidelines:
 
