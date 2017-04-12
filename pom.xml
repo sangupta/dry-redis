@@ -10,7 +10,7 @@
 
     <groupId>com.sangupta</groupId>
     <artifactId>dryredis</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.8.0</version>
     <packaging>jar</packaging>
 
     <name>dry-redis</name>
