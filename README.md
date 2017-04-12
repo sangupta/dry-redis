@@ -15,6 +15,37 @@ Other implementations available include:
 * [Redis Mock Java](https://github.com/wilkenstein/redis-mock-java) - Last updated 22 Sep 2015
 * [Embedded-Redis](https://github.com/kstyrc/embedded-redis) - Runs a server to connect to Redis for unit testing
 
+## Usage
+
+To fetch a `Redis` database instance you may use one of the following methods:
+
+```java
+DryRedis redis = DryRedis.getDatabase(); // gets the default singleton instance
+
+// fetch a new singleton instance represented by "myDatabase"
+redis = DryRedis.getDatabase("myDatabase");
+
+// fetching an instance for "myDatabase" again will return the same instance
+redis =  DryRedis.getDatabase("myDatabase"); // the instance is same as before
+```
+
+All `Redis` commands are available on this instance:
+
+```java
+redis.setnx("dryredis-version", "1"); // succeeds
+redis.setnx("dryredis-version", "2"); // fails
+```
+
+For a list of all Redis commands, refer http://redis.io/commands.
+
+## TODO
+
+* Thread-safety is currently not supported
+* Multiple redis databases and moving between databases is currently not supported
+* Increase unit-test code-coverage
+* Implement missing Redis commands (see below for details)
+* Remove differences from actual Redis implementations (see below for details)
+
 ## Commands not yet supported:
 
 DryRedis supports all `Redis` commands as of version 3.2 (stable) except the following ones:
@@ -61,34 +92,6 @@ DryRedis supports all `Redis` commands as of version 3.2 (stable) except the fol
 * Geo algorithms currently use a brute-force method, a O(n) search and thus will be slower than `Redis`
 * Geo methods use `haversine` method to compute distance between two points but return a slightly different distance than Redis
 * HyperLogLog implementation uses https://github.com/addthis/stream-lib libraries implementation and may thus slightly differ from `Redis`
-
-## TODO
-
-* Thread-safety is currently not supported
-* Multiple redis databases and moving between databases is currently not supported
-
-## Usage
-
-To fetch a `Redis` database instance you may use one of the following methods:
-
-```java
-DryRedis redis = DryRedis.getDatabase(); // gets the default singleton instance
-
-// fetch a new singleton instance represented by "myDatabase"
-redis = DryRedis.getDatabase("myDatabase");
-
-// fetching an instance for "myDatabase" again will return the same instance
-redis =  DryRedis.getDatabase("myDatabase"); // the instance is same as before
-```
-
-All `Redis` commands are available on this instance:
-
-```java
-redis.setnx("dryredis-version", "1"); // succeeds
-redis.setnx("dryredis-version", "2"); // fails
-```
-
-For a list of all Redis commands, refer http://redis.io/commands.
 
 ## Versioning
 
