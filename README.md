@@ -8,8 +8,8 @@
 Pure-Java in-memory implementation to `Redis`. The objective is to at-par with all commands
 that `Redis` supports. There are many other implementation available like:
 
-* [Mock Jedis](https://github.com/50onRed/mock-jedis) - updated over an year ago
-* [Redis Mock Java](https://github.com/wilkenstein/redis-mock-java)
+* [Mock Jedis](https://github.com/50onRed/mock-jedis) - Last updated 3 Mar 2015
+* [Redis Mock Java](https://github.com/wilkenstein/redis-mock-java) - Last updated 22 Sep 2015
 
 ## Commands not yet supported:
 
@@ -79,7 +79,7 @@ For a list of all Redis commands, refer http://redis.io/commands.
 
 ```
  dry-redis: In-memory pure java implementation to Redis
- Copyright (c) 2016, Sandeep Gupta
+ Copyright (c) 2016-2017, Sandeep Gupta
  
  http://sangupta.com/projects/dry-redis
  
