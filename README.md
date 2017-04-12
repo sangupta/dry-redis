@@ -5,11 +5,15 @@
 [![Coverage Status](https://coveralls.io/repos/github/sangupta/dry-redis/badge.svg?branch=master)](https://coveralls.io/github/sangupta/dry-redis?branch=master)
 [![Maven Version](https://maven-badges.herokuapp.com/maven-central/com.sangupta/dry-redis/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.sangupta/dry-redis)
 
-Pure-Java in-memory implementation to `Redis`. The objective is to at-par with all commands
-that `Redis` supports. There are many other implementation available like:
+Pure-Java in-memory implementation to `Redis` that makes testing with Redis super-easy via
+the use of `dry-run` library project. The objective is to at-par with all commands
+that `Redis` supports. 
+
+Other implementation available like:
 
 * [Mock Jedis](https://github.com/50onRed/mock-jedis) - Last updated 3 Mar 2015
 * [Redis Mock Java](https://github.com/wilkenstein/redis-mock-java) - Last updated 22 Sep 2015
+* [Embedded-Redis](https://github.com/kstyrc/embedded-redis) - Runs a server to connect to Redis for unit testing
 
 ## Commands not yet supported:
 
