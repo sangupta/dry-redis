@@ -9,7 +9,7 @@ Pure-Java in-memory implementation to `Redis` that makes testing with Redis supe
 the use of `dry-run` library project. The objective is to at-par with all commands
 that `Redis` supports. 
 
-Other implementation available like:
+Other implementations available include:
 
 * [Mock Jedis](https://github.com/50onRed/mock-jedis) - Last updated 3 Mar 2015
 * [Redis Mock Java](https://github.com/wilkenstein/redis-mock-java) - Last updated 22 Sep 2015
