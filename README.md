@@ -1,13 +1,14 @@
 # Dry Redis
 
-
 [![Build Status](https://travis-ci.org/sangupta/dry-redis.svg?branch=master)](https://travis-ci.org/sangupta/dry-redis)
 [![Coverage Status](https://coveralls.io/repos/github/sangupta/dry-redis/badge.svg?branch=master)](https://coveralls.io/github/sangupta/dry-redis?branch=master)
 [![Maven Version](https://maven-badges.herokuapp.com/maven-central/com.sangupta/dryredis/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.sangupta/dryredis)
 
 Pure-Java in-memory implementation to `Redis` that makes testing with `Redis` super-easy via
 the use of [dry-run](https://github.com/sangupta/dry-run) library project. The objective is 
-to at-par with all commands that `Redis` supports. 
+to at-par with all commands that `Redis` supports. `dry-redis` can also be used to replace
+`Redis` during development phase, to be an embedded in-memory implementation so that you need
+not run `Redis` everytime. 
 
 The library is tested on the following JDK versions:
 
@@ -15,11 +16,25 @@ The library is tested on the following JDK versions:
 * Oracle JDK 7
 * Open JDK 7
 
-Other implementations available include:
+`dry-redis` was born out of frustration to test my own Redis code, as all other implementations
+either were too stale/old, or required me to run an embedded server connecting over TCP.
+Other notable implementations available include:
 
 * [Mock Jedis](https://github.com/50onRed/mock-jedis) - Last updated 3 Mar 2015
 * [Redis Mock Java](https://github.com/wilkenstein/redis-mock-java) - Last updated 22 Sep 2015
 * [Embedded-Redis](https://github.com/kstyrc/embedded-redis) - Runs a server to connect to Redis for unit testing
+
+## Table of Contents
+
+* Introduction
+* Usage
+* Downloads
+* Change Log
+* TODO items
+* Supported commands
+* Differences from Redis
+* Versioning
+* License
 
 ## Usage
 
