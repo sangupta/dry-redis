@@ -1,5 +1,9 @@
 language: java
 
+# This fixes unavailability of Oracle JDK-7
+# Refer https://github.com/travis-ci/travis-ci/issues/7884#issuecomment-308451879
+dist: precise
+
 sudo: false
 
 jdk:
