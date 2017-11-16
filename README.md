@@ -26,15 +26,16 @@ Other notable implementations available include:
 
 ## Table of Contents
 
-* Introduction
-* Usage
-* Downloads
-* Change Log
-* TODO items
-* Supported commands
-* Differences from Redis
-* Versioning
-* License
+* [Introduction](#dry-redis)
+* [Table of Contens=ts](#table-of-contents)
+* [Usage](#usage)
+* [Downloads](#downloads)
+* [Changelog](#changelog)
+* [TODO items](#todo)
+* [Supported commands](#commands-not-yet-supported)
+* [Differences from Redis](#behaviour-differences-from-redis)
+* [Versioning](#versioning)
+* [License](#license)
 
 ## Usage
 
@@ -57,14 +58,6 @@ redis.setnx("dryredis-version", "2"); // fails
 
 For a list of all Redis commands, refer http://redis.io/commands.
 
-## TODO
-
-* Thread-safety is currently not supported
-* Multiple redis databases and moving between databases is currently not supported
-* Increase unit-test code-coverage
-* Implement missing Redis commands (see below for details)
-* Remove differences from actual Redis implementations (see below for details)
-
 ## Download
 
 The latest released binaries are available from Maven Central using:
@@ -83,6 +76,14 @@ The latest released binaries are available from Maven Central using:
 
 * 8 type of command-groups are now implemented
 * initial release
+
+## TODO
+
+* Thread-safety is currently not supported
+* Multiple redis databases and moving between databases is currently not supported
+* Increase unit-test code-coverage
+* Implement missing Redis commands (see below for details)
+* Remove differences from actual Redis implementations (see below for details)
 
 ## Commands not yet supported:
 
